@@ -9,9 +9,18 @@ describe("portable SVG filter", () => {
     expect(filter.querySelector('[result="rimLight"]')).toHaveAttribute("href","data:image/png;base64,light");
     expect(filter.querySelector("feBlend")).toHaveAttribute("in2","displaced");
     expect(filter.querySelector("feBlend")).toHaveAttribute("mode","normal");
-    expect(filter.querySelector('[result="ambient"]')).toHaveAttribute("stdDeviation","2 24");
+    expect(filter.querySelector('[result="ambient"]')).toHaveAttribute("stdDeviation","1 24");
     expect(filter.querySelectorAll("feDisplacementMap")).toHaveLength(1);
-    expect(filter.querySelector('[result="coloredRim"] feFuncA')?.getAttribute("slope")).toBe(String(.75*.55));
+    expect(filter.querySelector('[result="coloredRim"] feFuncA')?.getAttribute("slope")).toBe("0.75");
+  });
+  it("projects each lens's source column onto its rim without shifting neighboring columns",()=>{
+    const filter=buildDisplacementFilter({...config,rim:"rim",rimScale:80,colorBleed:1});
+    const projected=filter.querySelector('[result="columnColor"]');
+    expect(projected).toHaveAttribute("in","ambientLight");
+    expect(projected).toHaveAttribute("in2","columnCoordinates");
+    expect(projected).toHaveAttribute("scale","80");
+    expect(projected).toHaveAttribute("xChannelSelector","R");
+    expect(filter.querySelector('[result="maskedColor"]')).toHaveAttribute("in","columnColor");
   });
   it("softens transmitted content before adding the sharp source-colored edge",()=>{
     const filter=buildDisplacementFilter({...config,blur:8,rim:"rim",colorBleed:1});

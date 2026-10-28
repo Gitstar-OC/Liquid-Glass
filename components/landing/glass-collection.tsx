@@ -36,7 +36,6 @@ export function GlassCollection() {
   const router = useRouter();
   const { resolvedMode: theme, setMode } = useGlassTheme();
   const [themeBehavior, setThemeBehavior] = useState<GlassThemeBehavior>("unitheme");
-  const [fixedInk, setFixedInk] = useState<"light" | "dark">("dark");
   const [volume, setVolume] = useState(58), [focus, setFocus] = useState(false);
   const [refraction, setRefraction] = useState(true), [edges, setEdges] = useState(false);
   const [backdrop, setBackdrop] = useState<"photos" | "plain">("photos");
@@ -56,13 +55,12 @@ export function GlassCollection() {
   useEffect(() => { const resize = () => fitPortal(true); window.addEventListener("resize", resize); return () => window.removeEventListener("resize", resize); }, [fitPortal]);
   const story = useRef<HTMLElement>(null), ocean = useRef<HTMLDivElement>(null), dunes = useRef<HTMLDivElement>(null);
   useShowcaseScroll(story, ocean, dunes, true);
-  const commands = useMemo(() => COMPONENT_CATALOGUE.map(item => ({ id: item.id, label: item.title, group: item.group, icon: <GlassIcon name="components" />, onSelect: () => router.push(`/docs/${item.id}`) })), [router]);
+  const commands = useMemo(() => COMPONENT_CATALOGUE.map(item => ({ id: item.id, label: item.title, group: item.group, icon: <GlassIcon name="arrow" />, onSelect: () => router.push(`/docs/${item.id}`) })), [router]);
   const dark = theme === "dark";
   const changeTheme = () => setMode(dark ? "light" : "dark");
-  const changeBehavior = (next: GlassThemeBehavior) => { setFixedInk(dark ? "light" : "dark"); setThemeBehavior(next); };
   return <section ref={story} className="showcase-story" data-scroll-enabled="true" aria-label="Live glass collection">
     <div className="showcase-pin"><div ref={stageRef} className={cn("showcase-stage relative isolate", dark ? "showcase-dark" : "showcase-light")} data-testid="collection-stage" data-theme={theme} data-show-edges={edges} data-backdrop={backdrop} data-theme-behavior={themeBehavior}>
-      <GlassSettingsProvider surface="clear" refraction={refraction} showOutlines={edges} themeBehavior={themeBehavior} ink={themeBehavior === "duotheme" ? fixedInk : "auto"} config={{ ...GLASS_DEFAULT_PARAMS, blur: backdrop === "plain" ? 0 : GLASS_DEFAULT_PARAMS.blur, tint: dark ? .035 : .025, tintColor: dark ? "#161920" : "#ffffff" }}>
+      <GlassSettingsProvider surface="clear" refraction={refraction} showOutlines={edges} themeBehavior={themeBehavior} ink={themeBehavior === "duotheme" ? (dark ? "light" : "dark") : "auto"} config={{ ...GLASS_DEFAULT_PARAMS, blur: backdrop === "plain" ? 0 : GLASS_DEFAULT_PARAMS.blur, tint: dark ? .035 : .025, tintColor: dark ? "#161920" : "#ffffff" }}>
         <GlassScene appearance={theme} frameRate={30} className="showcase-scene" content={<div className="showcase-source absolute inset-0 overflow-hidden bg-background" aria-hidden="true">
           <div className="absolute inset-0" style={{ opacity: backdrop === "plain" ? 0 : 1 }}>
             <div className="absolute inset-0"><SceneBackdrop photo={dark ? "ice" : "dunes"} priority /></div>
@@ -84,7 +82,7 @@ export function GlassCollection() {
                   ] as const).map(action => (
                     <GlassButton key={action.href} asChild variant="ghost">
                       <GlassSurface asChild radius={999} ink={dark ? "light" : "dark"}
-                        config={{ blur: 0, glint: 100, tint: dark ? .06 : .035, tintColor: dark ? "#ffffff" : "#000000" }}
+                        config={{ tint: dark ? .06 : .035, tintColor: dark ? "#ffffff" : "#000000" }}
                         tintBlendMode="normal">
                         <Link href={action.href}>{action.label}{action.icon && <GlassIcon name={action.icon} data-icon="inline-end" />}</Link>
                       </GlassSurface>
@@ -116,7 +114,7 @@ export function GlassCollection() {
                     <div className="flex w-full flex-wrap items-center justify-between gap-3 pt-1"><QuickActions onSearch={() => setSearchOpen(true)} /><GlassElasticButton /></div>
                   </div>
                   <div className="showcase-right flex min-w-0 flex-col gap-3">
-                    <div className="showcase-actions flex items-center gap-2.5"><DrawerTrigger asChild><GlassButton onClick={rememberTrigger} className="min-w-0 flex-1 px-4">Continue<GlassIcon name="arrow" data-icon="inline-end" /></GlassButton></DrawerTrigger><GlassSaveButton className="min-w-0 flex-1 px-3" /></div>
+                    <div className="showcase-actions flex items-center gap-2.5"><DrawerTrigger asChild><GlassButton composite={false} onClick={rememberTrigger} className="min-w-0 flex-1 px-4">Continue<GlassIcon name="arrow" data-icon="inline-end" /></GlassButton></DrawerTrigger><GlassSaveButton composite={false} className="min-w-0 flex-1 px-3" /></div>
                     <GlassSpotlight title="Search components" container={container} open={searchOpen} onOpenChange={open => { fitPortal(open); setSearchOpen(open); }} commands={commands} triggerLabel="Search components" placeholder="Find a component…" className="h-10 w-[calc(100%-1rem)] max-w-none self-end px-4 text-[13px]" />
                     <GlassRangeControl priority={2} label="MacBook Pro Speakers" value={volume} onValueChange={setVolume} sliderTone="accent" />
                     <GlassConnectivity priority={2} className="max-w-none" />
@@ -133,7 +131,7 @@ export function GlassCollection() {
                 </GlassDrawerContent>
               </Drawer>
             </div>
-            <div className="showcase-dock-position"><ShowcaseDock dark={dark} onThemeChange={changeTheme} themeBehavior={themeBehavior} onBehaviorChange={changeBehavior} backdrop={backdrop} onBackdropChange={setBackdrop} edges={edges} onEdgesChange={setEdges} /></div>
+            <div className="showcase-dock-position"><ShowcaseDock dark={dark} onThemeChange={changeTheme} themeBehavior={themeBehavior} onBehaviorChange={setThemeBehavior} backdrop={backdrop} onBackdropChange={setBackdrop} edges={edges} onEdgesChange={setEdges} /></div>
             <div className="showcase-portal-track pointer-events-none absolute inset-0"><div ref={mountPortal} className="showcase-portal-window pointer-events-none sticky top-0 w-full" /></div>
           </GlassAtlas>
           <GlassToaster id="showcase" position="bottom-right" offset={{ bottom: 96, right: 24 }} mobileOffset={{ bottom: 24, right: 16, left: 16 }} visibleToasts={1} />

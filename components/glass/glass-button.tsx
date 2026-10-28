@@ -12,13 +12,15 @@ export type GlassButtonProps = Omit<React.ComponentProps<typeof Button>, "varian
   variant?: ButtonVariant | "core" | "primary" | "glass" | "glass-strong" | "accent";
   shape?: "default" | "pill" | "circle";
   rendering?: "auto" | "shared";
+  /** Own the optical layer so press scaling includes the glass and its glint. */
+  composite?: boolean;
   /** A deliberate press reveals the lens. Release, blur, and cancellation restore it. */
   liquidOnHold?: boolean;
 };
 
 export function GlassButton({
   className, variant = "core", type = "button", shape = "pill", size = "default", rendering = "auto",
-  liquidOnHold = false, children, asChild, onPointerDown, onPointerUp,
+  liquidOnHold = false, composite = true, children, asChild, onPointerDown, onPointerUp,
   onPointerCancel, onLostPointerCapture, onKeyDown, onKeyUp, onBlur, ...props
 }: GlassButtonProps) {
   const scene = useGlassScene();
@@ -41,7 +43,7 @@ export function GlassButton({
   const core = !primary && !bare && !secondary;
   const refract = Boolean(scene && !within && rendering === "auto" && core);
   const classes = cn(
-    "relative isolate h-10 select-text text-[13px] font-semibold tracking-[-.015em] text-foreground transition-[background-color,transform] duration-150 ease-(--ease-out) hover:bg-foreground/4 active:bg-foreground/7 active:scale-[.97] motion-reduce:transform-none",
+    "relative isolate h-10 select-text text-[13px] font-semibold tracking-[-.015em] text-foreground transition-[background-color,scale,transform] duration-150 ease-(--ease-out) hover:bg-foreground/4 active:bg-foreground/7 active:scale-[.97] motion-reduce:transform-none motion-reduce:active:scale-100",
     shape === "circle" ? "size-11 shrink-0 rounded-full p-0" : shape === "pill" ? "rounded-full px-5" : "rounded-xl px-4",
     size === "xs" && "h-6 px-2 text-xs",
     size === "sm" && "h-8 px-3 text-xs",
@@ -88,6 +90,7 @@ export function GlassButton({
     data-input-modality={pointerMotion ? "pointer" : "keyboard"}
     data-liquid-held={active} asChild={refract || asChild} className={classes}>
     {refract ? <GlassSurface kind="card" radius={shape === "default" ? 12 : 999} asChild
+      composite={composite}
       rendering={liquidOnHold && !active ? "shared" : "auto"} priority={active ? 5 : 0}>
       {asChild ? children : <button type={type}>{children}</button>}
     </GlassSurface> : children}

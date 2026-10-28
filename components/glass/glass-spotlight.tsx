@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUp, ArrowDown, CornerDownLeft } from "lucide-react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import type { LensParams } from "@/lib/glass";
 import { GlassSurface } from "@/components/glass/glass-surface";
 import { GlassIcon } from "@/components/glass/glass-icons";
@@ -15,6 +14,8 @@ import {
   GlassCommandItem,
   GlassCommandShortcut,
   GlassCommandDialog,
+  GlassCommandFooter,
+  GlassCommandSeparator,
 } from "@/components/glass/glass-command";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,8 @@ export interface GlassSpotlightCommand {
   group?: string;
   icon?: ReactNode;
   shortcut?: string;
+  description?: string;
+  keywords?: string[];
   disabled?: boolean;
   onSelect: () => void;
 }
@@ -47,19 +50,20 @@ function SpotlightCommands({
       <GlassCommandInput
         aria-label="Search commands"
         placeholder={placeholder}
-        className="text-sm"
       />
-      <GlassCommandList className="max-h-64">
+      <GlassCommandList className="max-h-[min(380px,50dvh)] scroll-py-2 p-2">
         <GlassCommandEmpty>No results found.</GlassCommandEmpty>
-        {groups.map((group) => (
-          <GlassCommandGroup key={group} heading={group}>
+        {groups.map((group,index) => (
+          <Fragment key={group}>
+            {index > 0 && <GlassCommandSeparator className="mx-1 my-2 bg-foreground/8"/>}
+          <GlassCommandGroup heading={group} className="p-0 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-2.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:text-foreground/50">
             {commands
               .filter((command) => (command.group ?? "Suggestions") === group)
               .map((command) => (
                 <GlassCommandItem
                   key={command.id}
-                  className="min-h-12 gap-3 rounded-xl px-3 text-[13px] data-selected:bg-foreground/12"
                   value={command.label}
+                  keywords={command.keywords}
                   disabled={command.disabled}
                   onSelect={() => {
                     onCommandSelect?.();
@@ -67,11 +71,12 @@ function SpotlightCommands({
                   }}
                 >
                   {command.icon && (
-                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-foreground/10 [&_svg]:size-3.5">
+                    <span aria-hidden="true" className="grid size-5 shrink-0 place-items-center text-foreground/60 [&_svg]:size-4">
                       {command.icon}
                     </span>
                   )}
-                  <span>{command.label}</span>
+                  <span className="min-w-0 flex-1 truncate font-medium">{command.label}</span>
+                  {command.description && <span className="ml-auto hidden text-xs text-foreground/45 sm:block">{command.description}</span>}
                   {command.shortcut && (
                     <GlassCommandShortcut>
                       {command.shortcut}
@@ -80,17 +85,10 @@ function SpotlightCommands({
                 </GlassCommandItem>
               ))}
           </GlassCommandGroup>
+          </Fragment>
         ))}
       </GlassCommandList>
-      <div className="mt-2 flex items-center justify-between border-t border-foreground/10 px-3 pt-3 pb-1 text-[10px] text-foreground/60">
-        <span className="flex items-center gap-1">
-          <ArrowUp aria-hidden="true" className="size-3" />
-          <ArrowDown aria-hidden="true" className="mr-1 size-3" /> Navigate
-        </span>
-        <span className="flex items-center gap-1.5">
-          <CornerDownLeft aria-hidden="true" className="size-3" /> Open
-        </span>
-      </div>
+      <GlassCommandFooter/>
     </GlassCommand>
   );
 }
@@ -104,7 +102,7 @@ export function GlassSpotlightPanel({
       kind="command"
       surface="clear"
       config={config}
-      className={cn("w-full max-w-[400px] p-3", className)}
+      className={cn("w-full max-w-[520px] overflow-hidden", className)}
     >
       <SpotlightCommands {...props} />
     </GlassSurface>
@@ -118,6 +116,7 @@ export interface GlassSpotlightProps extends GlassSpotlightPanelProps {
   shortcut?: boolean;
   title?: string;
   triggerLabel?: string;
+  triggerAriaLabel?: string;
 }
 export function GlassSpotlight({
   open,
@@ -127,6 +126,7 @@ export function GlassSpotlight({
   shortcut = false,
   title = "Spotlight",
   triggerLabel = "Search anything…",
+  triggerAriaLabel,
   className,
   config,
   ...props
@@ -153,6 +153,8 @@ export function GlassSpotlight({
   return (
     <>
       <GlassButton
+        composite={false}
+        aria-label={triggerAriaLabel}
         ref={triggerRef}
         className={cn(
           "h-14 w-full max-w-sm justify-start gap-3 px-5 text-lg font-normal text-foreground/65",
@@ -174,7 +176,7 @@ export function GlassSpotlight({
         open={visible}
         onOpenChange={change}
         container={container}
-        config={{ blur: 8, ...config }}
+        config={config}
         onCloseAutoFocus={event => { event.preventDefault(); triggerRef.current?.focus(); }}
       >
         <SpotlightCommands

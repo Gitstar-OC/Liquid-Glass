@@ -33,6 +33,16 @@ describe("batched lens field", () => {
     const flat=buildAtlasPixels(100,80,[lens],params,{refractiveIndex:1});
     expect(flat.rim.filter((_,index)=>index%4===3).every(alpha=>alpha===0)).toBe(true);
   });
+  it("projects stacked lenses to their own column centers with no horizontal offset",()=>{
+    const lenses=[{x:0,y:0,width:80,height:40,radius:20},{x:0,y:70,width:80,height:40,radius:20}];
+    const atlas=buildAtlasPixels(80,120,lenses,params);
+    for(const [y,center] of [[0,20],[39,20],[70,90],[109,90]]){
+      const pixel=at(40,y,80);
+      expect(atlas.rim[pixel]).toBe(128);
+      const sourceY=y+.5+(atlas.rim[pixel+1]-128)/254*40;
+      expect(Math.abs(sourceY-center)).toBeLessThan(.2);
+    }
+  });
   it("masks and refracts the same squircle boundary as an independent lens",()=>{
     const shape={x:0,y:0,width:100,height:100,radius:20};
     const round=buildAtlasPixels(100,100,[shape],params),square=buildAtlasPixels(100,100,[{...shape,shape:"squircle"}],params);

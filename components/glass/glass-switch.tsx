@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Switch as SwitchPrimitive } from "radix-ui";
 import { cn } from "@/lib/utils";
+import { buildLensTextures } from "@/lib/glass";
 import {
   GlassSurface,
   useWithinGlassSurface,
@@ -21,6 +22,17 @@ export function GlassSwitch({
   const within = useWithinGlassSurface();
   const [pointerMotion, setPointerMotion] = React.useState(false);
   const [pressed, setPressed] = React.useState(false);
+  const thumbRef = React.useRef<HTMLSpanElement>(null);
+  React.useEffect(() => {
+    // Cached optical maps give the little thumb the same contour/light model.
+    // It continues sharing its parent's scene, with no extra mirror or blur.
+    const textures = buildLensTextures(size === "sm" ? 26 : 34, size === "sm" ? 18 : 22, {
+      radius: 999, shape: "round", pad: 0, splay: 2, feather: 4, curve: 2.2,
+      optics: { lightAngle: -35, roughness: .12 },
+    });
+    thumbRef.current?.style.setProperty("--switch-light", `url("${textures.reflection}")`);
+    thumbRef.current?.style.setProperty("--switch-shade", `url("${textures.shade}")`);
+  }, [size]);
   if (props.disabled && pressed) setPressed(false);
   const settle = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const clear = () => { if (settle.current) clearTimeout(settle.current); settle.current = null; setPressed(false); };
@@ -48,8 +60,9 @@ export function GlassSwitch({
     >
       <SwitchPrimitive.Thumb
         data-slot="switch-thumb"
+        ref={thumbRef}
         className={cn(
-          "glass-switch-thumb pointer-events-none relative z-1 block rounded-full border-0 transition-[transform,scale] duration-300 ease-(--ease-out) motion-reduce:transition-none",
+          "glass-switch-thumb pointer-events-none relative z-1 block rounded-full border-0 transition-[translate,scale] duration-300 ease-(--ease-out) motion-reduce:transition-none",
           !pointerMotion && "transition-none",
           size === "sm"
             ? "h-[18px] w-[26px] data-[state=checked]:translate-x-4"

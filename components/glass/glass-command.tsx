@@ -3,10 +3,12 @@
 import * as React from "react";
 import { Command as CommandPrimitive } from "cmdk";
 import { Dialog as DialogPrimitive } from "radix-ui";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, ArrowUp, ArrowDown, CornerDownLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GlassSurface } from "@/components/glass/glass-surface";
 import { Dialog, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 
 export function GlassCommand({
   className,
@@ -17,7 +19,7 @@ export function GlassCommand({
       data-slot="command"
       {...props}
       className={cn(
-        "flex size-full flex-col overflow-hidden rounded-xl p-1",
+        "glass-command flex w-full min-w-0 flex-col overflow-hidden",
         className,
       )}
     />
@@ -29,24 +31,25 @@ export function GlassCommandInput({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
   return (
-    <div data-slot="command-input-wrapper" className="p-1 pb-0">
+    <div data-slot="command-input-wrapper">
       <div
         data-slot="input-group"
-        className="flex h-12 items-center gap-3 border-b border-foreground/10 px-3"
+        className="flex h-12 items-center gap-3 px-5"
       >
-        <SearchIcon aria-hidden="true" className="size-4 shrink-0 opacity-50" />
+        <SearchIcon aria-hidden="true" className="size-[18px] shrink-0 opacity-55" />
         <CommandPrimitive.Input
           data-slot="command-input"
           // cmdk renders a bare <input>; without a name the control is
           // announced as an unlabelled text field by screen readers.
           aria-label="Command"
           className={cn(
-            "w-full bg-transparent text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+            "h-full min-w-0 flex-1 bg-transparent text-base placeholder:text-foreground/45 outline-none disabled:cursor-not-allowed disabled:opacity-50",
             className,
           )}
           {...props}
         />
       </div>
+      <Separator className="bg-foreground/10" />
     </div>
   );
 }
@@ -70,20 +73,21 @@ export function GlassCommandDialog({
   container?: HTMLElement | null;
   onCloseAutoFocus?: React.ComponentProps<typeof DialogPrimitive.Content>["onCloseAutoFocus"];
 }) {
+  const { resolvedMode } = useGlassTheme();
   return (
     <Dialog {...props}>
       <DialogPrimitive.Portal container={container}>
         <DialogPrimitive.Overlay
           className={cn(
-            "fixed inset-0 z-50 bg-black/15 backdrop-blur-[6px]",
-            container && "absolute rounded-[20px]",
+            "glass-command-overlay fixed inset-0 z-50 bg-black/20 backdrop-blur-xl",
+            container && "absolute",
           )}
         />
         <DialogPrimitive.Content
           onCloseAutoFocus={onCloseAutoFocus}
           className={cn(
-            "fixed top-[32%] left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 outline-none",
-            container && "absolute top-1/2",
+            "glass-command-dialog fixed top-[clamp(24px,14svh,128px)] left-1/2 z-50 w-[calc(100%-2rem)] max-w-[640px] -translate-x-1/2 outline-none",
+            container && "absolute",
           )}
         >
           <DialogTitle className="sr-only">{title}</DialogTitle>
@@ -92,9 +96,11 @@ export function GlassCommandDialog({
           </DialogDescription>
           <GlassSurface
             kind="command"
+            radius={24}
             surface={surface}
-            config={config}
-            className={cn("overflow-hidden p-2", className)}
+            config={{ blur: 24, tint: resolvedMode === "dark" ? .62 : .5, tintColor: resolvedMode === "dark" ? "#2a2b2e" : "#ffffff", ...config }}
+            tintBlendMode="normal"
+            className={cn("overflow-hidden", className)}
           >
             {children}
           </GlassSurface>
@@ -104,11 +110,25 @@ export function GlassCommandDialog({
   );
 }
 
+/** Shared footer keeps command palettes aligned across docs and examples. */
+export function GlassCommandFooter() {
+  return <>
+    <Separator className="bg-foreground/10" />
+    <div className="flex h-11 shrink-0 items-center justify-between gap-3 px-4 text-[11px] text-foreground/55">
+      <span className="flex items-center gap-1"><ArrowUp aria-hidden="true" className="size-3"/><ArrowDown aria-hidden="true" className="size-3"/><span className="ml-1">Navigate</span></span>
+      <span className="flex items-center gap-3"><span className="flex items-center gap-1.5"><CornerDownLeft aria-hidden="true" className="size-3"/>Open</span><span className="hidden items-center gap-1.5 sm:flex"><kbd className="font-sans text-[10px]">esc</kbd>Close</span></span>
+    </div>
+  </>;
+}
+
+export function GlassCommandItem({className, children, ...props}: React.ComponentProps<typeof CommandPrimitive.Item>) {
+  return <CommandPrimitive.Item {...props} data-slot="command-item" className={cn("relative flex min-h-11 cursor-default items-center gap-3 rounded-xl px-3 py-2 text-[13px] outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 data-selected:bg-foreground/8 [&_svg]:shrink-0",className)}>{children}</CommandPrimitive.Item>;
+}
+
 export {
   CommandList as GlassCommandList,
   CommandEmpty as GlassCommandEmpty,
   CommandGroup as GlassCommandGroup,
   CommandSeparator as GlassCommandSeparator,
-  CommandItem as GlassCommandItem,
   CommandShortcut as GlassCommandShortcut,
 } from "@/components/ui/command";

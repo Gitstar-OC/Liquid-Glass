@@ -233,7 +233,9 @@
       "registryDependencies": [
         "command",
         "dialog",
-        "http://localhost:3000/r/glass-surface.json"
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-theme-provider.json",
+        "separator"
       ],
       "dependencies": [
         "cmdk",
@@ -954,9 +956,6 @@
         "http://localhost:3000/r/glass-lens.json",
         "http://localhost:3000/r/glass-surface.json"
       ],
-      "dependencies": [
-        "lucide-react"
-      ],
       "files": [
         {
           "path": "components/glass/glass-spotlight.tsx",
@@ -1043,6 +1042,7 @@
       "description": "A switch whose track is a tinted glass channel.",
       "docs": "http://localhost:3000/docs/glass-switch",
       "registryDependencies": [
+        "http://localhost:3000/r/glass-lens.json",
         "http://localhost:3000/r/glass-surface.json",
         "http://localhost:3000/r/glass-utilities.json"
       ],
@@ -1260,8 +1260,9 @@
         "[data-glass-button][data-input-modality=\"keyboard\"], .glass-hold-button[data-input-modality=\"keyboard\"]::before": {
           "transition": "none"
         },
-        "[data-glass-button=\"core\"][data-glass-compositor=\"atlas\"]": {
+        "[data-glass-button][data-glass-compositor=\"atlas\"]": {
           "transform": "none !important",
+          "scale": "1 !important",
           "background-color": "transparent !important"
         },
         ".glass-hold-button::before": {
@@ -1309,7 +1310,7 @@
           "transition": "none"
         },
         ".glass-switch-thumb": {
-          "background": "linear-gradient(150deg,#ffffffb3,#ffffff18 42%,#ffffff66)",
+          "background": "#ffffff1a",
           "scale": "1"
         },
         ".glass-switch-thumb::before": {
@@ -1321,13 +1322,35 @@
           "transition": "opacity 160ms var(--ease-out)"
         },
         "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
-          "scale": "1.12 1.36"
+          "scale": "1.3"
         },
         "[data-liquid-pressed=\"true\"] .glass-switch-thumb::before": {
           "opacity": ".12"
         },
-        ".glass-action-group[data-slot=\"button-group\"] > [data-glass-button]": {
-          "border-radius": "999px !important"
+        ".glass-switch-thumb::after": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background-image": "var(--switch-light,none),var(--switch-shade,none)",
+          "background-size": "100% 100%",
+          "opacity": ".5",
+          "transition": "opacity 160ms var(--ease-out)"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-switch-thumb::after": {
+          "opacity": "1"
+        },
+        ".glass-command-dialog, .glass-command-overlay": {
+          "pointer-events": "auto",
+          "animation": "glass-command-enter 160ms var(--ease-out) both"
+        },
+        "@keyframes glass-command-enter": {
+          "from": {
+            "opacity": "0"
+          },
+          "to": {
+            "opacity": "1"
+          }
         },
         "[data-slot=\"switch\"][data-input-modality=\"keyboard\"] .glass-switch-thumb::before": {
           "transition": "none"
@@ -1458,7 +1481,7 @@
             "transition": "none",
             "transition-duration": "0s !important"
           },
-          ".glass-switch-thumb::before, .glass-selection-indicator, .glass-atlas-finish": {
+          ".glass-switch-thumb::before, .glass-switch-thumb::after, .glass-selection-indicator, .glass-atlas-finish": {
             "transition": "none"
           },
           ".glass-elastic-button": {
@@ -1606,8 +1629,9 @@
         "[data-glass-button][data-input-modality=\"keyboard\"], .glass-hold-button[data-input-modality=\"keyboard\"]::before": {
           "transition": "none"
         },
-        "[data-glass-button=\"core\"][data-glass-compositor=\"atlas\"]": {
+        "[data-glass-button][data-glass-compositor=\"atlas\"]": {
           "transform": "none !important",
+          "scale": "1 !important",
           "background-color": "transparent !important"
         },
         ".glass-hold-button::before": {
@@ -1655,7 +1679,7 @@
           "transition": "none"
         },
         ".glass-switch-thumb": {
-          "background": "linear-gradient(150deg,#ffffffb3,#ffffff18 42%,#ffffff66)",
+          "background": "#ffffff1a",
           "scale": "1"
         },
         ".glass-switch-thumb::before": {
@@ -1667,13 +1691,35 @@
           "transition": "opacity 160ms var(--ease-out)"
         },
         "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
-          "scale": "1.12 1.36"
+          "scale": "1.3"
         },
         "[data-liquid-pressed=\"true\"] .glass-switch-thumb::before": {
           "opacity": ".12"
         },
-        ".glass-action-group[data-slot=\"button-group\"] > [data-glass-button]": {
-          "border-radius": "999px !important"
+        ".glass-switch-thumb::after": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background-image": "var(--switch-light,none),var(--switch-shade,none)",
+          "background-size": "100% 100%",
+          "opacity": ".5",
+          "transition": "opacity 160ms var(--ease-out)"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-switch-thumb::after": {
+          "opacity": "1"
+        },
+        ".glass-command-dialog, .glass-command-overlay": {
+          "pointer-events": "auto",
+          "animation": "glass-command-enter 160ms var(--ease-out) both"
+        },
+        "@keyframes glass-command-enter": {
+          "from": {
+            "opacity": "0"
+          },
+          "to": {
+            "opacity": "1"
+          }
         },
         "[data-slot=\"switch\"][data-input-modality=\"keyboard\"] .glass-switch-thumb::before": {
           "transition": "none"
@@ -1804,7 +1850,7 @@
             "transition": "none",
             "transition-duration": "0s !important"
           },
-          ".glass-switch-thumb::before, .glass-selection-indicator, .glass-atlas-finish": {
+          ".glass-switch-thumb::before, .glass-switch-thumb::after, .glass-selection-indicator, .glass-atlas-finish": {
             "transition": "none"
           },
           ".glass-elastic-button": {

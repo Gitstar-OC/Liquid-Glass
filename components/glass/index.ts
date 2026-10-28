@@ -203,6 +203,7 @@ export {
   GlassCommand,
   GlassCommandInput,
   GlassCommandDialog,
+  GlassCommandFooter,
   GlassCommandList,
   GlassCommandEmpty,
   GlassCommandGroup,

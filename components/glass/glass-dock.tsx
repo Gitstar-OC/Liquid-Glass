@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 /** A single optical surface; app controls and tooltips retain their own semantics. */
 export function GlassDock({ children, className, ...props }: GlassSurfaceProps) {
   return <TooltipProvider delayDuration={250} skipDelayDuration={300}>
-    <GlassSurface as="nav" kind="navbar" shape="squircle" radius={34} aria-label="Dock" {...props}
+    <GlassSurface as="nav" kind="navbar" shape="round" radius={22} aria-label="Dock" {...props}
       className={cn("flex w-fit items-center gap-2 p-2.5", className)}>{children}</GlassSurface>
   </TooltipProvider>;
 }

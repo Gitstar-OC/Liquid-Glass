@@ -11,7 +11,7 @@ export function SiteHeader({
   active?: "playground" | "components" | "docs";
 }) {
   return (
-    <header className="relative z-30 mx-auto flex h-16 w-full max-w-6xl items-center gap-2 sm:gap-8">
+    <header className="relative z-30 mx-auto flex h-16 w-full max-w-5xl items-center gap-2 sm:gap-8">
       <Link
         href="/"
         aria-label="Liquid Glass home"

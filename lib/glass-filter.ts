@@ -11,6 +11,7 @@ export interface GlassFilterConfig {
   /** Reuse the lens's ambient rim mask; reflection is the legacy fallback. */
   reflection?: string;
   rim?: string;
+  rimScale?: number;
   colorBleed?: number;
   glint?: number;
 }
@@ -46,17 +47,25 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
     // No raster capture, source copy, pixel readback, or animated map is added.
     // A narrow horizontal kernel keeps neighboring colors separate while the
     // taller vertical kernel carries the local column toward the upper/lower rim.
-    filter.append(element("feGaussianBlur", {in: "SourceGraphic", stdDeviation: "2 24", edgeMode: "duplicate", result: "ambient"}));
-    filter.append(element("feColorMatrix", {in: "ambient", type: "saturate", values: 1.7, result: "ambientColor"}));
+    filter.append(element("feGaussianBlur", {in: "SourceGraphic", stdDeviation: "1 24", edgeMode: "duplicate", result: "ambient"}));
+    filter.append(element("feColorMatrix", {in: "ambient", type: "saturate", values: 1.5, result: "ambientColor"}));
     const energy = element("feComponentTransfer", {in: "ambientColor", result: "ambientLight"});
-    for (const channel of ["feFuncR", "feFuncG", "feFuncB"] as const) energy.append(element(channel, {type: "linear", slope: 1.5}));
+    for (const channel of ["feFuncR", "feFuncG", "feFuncB"] as const) energy.append(element(channel, {type: "linear", slope: 1.15}));
     filter.append(energy);
     const light = element("feImage", {href: rimMap, x: 0, y: 0, width: config.width, height: config.height, preserveAspectRatio: "none", result: "rimLight"});
     light.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", rimMap);
     filter.append(light);
-    filter.append(element("feComposite", {in: "ambientLight", in2: "rimLight", operator: "in", result: "maskedColor"}));
+    const columnScale = Math.max(0, Math.min(8192, Number.isFinite(config.rimScale) ? config.rimScale! : 0));
+    if (columnScale > 0) {
+      const coordinates = element("feComponentTransfer", {in:"rimLight",result:"columnCoordinates"});
+      coordinates.append(element("feFuncR", {type:"linear",slope:255/254,intercept:-1/254}),element("feFuncG", {type:"linear",slope:255/254,intercept:-1/254}));
+      filter.append(coordinates,element("feDisplacementMap",{in:"ambientLight",in2:"columnCoordinates",scale:columnScale,xChannelSelector:"R",yChannelSelector:"G",result:"columnColor"}));
+    }
+    filter.append(element("feComposite", {in: columnScale > 0 ? "columnColor" : "ambientLight", in2: "rimLight", operator: "in", result: "maskedColor"}));
     const opacity = element("feComponentTransfer", {in: "maskedColor", result: "coloredRim"});
-    opacity.append(element("feFuncA", {type: "linear", slope: bleed * (config.glint ?? 1)}));
+    // A thin colored edge needs enough energy to survive the neutral tint and
+    // white specular layer above it. Keep its coverage soft, rather than wider.
+    opacity.append(element("feFuncA", {type: "linear", slope: bleed * Math.min(1, 2 * (config.glint ?? 1))}));
     filter.append(opacity);
     // Normal composition retains colored glints on white backdrops as well.
     filter.append(element("feBlend", {in: "coloredRim", in2: transmitted, mode: "normal"}));

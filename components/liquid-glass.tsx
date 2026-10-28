@@ -278,7 +278,7 @@ export function LiquidGlass({
   const {blur:resolvedBlur,depth:resolvedDepth}=resolveBackdropTreatment(backdropKind,p,adaptiveBackdrop,preserveBlur);
   const colorFinish = `saturate(${p.saturate})${p.brightness !== 1 ? ` brightness(${p.brightness})` : ""}${p.contrast !== 1 ? ` contrast(${p.contrast})` : ""}`;
   const diffuse = `${resolvedBlur > 0 ? `blur(${resolvedBlur}px) ` : ""}${colorFinish}`;
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!housing.current || !layer.current) return;
     manager.current?.destroy();
     manager.current = null;
@@ -298,6 +298,7 @@ export function LiquidGlass({
       blur: portable ? resolvedBlur : 0,
       reflection: portable ? textures?.reflection : undefined,
       rim: portable ? textures?.rim : undefined,
+      rimScale: portable ? textures?.rimScale : undefined,
       colorBleed: optical.colorBleed,
       glint: Math.min(1,p.glint/100),
       postFilter: portable ? undefined : diffuse,
@@ -306,7 +307,7 @@ export function LiquidGlass({
       filter.destroy();
       if (manager.current === filter) manager.current = null;
     };
-  }, [active, portable, map, fw, fh, resolvedDepth, resolvedBlur, p.chroma, p.glint, diffuse, settings.refraction, textures?.reflection, textures?.rim, optical.colorBleed]);
+  }, [active, portable, map, fw, fh, resolvedDepth, resolvedBlur, p.chroma, p.glint, diffuse, settings.refraction, textures?.reflection, textures?.rim, textures?.rimScale, optical.colorBleed]);
 
   // React moves can change only the position, leaving size/maps unchanged.
   // Update the source offset and Safari's output on every geometry commit.
@@ -462,7 +463,7 @@ export function LiquidGlass({
             style={{
               ...textureStyle,
               backgroundImage: `url("${textures.reflection}")`,
-              opacity: p.glint / 100 * (1 - optical.colorBleed * .45),
+              opacity: p.glint / 100 * (1 - optical.colorBleed * .85),
             }}
           />
         )}

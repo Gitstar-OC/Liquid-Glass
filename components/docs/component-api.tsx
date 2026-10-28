@@ -6,6 +6,7 @@ const API: Record<string, Prop[]> = {
     ["shape", '"round" | "squircle"', '"squircle"; capsules use "round"', "Uses the same contour for clipping, displacement, reflected light, and the optional outline. Radius sets the corner size."],
     ["adaptiveBackdrop", "boolean", "true", "Uses zero blur over plain content and the configured photo blur (4px by default). Background text/controls use at least 8px and zero displacement. Local config.blur preserves its value; false restores manual optics. Classification runs on scene paints, without an idle timer."],
     ["rendering", '"auto" | "shared"', '"auto"', "Auto uses the bounded scene or a compatible atlas. Shared retains the parent's optical finish without a second mirror."],
+    ["composite", "boolean", "true", "False keeps a standalone optical layer so transforms move the whole glass surface. Each independent surface counts against the 3–5 lens budget."],
   ],
   "glass-toaster": [
     ["id", "string", "—", "Optional Toaster identity. Mount it inside the scene/settings context for scene-backed toast refraction."],
@@ -87,11 +88,12 @@ const API: Record<string, Prop[]> = {
     ["onTrackChange", "(index: number) => void", "—", "Reports the selected track. Playback begins after a user action."],
   ],
   "glass-spotlight": [
-    ["commands", "readonly GlassSpotlightCommand[]", "Required", "Commands include id, label and onSelect; icon, group, shortcut and disabled are optional."],
+    ["commands", "readonly GlassSpotlightCommand[]", "Required", "Commands include id, label and onSelect; icon, group, description, keywords, shortcut and disabled are optional."],
     ["open / defaultOpen", "boolean", "false (defaultOpen)", "Controlled or initial dialog state."],
     ["onOpenChange", "(open: boolean) => void", "—", "Reports opening and dismissal."],
     ["shortcut", "boolean", "false", "Enables Command/Ctrl+K. Enable only one global command shortcut per page."],
     ["triggerLabel / placeholder", "string", '"Search anything…"', "Text for the trigger and search field."],
+    ["config", "Partial<LensParams>", "24px blur; neutral tint", "Controls the frosted search surface. The input, groups and footer share one optical layer."],
     ["container", "HTMLElement | null", "document.body", "Portal target. Keep it over the scene bounds to refract that scene."],
   ],
   "glass-drawer": [

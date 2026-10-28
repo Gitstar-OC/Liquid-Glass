@@ -1,103 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Component, BookOpen, SlidersHorizontal } from "lucide-react";
-import { GlassButton as Button } from "@/components/glass/glass-button";
-import {
-  Dialog,
-  GlassDialogContent as DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/glass/glass-dialog";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
+import { BookOpen, SlidersHorizontal } from "lucide-react";
+import { GlassIcon } from "@/components/glass/glass-icons";
+import { GlassSpotlight, type GlassSpotlightCommand } from "@/components/glass/glass-spotlight";
 import { COMPONENT_CATALOGUE } from "@/components/gallery/catalogue";
 
+/** Documentation and the showcase use the same palette, rows and keyboard model. */
 export function SiteSearch() {
-  const [open, setOpen] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    const key = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        setOpen((value) => !value);
-      }
-    };
-    window.addEventListener("keydown", key);
-    return () => window.removeEventListener("keydown", key);
-  }, []);
-  const visit = (href: string) => {
-    setOpen(false);
-    router.push(href);
-  };
-  return (
-    <>
-      <Button
-        variant="outline"
-        size="sm"
-        aria-label="Search documentation"
-        onClick={() => setOpen(true)}
-        className="size-10 gap-2 p-0 text-muted-foreground lg:w-auto lg:px-3"
-      >
-        <Search className="size-3.5" />
-        <span className="hidden lg:inline">Search docs…</span>
-        <kbd className="hidden rounded bg-foreground/5 px-1 text-[10px] lg:inline">
-          ⌘ K
-        </kbd>
-      </Button>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-          showCloseButton={false}
-          className="top-[20%] translate-y-0 p-0 sm:max-w-lg"
-        >
-          <DialogTitle className="sr-only">Search documentation</DialogTitle>
-          <DialogDescription className="sr-only">
-            Find a glass component or page.
-          </DialogDescription>
-          <Command className="bg-transparent">
-            <CommandInput
-              aria-label="Search documentation"
-              placeholder="Find a component…"
-              className="h-10"
-            />
-            <CommandList className="max-h-80">
-              <CommandEmpty>No components found.</CommandEmpty>
-              <CommandGroup heading="Get started">
-                <CommandItem onSelect={() => visit("/docs")}>
-                  <BookOpen />
-                  Documentation
-                </CommandItem>
-                <CommandItem onSelect={() => visit("/playground")}>
-                  <SlidersHorizontal />
-                  Playground
-                </CommandItem>
-              </CommandGroup>
-              <CommandGroup heading="Components">
-                {COMPONENT_CATALOGUE.map((item) => (
-                  <CommandItem
-                    key={item.id}
-                    value={`${item.title} ${item.group}`}
-                    onSelect={() => visit(`/docs/${item.id}`)}
-                  >
-                    <Component />
-                    <span>{item.title}</span>
-                    <span className="ml-auto text-xs text-muted-foreground">
-                      {item.group}
-                    </span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+  const commands = useMemo<GlassSpotlightCommand[]>(() => [
+    { id: "docs", label: "Documentation", group: "Get started", icon: <BookOpen/>, onSelect: () => router.push("/docs") },
+    { id: "playground", label: "Playground", group: "Get started", icon: <SlidersHorizontal/>, onSelect: () => router.push("/playground") },
+    ...COMPONENT_CATALOGUE.map(item => ({ id: item.id, label: item.title, group: "Components", description: item.group, keywords: [item.group, item.id], icon: <GlassIcon name="arrow"/>, onSelect: () => router.push(`/docs/${item.id}`) })),
+  ], [router]);
+  return <GlassSpotlight shortcut title="Search documentation" triggerAriaLabel="Search documentation" triggerLabel="Search docs…" placeholder="Find a component or page…" commands={commands}
+    className="size-10 max-w-none gap-2 p-0 text-xs font-normal lg:w-52 lg:px-3 [&>span]:hidden lg:[&>span]:block [&>kbd]:hidden lg:[&>kbd]:block"/>;
 }

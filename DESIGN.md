@@ -126,8 +126,9 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Explicit local blur overrides and playground controls take precedence. The
   homepage's Plain backdrop also sets its shared atlas blur to zero.
 - Carry nearby source colors into the glint through the existing bounded mirror.
-  Diffuse narrow vertical source columns into a cached contour mask, retaining
-  separate colors along the top and bottom. Blur transmitted content before the
+  Resolve a narrow vertical source column, then project each lens's central
+  column color to both arcs with coordinates packed in its cached rim texture.
+  Keep neighboring columns separate. Blur transmitted content before the
   colored rim is composed so its light stays crisp on white and black backgrounds.
   Do not use a fixed colored perimeter, a second source capture, or continuous
   CPU pixel sampling. Keep the small white optical reflection for neutral light.
@@ -136,12 +137,18 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   geometry, blur, and optical finish unchanged so the difference is inspectable.
 - Unitheme samples the background for readable ink. Duotheme pins the chosen ink
   while appearance changes the optical finish; contrast protection still runs.
+  The homepage chooses black ink in light Duotheme and white ink in dark Duotheme,
+  independent of the photo. Changing appearance must update this chosen ink.
 - A drawer/dialog/command uses at least 8px blur by default, menus/popovers 6px,
   tooltips 4px. Local blur overrides remain available. Higher layers soften the
   lower content they capture. Reveal overlays after admission/texture readiness
   to avoid a bright CSS fallback flashing before the actual glass.
-- The homepage uses one atlas, two small independent glass navigation links on the
-  plain intro, and one deliberately elastic lens. The ring mark is vector artwork
+- The homepage uses one atlas (including the intro links), three small independent
+  lenses for Continue, Save and Search, and one deliberately elastic lens.
+  These three buttons scale as complete surfaces. Tint-only overrides remain
+  atlas-compatible; `composite={false}` opts a transforming surface out.
+  Batched controls use tonal feedback without scaling text over a static lens.
+  The ring mark is vector artwork
   and allocates no renderer. These count
   against the unchanged five-renderer ceiling (three on coarse pointers).
   Explicit per-surface optics and overlapping overlays stay independent.
@@ -175,7 +182,7 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - Music transport buttons are bare glyphs in one glass panel. Do not add a glass
   circle behind each playback icon. Keep accessible labels and 44px targets.
 - Sound and AirDrop use the same 20px rounded rectangle. They are not full capsules.
-- The homepage dock uses labelled 44px links, a single 34px squircle glass slab,
+- The homepage dock uses labelled 44px links, a single softly rounded 22px glass slab,
   keyboard focus, and tooltips. Other docks can use 44px app glyphs.
 - Action button groups use a capsule silhouette and individually rounded hit
   areas within one shared glass surface; do not inherit square shadcn group joins.
@@ -197,7 +204,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   16px between sibling panels and preserve the dock's separate bottom space.
 - During switch travel, retain a subtle translucent specular finish beneath the
   fading white rest layer so the elongated thumb remains visible. This small
-  control finish adds no border, blur or independent scene capture.
+  control finish uses cached SDF reflection/shade textures, matching the panel's
+  optics. It adds no border, blur or independent scene capture.
   Moving tab highlights and tab hover have no added gradient,
   sheen, or fill. Keep selected labels and keyboard focus distinguishable.
 - Browser bookmarks require browser UI or an extension. Show the native shortcut
@@ -223,3 +231,16 @@ into glass. Reduced motion uses an 80ms fade without travel or scaling. The elas
 example returns its optical deformation to rest over a bounded 420ms gesture
 animation, then stops all frame work. Focus mode is a second working switch
 example, connected to the notification preview.
+
+## Search and navigation overlays
+
+- Use the same `GlassSpotlight` command palette for site search and examples.
+  Keep a 48px input, 44px result rows, group headings, separators and a 44px
+  keyboard footer inside one frosted surface. The dialog defaults to 24px blur.
+- Component search results use bare right arrows, without boxed/grid glyphs.
+- Keep the palette at a stable top inset; filtering must not re-center it vertically.
+  Limit width to 640px and result height to 50dvh/380px. Respect phone gutters.
+- Navigation triggers share a 40px height. Align their viewport to the menu's
+  leading edge; popovers use a 16px collision inset and remain inside the viewport.
+- Install optical filters in a layout effect before revealing mirrored content.
+  Focus enters the input, arrow keys select, Enter opens, and Escape restores focus.

@@ -39,22 +39,29 @@ interior lens. When adaptive classification finds background text, controls or
 lower glass, it uses at least 8px blur and zero displacement. Foreground children
 stay sharp. The playground's Adapt to content switch permits manual comparison.
 Source-colored rim lighting reuses `SourceGraphic` in the existing SVG filter:
-a 2px-horizontal / 24px-vertical color diffusion preserves neighboring color
-columns, then saturation/energy and a cached ambient-rim mask carry those colors
-onto the top and bottom arcs. Normal composition retains color against white.
+a 1px-horizontal / 24px-vertical color diffusion preserves neighboring color
+columns. The rim PNG also packs coordinates that project each lens's central
+source column to its top and bottom arcs, using one additional displacement pass
+only when source-colored light is enabled. Atlas members retain their own column
+centers. Saturation/energy and the thin alpha mask retain color against white.
 The transmitted scene is blurred inside the SVG before the sharp rim is added.
 This replaces the outer CSS blur on the portable path; it does not add a second
 content blur. The rim mask uses the same round/L4 geometry and cache as displacement.
 It adds one cached PNG, no mirror, CPU image readback, raster capture or idle
 loop. `optics.colorBleed=0` omits the color pass; its changes do not rebuild maps.
 `optics.interior=0` restores the legacy flat interior. The color pass is an
-approximation of local column color, not exact dominant-color histogram sampling
+approximation weighted toward the central column, not exact dominant-color histogram sampling
 or a claim about Apple's private renderer.
 
 ## Composition rules
 
 - Target **one to three optical panels** in a normal viewport. Five is a ceiling,
   not a reason to add more. Size and source complexity matter as much as count.
+- Transforming standalone controls can opt out of the atlas with
+  `composite={false}`. Their content, clip and optics then transform together.
+  Tint-only overrides can stay batched. The homepage moves its intro links into
+  the atlas to reserve three small lenses for Continue, Save and Search without
+  raising the ceiling. Overlay priority still wins.
 - Use one bounded `GlassScene` for related panels. Keep unrelated page sections
   outside that source. Do not mirror an entire document by default.
 - Put text/images/forms in the explicit source. Put interactive glass in children.

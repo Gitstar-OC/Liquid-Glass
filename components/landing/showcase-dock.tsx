@@ -31,7 +31,7 @@ export function ShowcaseDock({ dark, onThemeChange, themeBehavior, onBehaviorCha
         <DropdownMenuLabel>Text behavior</DropdownMenuLabel>
         <DropdownMenuRadioGroup value={themeBehavior} onValueChange={value => onBehaviorChange(value as GlassThemeBehavior)}>
           <DropdownMenuRadioItem value="unitheme"><span className="flex flex-col gap-0.5"><span>Unitheme</span><span className="text-[11px] opacity-65">Text adapts to the background</span></span></DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="duotheme"><span className="flex flex-col gap-0.5"><span>Duotheme</span><span className="text-[11px] opacity-65">Keep text; change the glass</span></span></DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="duotheme"><span className="flex flex-col gap-0.5"><span>Duotheme</span><span className="text-[11px] opacity-65">Black in light, white in dark</span></span></DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator/>
         <DropdownMenuLabel>Backdrop</DropdownMenuLabel>

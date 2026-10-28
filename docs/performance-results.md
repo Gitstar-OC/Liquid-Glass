@@ -480,3 +480,60 @@ benchmark or a physical mobile-device measurement. The renderer itself is unchan
 
 Validation: 123 tests, lint, TypeScript, production build (63 routes), registry
 verification (53 items / 795 installs), and diff whitespace checks pass.
+
+## Column light, search and control motion — 2026-10-28
+
+The rim texture now packs a neutral horizontal coordinate and a vertical source
+coordinate in RGB, while alpha remains the shared SDF's thin edge mask. One
+additional SVG displacement pass projects a lens's central source column to its
+upper and lower arcs. The source is softly resolved over a 1px × 24px kernel;
+neighboring columns stay separate. Atlas members use their own centers, including
+stacked members. White specular energy is reduced when source color is present.
+There is no additional texture, DOM mirror, raster capture, CPU pixel readback,
+or idle loop relative to the previous rim-mask implementation. Color bleed zero
+omits the projection pass. This is center-weighted column light, rather than an
+exact full-column dominant-color histogram or Apple's private renderer.
+
+The lab source now includes a blue diagnostic object. Desktop comparisons below
+used the original full-height moving blue strip. The final phone repeat used a
+48px object, allowing color to reach an edge even when the object itself is
+inside the lens. All runs used eight squircle members, requested limit three,
+4px content blur, and 120 measured frame intervals in the app browser on the same
+Mac, without CPU throttling:
+
+| Backend | Viewport | Color bleed | Active / mirrors | Refreshes | Median / P95 / max ms | >25ms |
+| --- | --- | ---: | ---: | ---: | --- | ---: |
+| Atlas | 1280 × 720 | 0 | 1 / 1 | 60 | 16.7 / 16.8 / 17.5 | 0 |
+| Atlas | 1280 × 720 | 0.75 | 1 / 1 | 60 | 16.7 / 16.8 / 17.5 | 0 |
+| Independent | 1280 × 720 | 0.75 | 3 / 3 | 88 | 16.7 / 17.1 / 17.5 | 0 |
+| Atlas, settled repeat | 390 × 844 | 0.75 | 1 / 1 | 59 | 16.7 / 16.8 / 17.7 | 0 |
+
+Atlas setup was 58.50ms on desktop and 31.00ms for the final phone-width run.
+An earlier phone-width run during the editing session had one 150ms interval
+(16.7ms median, 16.8ms P95); it is not discarded as evidence of possible stalls.
+The settled repeat above was taken after compilation. These are individual
+measurements on a desktop GPU, not physical-phone, Safari or Firefox certification.
+
+Continue, Save and Search own small independent optical layers, so their clips,
+backgrounds and labels all receive the same press scale. Tint-only intro links
+now share the atlas, preserving five active renderers on the inspected desktop.
+Other atlas controls no longer scale their labels over a stationary material.
+Switch travel transitions CSS `translate` and `scale`; the 1.3 uniform expansion
+preserves the elongated capsule. Cached SDF reflection/shade textures retain a
+visible optical edge during the 300ms travel, without a separate mirror or blur.
+Keyboard interaction remains immediate.
+
+Docs and showcase search share a 640px command palette with 24px surface blur,
+a blurred scrim, 64px input, 44px results and keyboard footer. Filtering, Enter
+navigation, Escape/focus return, both appearances, and mobile navigation were
+checked in the app browser. At 320 × 740 the search dialog was x=16px, width=273px,
+y=103.59px, height=480px; it remained inside the viewport. At 390px, the mobile
+navigation was x=52px, y=62px, 192 × 152px. The separate navigation-menu example
+now opens at y=428px below its trigger, with a consistent 224px panel width.
+Optical filter installation runs before paint to avoid exposing an unfiltered
+copy while an overlay appears.
+
+Validation: 127 unit tests, TypeScript, lint, production build with Next's webpack
+compiler (63 routes), registry verification (53 items / 795 file installs), and
+tracked diff whitespace checks pass. Browser interaction checks were performed
+in the app browser; the Playwright CLI suite was not run.

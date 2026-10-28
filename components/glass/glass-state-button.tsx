@@ -5,12 +5,12 @@ import { GlassIcon } from "@/components/glass/glass-icons";
 import { GlassButton } from "@/components/glass/glass-button";
 import { GlassStateSwap } from "@/components/glass/glass-state-swap";
 
-export function GlassSaveButton({ className, onSavedChange }: {
-  className?: string; onSavedChange?: (saved: boolean) => void;
+export function GlassSaveButton({ className, composite, onSavedChange }: {
+  className?: string; composite?: boolean; onSavedChange?: (saved: boolean) => void;
 }) {
   const [saved, setSaved] = useState(false);
   const [animate, setAnimate] = useState(false);
-  return <GlassButton aria-label={saved ? "Saved" : "Save changes"} className={className} onClick={event=>{
+  return <GlassButton composite={composite} aria-label={saved ? "Saved" : "Save changes"} className={className} onClick={event=>{
     setAnimate(event.detail > 0); setSaved(!saved); onSavedChange?.(!saved);
   }}><GlassStateSwap active={saved} animate={animate} className="min-w-28" from={<><GlassIcon name="arrow" />Save changes</>} to={<><GlassIcon name="check" />Saved</>} /></GlassButton>;
 }

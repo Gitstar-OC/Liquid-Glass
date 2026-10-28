@@ -202,12 +202,14 @@ export interface LensTextures {
   shade: string;
   /** Ambient color coverage, independent of the directional white reflection. */
   rim?: string;
+  /** Height of the local vertical column encoded in the rim's green channel. */
+  rimScale?: number;
 }
 
 /** A thin, soft optical rim. Vertical source columns favor the top/bottom arcs. */
 export function ambientRimStrength(inside: number, normalY: number, refractiveIndex: number) {
   if (inside < 0 || refractiveIndex === 1) return 0;
-  return .72 * Math.exp(-inside / 1.6) * (.35 + .65 * Math.abs(normalY));
+  return .95 * Math.exp(-inside / 1.05) * (.6 + .4 * Math.abs(normalY));
 }
 
 const MAP_CACHE_MAX = 24;
@@ -335,7 +337,7 @@ export function decodeLensTextures(textures: LensTextures): Promise<void> {
   if (cached) return cached;
   const ready = Promise.all(
     Object.values(textures)
-      .filter(Boolean)
+      .filter((url): url is string => typeof url === "string" && Boolean(url))
       .map(async (url) => {
         const image = new Image();
         image.src = url;
@@ -430,7 +432,10 @@ export function buildLensTextures(
         displacement.data[i + 2] = 128;
         displacement.data[i + 3] = 255;
         if (inside < 0 || inside >= bevel || bevel <= 0) continue;
-        ambientRim.data[i] = ambientRim.data[i + 1] = ambientRim.data[i + 2] = 255;
+        // RGB projects this pixel to its own lens's central source column;
+        // alpha remains the exact contour's thin ambient-light coverage.
+        ambientRim.data[i] = ambientRim.data[i + 2] = 128;
+        ambientRim.data[i + 1] = encode(-py * (flipY ? -1 : 1) / Math.max(1, hh));
         ambientRim.data[i + 3] = Math.round(ambientRimStrength(inside, ny, optics.refractiveIndex) * 255);
         const normalX = nx * ray.normalXY;
         const normalY = ny * ray.normalXY;
@@ -471,6 +476,7 @@ export function buildLensTextures(
     reflection: reflectionUrl,
     shade: shadeUrl,
     rim: rimUrl,
+    rimScale: hh * 2,
   };
   if (mapCache.size >= MAP_CACHE_MAX)
     mapCache.delete(mapCache.keys().next().value!);

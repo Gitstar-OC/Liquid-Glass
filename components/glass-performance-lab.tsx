@@ -64,7 +64,7 @@ export function GlassPerformanceLab() {
     </div>
     <GlassSettingsProvider surface="clear" config={GLASS_DEFAULT_PARAMS} optics={{colorBleed:colorBleed==="source"?.75:0}} performance={{ maxActiveSurfaces: Number(limit), frameRate: 30 }}>
       <div ref={stage} data-testid="performance-stage"><GlassScene key={backend} sourceRef={scene} frameRate={30} className="relative overflow-hidden rounded-[20px]" style={{height:480}}
-        content={<div className="absolute inset-0"><SceneBackdrop priority /><div ref={marker} className="absolute top-0 left-1/2 h-full w-12 bg-foreground/10" /><div className="absolute bottom-4 left-4 flex gap-4 text-sm">{["Scene text","Live content","Refraction"].map(text=><span key={text}>{text}</span>)}</div></div>}>
+        content={<div className="absolute inset-0"><SceneBackdrop priority /><div ref={marker} className="absolute top-[calc(50%-90px)] left-1/2 size-12 bg-[#007aff]" /><div className="absolute bottom-4 left-4 flex gap-4 text-sm">{["Scene text","Live content","Refraction"].map(text=><span key={text}>{text}</span>)}</div></div>}>
         {backend === "atlas" ? <GlassAtlas className="h-[480px]">{surfaces}</GlassAtlas> : surfaces}
       </GlassScene></div>
     </GlassSettingsProvider>

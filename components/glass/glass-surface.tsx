@@ -45,6 +45,8 @@ export interface GlassSurfaceProps
   frameRate?: number;
   /** Share optics or admit this surface to the document budget. */
   rendering?: "auto" | "shared";
+  /** Disable atlas batching when the surface needs its own transform. */
+  composite?: boolean;
   /** Higher values are admitted first; overlays use 10. The device cap still applies. */
   priority?: number;
   tintBlendMode?: React.CSSProperties["mixBlendMode"];
@@ -70,6 +72,7 @@ export function GlassSurface({
   asChild = false,
   sceneRef,
   rendering = "auto",
+  composite = true,
   priority,
   tintBlendMode,
   surface,
@@ -123,7 +126,8 @@ export function GlassSurface({
     },
     [ref],
   );
-  const atlas = useAtlasMember(localRef, style.radius, !parentSurface && !overlay && rendering === "auto" && !config && !deformation && !sceneRef && (effectiveSurface === undefined || effectiveSurface === "clear"), shape);
+  const compatibleConfig = !config || Object.keys(config).every(key => key === "tint" || key === "tintColor");
+  const atlas = useAtlasMember(localRef, style.radius, composite && !parentSurface && !overlay && rendering === "auto" && compatibleConfig && !deformation && !sceneRef && (effectiveSurface === undefined || effectiveSurface === "clear"), shape);
   const sample = useAdaptiveContrast(localRef, {
     enabled: (ink === "auto" || settings.themeBehavior === "duotheme") && !parentSurface,
     tone: settings.themeBehavior === "duotheme" && ink !== "auto" ? ink : undefined,

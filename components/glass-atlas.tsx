@@ -21,7 +21,7 @@ export function GlassAtlas({ children, className }: { children: ReactNode; class
   const scene = useGlassScene(), settings = useGlassSettings();
   const root = useRef<HTMLDivElement>(null), layer = useRef<HTMLDivElement>(null), host = useRef<HTMLDivElement>(null);
   const housing = useRef<SVGSVGElement>(null), reflection = useRef<HTMLDivElement>(null), blur = useRef<HTMLDivElement>(null);
-  const filter = useRef<GlassFilterManager | null>(null), installed = useRef<{map: string; reflection: string; rim?: string; width: number; height: number} | null>(null);
+  const filter = useRef<GlassFilterManager | null>(null), installed = useRef<{map: string; reflection: string; rim?: string; rimScale?: number; width: number; height: number} | null>(null);
   const members = useRef(new Map<HTMLElement, {radius:number;shape:GlassShape}>()), resize = useRef<ResizeObserver | null>(null);
   const queue = useRef<() => void>(() => {});
   const [admitted, setAdmitted] = useState(false), [ready, setReady] = useState(false);
@@ -40,7 +40,7 @@ export function GlassAtlas({ children, className }: { children: ReactNode; class
     const p = latestParams.current;
     if (blur.current) blur.current.style.filter = `saturate(${p.saturate}) brightness(${p.brightness}) contrast(${p.contrast})`;
     if (installed.current) filter.current?.update({...installed.current, depth: p.depth, blur: p.blur, chroma: p.chroma, glint: Math.min(1,p.glint/100), colorBleed: latestOptics.current.colorBleed});
-    if (reflection.current) reflection.current.style.opacity=String(1-latestOptics.current.colorBleed*.45);
+    if (reflection.current) reflection.current.style.opacity=String(1-latestOptics.current.colorBleed*.85);
   }, []);
   useLayoutEffect(() => { latestParams.current = params; latestOptics.current = optics; });
   useLayoutEffect(applyFinish, [params.blur, params.saturate, params.brightness, params.contrast, params.depth, params.chroma, optics.colorBleed, applyFinish]);
@@ -89,7 +89,7 @@ export function GlassAtlas({ children, className }: { children: ReactNode; class
       surface.style.maskSize = "100% 100%";
       surface.style.setProperty("-webkit-mask-size", "100% 100%");
       if (reflection.current) reflection.current.style.backgroundImage = `url("${textures.reflection}")`;
-      installed.current = {map: textures.displacement, reflection: textures.reflection, rim: textures.rim, width: bounds.width, height: bounds.height};
+      installed.current = {map: textures.displacement, reflection: textures.reflection, rim: textures.rim, rimScale: textures.rimScale, width: bounds.width, height: bounds.height};
       applyFinish();
       surface.dataset.atlasMapBuilds = String(++builds);
       surface.dataset.atlasShapes = String(shapes.length);

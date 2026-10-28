@@ -14,6 +14,7 @@ export function buildAtlasPixels(width: number, height: number, lenses: AtlasLen
   const displacement = new Uint8ClampedArray(tw * th * 4);
   const reflection = new Uint8ClampedArray(displacement.length), mask = new Uint8ClampedArray(displacement.length);
   const ambientRim = new Uint8ClampedArray(displacement.length);
+  const columnHeight = Math.max(1, ...lenses.map(lens => Number.isFinite(lens.height) ? lens.height : 0));
   for (let i = 0; i < displacement.length; i += 4) { displacement[i] = displacement[i + 1] = displacement[i + 2] = 128; displacement[i + 3] = 255; }
   const optics = resolveOptics(optical);
   const radians = optics.lightAngle * Math.PI / 180;
@@ -38,7 +39,8 @@ export function buildAtlasPixels(width: number, height: number, lenses: AtlasLen
       displacement[i] = encode(-surface.nx * strength + interior.x); displacement[i + 1] = encode(-surface.ny * strength + interior.y);
       mask[i] = mask[i + 1] = mask[i + 2] = 255; mask[i + 3] = Math.round(Math.max(0, Math.min(1, inside * scale + .5)) * 255);
       if (inside < 0 || inside >= bevel || bevel <= 0) continue;
-      ambientRim[i] = ambientRim[i + 1] = ambientRim[i + 2] = 255;
+      ambientRim[i] = ambientRim[i + 2] = 128;
+      ambientRim[i + 1] = encode(-2 * py / columnHeight);
       ambientRim[i + 3] = Math.round(ambientRimStrength(inside, surface.ny, optics.refractiveIndex) * 255);
       const nx = surface.nx * ray.normalXY, ny = surface.ny * ray.normalXY;
       const facing = nx * lx + ny * ly;
@@ -76,7 +78,7 @@ export function buildAtlasTextures(width: number, height: number, lenses: AtlasL
     const image = context.createImageData(pixels.width, pixels.height); image.data.set(data); context.putImageData(image, 0, 0);
     return canvas.toDataURL("image/png");
   };
-  const result = { displacement: encode(pixels.displacement), reflection: encode(pixels.reflection), mask: encode(pixels.mask), rim: encode(pixels.rim), shade: "" };
+  const result = { displacement: encode(pixels.displacement), reflection: encode(pixels.reflection), mask: encode(pixels.mask), rim: encode(pixels.rim), rimScale: Math.max(1, ...lenses.map(lens => lens.height)), shade: "" };
   atlasBuilds++;
   if (atlasCache.size >= 2) atlasCache.delete(atlasCache.keys().next().value!);
   atlasCache.set(key, result);

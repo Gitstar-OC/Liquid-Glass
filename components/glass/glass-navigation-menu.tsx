@@ -21,7 +21,7 @@ export function GlassNavigationMenu({
       data-viewport={viewport}
       {...props}
       className={cn(
-        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-start",
         className,
       )}
     >
@@ -48,7 +48,7 @@ export function GlassNavigationMenuList({
 }
 
 const navigationMenuTriggerStyle = cva(
-  "data-[state=open]:bg-foreground/10 dark:data-[state=open]:bg-white/15 rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground transition-all outline-none hover:bg-foreground/10 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:text-foreground dark:hover:bg-white/10 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex h-10 items-center justify-center gap-1.5 data-[state=open]:bg-foreground/8 rounded-full px-4 text-[13px] font-medium text-foreground transition-colors outline-none hover:bg-foreground/4 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4",
 );
 
 export function GlassNavigationMenuTrigger({
@@ -64,7 +64,7 @@ export function GlassNavigationMenuTrigger({
     >
       {children}{" "}
       <ChevronDownIcon
-        className="relative top-[1px] ml-1 size-3 transition-transform duration-300 group-data-[state=open]/navigation-menu-trigger:rotate-180"
+        className="size-3 transition-transform duration-200 group-data-[state=open]:rotate-180"
         aria-hidden="true"
       />
     </NavigationMenuPrimitive.Trigger>
@@ -83,7 +83,7 @@ export function GlassNavigationMenuContent({
       data-slot="navigation-menu-content"
       {...props}
       className={cn(
-        "ease-[cubic-bezier(0.22,1,0.36,1)] data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none md:absolute md:w-auto",
+        "ease-[cubic-bezier(0.22,1,0.36,1)] data-[motion=from-end]:slide-in-from-right-2 data-[motion=from-start]:slide-in-from-left-2 data-[motion=to-end]:slide-out-to-right-2 data-[motion=to-start]:slide-out-to-left-2 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none w-max max-w-[calc(100vw-2rem)] group-data-[viewport=true]/navigation-menu:absolute group-data-[viewport=false]/navigation-menu:absolute group-data-[viewport=false]/navigation-menu:left-0 group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-2",
         className,
       )}
     >
@@ -105,14 +105,14 @@ function GlassNavigationMenuViewport({
   return (
     <div
       className={cn(
-        "absolute top-full left-0 isolate z-50 flex justify-center",
+        "absolute top-full left-0 isolate z-50 w-max max-w-[calc(100vw-2rem)]",
       )}
     >
       <NavigationMenuPrimitive.Viewport
         data-slot="navigation-menu-viewport"
         {...props}
         className={cn(
-          "origin-top-center relative mt-1.5 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden rounded-2xl duration-100 md:w-(--radix-navigation-menu-viewport-width) data-open:animate-in data-open:zoom-in-90 data-closed:animate-out data-closed:zoom-out-90",
+          "relative mt-2 h-(--radix-navigation-menu-viewport-height) w-(--radix-navigation-menu-viewport-width) max-w-[calc(100vw-2rem)] overflow-hidden rounded-3xl transition-[width,height] duration-150 ease-out data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
           className,
         )}
       />
@@ -129,7 +129,7 @@ export function GlassNavigationMenuLink({
       data-slot="navigation-menu-link"
       {...props}
       className={cn(
-        "flex w-full cursor-pointer flex-col gap-1 rounded-xl p-2 transition-colors hover:bg-foreground/10 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none dark:hover:bg-white/10",
+        "flex min-h-10 w-full cursor-pointer flex-col justify-center gap-1 rounded-xl px-3 py-2 text-[13px] transition-colors hover:bg-foreground/4 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
         className,
       )}
     />
