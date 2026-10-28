@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-state-swap",
+  "title": "glass-state-swap",
+  "description": "The state-swap component, styled for liquid glass.",
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-utilities.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-state-swap.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n/** An interruptible visual state change. Give the parent button its accessible name. */\nexport function GlassStateSwap({ active, from, to, animate = true, className }: {\n  active: boolean;\n  from: ReactNode;\n  to: ReactNode;\n  /** Keyboard actions should pass false so their feedback is immediate. */\n  animate?: boolean;\n  className?: string;\n}) {\n  return <span aria-hidden=\"true\" data-active={active} data-animate={animate} className={cn(\"glass-state-swap\", className)}>\n    <span data-swap-layer=\"from\">{from}</span>\n    <span data-swap-layer=\"to\">{to}</span>\n  </span>;\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-state-swap.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-state-swap",
+  "type": "registry:ui"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-switch",
+  "title": "Glass Switch",
+  "description": "A switch whose track is a tinted glass channel.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-utilities.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-switch.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Switch as SwitchPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  GlassSurface,\n  useWithinGlassSurface,\n} from \"@/components/glass/glass-surface\";\n\nexport function GlassSwitch({\n  className,\n  size = \"default\",\n  onKeyDown,\n  onPointerDown,\n  onPointerUp, onPointerCancel, onLostPointerCapture, onBlur,\n  ...props\n}: React.ComponentProps<typeof SwitchPrimitive.Root> & {\n  size?: \"sm\" | \"default\";\n}) {\n  const within = useWithinGlassSurface();\n  const [pointerMotion, setPointerMotion] = React.useState(false);\n  const [pressed, setPressed] = React.useState(false);\n  if (props.disabled && pressed) setPressed(false);\n  const settle = React.useRef<ReturnType<typeof setTimeout> | null>(null);\n  const clear = () => { if (settle.current) clearTimeout(settle.current); settle.current = null; setPressed(false); };\n  React.useEffect(() => () => { if (settle.current) clearTimeout(settle.current); }, [props.disabled]);\n  const release = () => { if (settle.current) clearTimeout(settle.current); settle.current = setTimeout(() => { settle.current = null; setPressed(false); }, 300); };\n  const control = (\n    <SwitchPrimitive.Root\n      {...props}\n      onKeyDown={event=>{clear();setPointerMotion(false);onKeyDown?.(event);}}\n      onPointerDown={event=>{onPointerDown?.(event);if(event.button!==0||event.defaultPrevented||props.disabled)return;clear();setPointerMotion(true);setPressed(true);event.currentTarget.setPointerCapture?.(event.pointerId);}}\n      onPointerUp={event=>{release();onPointerUp?.(event);}}\n      onPointerCancel={event=>{clear();onPointerCancel?.(event);}}\n      onLostPointerCapture={event=>{if(!settle.current)clear();onLostPointerCapture?.(event);}}\n      onBlur={event=>{clear();onBlur?.(event);}}\n      data-liquid-pressed={pressed && !props.disabled}\n      data-input-modality={pointerMotion ? \"pointer\" : \"keyboard\"}\n      data-slot=\"switch\"\n      data-size={size}\n      className={cn(\n        \"group relative inline-flex shrink-0 cursor-pointer items-center rounded-full border-0 bg-foreground/15 outline-none transition-[background-color] duration-200 ease-(--ease-out) after:absolute after:-inset-2 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40 data-[state=checked]:bg-(--glass-action)\",\n        !pointerMotion && \"transition-none\",\n        size === \"sm\" ? \"h-[22px] w-[46px] p-0.5\" : \"h-7 w-[58px] p-0.5\",\n        className,\n      )}\n    >\n      <SwitchPrimitive.Thumb\n        data-slot=\"switch-thumb\"\n        className={cn(\n          \"glass-switch-thumb pointer-events-none relative z-1 block rounded-full border-0 transition-[transform,scale] duration-300 ease-(--ease-out) motion-reduce:transition-none\",\n          !pointerMotion && \"transition-none\",\n          size === \"sm\"\n            ? \"h-[18px] w-[26px] data-[state=checked]:translate-x-4\"\n            : \"h-[22px] w-[34px] data-[state=checked]:translate-x-5\",\n        )}\n      />\n    </SwitchPrimitive.Root>\n  );\n  return within ? (\n    control\n  ) : (\n    <GlassSurface asChild radius={999} shadow={false}>\n      {control}\n    </GlassSurface>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-switch.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-switch",
+  "type": "registry:ui"
+}

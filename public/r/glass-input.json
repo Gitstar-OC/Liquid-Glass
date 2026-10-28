@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-input",
+  "title": "Glass Input",
+  "description": "Input, textarea, and label with shared form semantics and focus states.",
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-form.json",
+    "http://localhost:3000/r/glass-utilities.json",
+    "input",
+    "label",
+    "textarea"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-input.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Input } from \"@/components/ui/input\";\nimport { Textarea } from \"@/components/ui/textarea\";\nimport { useGlassFormField } from \"@/components/glass/glass-form\";\nimport { cn } from \"@/lib/utils\";\n\nexport function GlassInput({\n  className,\n  ...props\n}: React.ComponentProps<typeof Input>) {\n  const field = useGlassFormField();\n  return (\n    <Input\n      id={field?.id}\n      aria-invalid={field?.invalid || undefined}\n      aria-describedby={field?.describedBy}\n      {...props}\n      className={cn(\n        \"glass-field h-10 rounded-full px-4 border-foreground/10 shadow-none placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30\",\n        className,\n      )}\n    />\n  );\n}\n\nexport function GlassTextarea({\n  className,\n  ...props\n}: React.ComponentProps<typeof Textarea>) {\n  const field = useGlassFormField();\n  return (\n    <Textarea\n      id={field?.id}\n      aria-invalid={field?.invalid || undefined}\n      aria-describedby={field?.describedBy}\n      {...props}\n      className={cn(\n        \"glass-field rounded-[12px] border-foreground/10 shadow-none placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30\",\n        className,\n      )}\n    />\n  );\n}\n\nexport { Label } from \"@/components/ui/label\";\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-input.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-input",
+  "type": "registry:ui"
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-alert",
+  "title": "Glass Alert",
+  "description": "Alert with a glass title and description.",
+  "registryDependencies": [
+    "alert",
+    "http://localhost:3000/r/glass-utilities.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-alert.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Alert, AlertTitle, AlertDescription } from \"@/components/ui/alert\";\n\nexport function GlassAlert({\n  className,\n  ...props\n}: React.ComponentProps<typeof Alert>) {\n  return (\n    <Alert\n      {...props}\n      className={cn(\n        \"glass-chip rounded-2xl border-none shadow-none\",\n        className,\n      )}\n    />\n  );\n}\n\nexport { AlertTitle, AlertDescription };\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-alert.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-alert",
+  "type": "registry:ui"
+}

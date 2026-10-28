@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-tabs",
+  "title": "Glass Tabs",
+  "description": "Tabs, tab list, trigger and content.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-utilities.json",
+    "tabs"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-tabs.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Tabs as TabsPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Tabs,\n  TabsContent,\n  TabsTrigger as BaseTabsTrigger,\n} from \"@/components/ui/tabs\";\nimport { GlassSelectionIndicator, useGlassSelection } from \"@/components/glass/glass-selection\";\n\nexport function GlassTabs({\n  className,\n  ...props\n}: React.ComponentProps<typeof Tabs>) {\n  return <Tabs {...props} className={cn(className)} />;\n}\n\nexport function GlassTabsList({\n  className,\n  children,\n  ...props\n}: React.ComponentProps<\"div\">) {\n  const ref = useGlassSelection();\n  return (\n    <TabsPrimitive.List asChild>\n      <div\n        data-slot=\"tabs-list\"\n        data-variant=\"default\"\n        {...props}\n        ref={ref}\n        data-liquid-selection=\"true\"\n        className={cn(\n          \"group/tabs-list glass-chip relative isolate inline-flex h-10 w-fit items-center justify-center rounded-[12px] p-1 text-muted-foreground\",\n          className,\n        )}\n      ><GlassSelectionIndicator/>{children}</div>\n    </TabsPrimitive.List>\n  );\n}\n\nexport function TabsTrigger({\n  className,\n  ...props\n}: React.ComponentProps<typeof BaseTabsTrigger>) {\n  return (\n    <BaseTabsTrigger\n      className={cn(\n        \"relative z-1 select-text data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport { TabsContent };\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-tabs.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-tabs",
+  "type": "registry:ui"
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-navbar",
+  "title": "Glass Navbar",
+  "description": "A refracting navigation surface for your brand, links, and actions.",
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-navbar.tsx",
+      "content": "\"use client\";\nimport {\n  GlassSurface,\n  type GlassSurfaceProps,\n} from \"@/components/glass/glass-surface\";\nimport { cn } from \"@/lib/utils\";\nexport function GlassNavbar({\n  className,\n  ...props\n}: Omit<GlassSurfaceProps, \"kind\" | \"as\">) {\n  return (\n    <GlassSurface\n      kind=\"navbar\"\n      as=\"nav\"\n      radius={999}\n      className={cn(\n        \"flex min-h-14 items-center justify-between gap-2 p-1.5\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-navbar.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-navbar",
+  "type": "registry:ui"
+}

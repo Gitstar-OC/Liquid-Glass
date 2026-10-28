@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-dock",
+  "title": "Glass Dock",
+  "description": "A glass dock with labelled controls, native links, and keyboard-accessible tooltips.",
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-button.json",
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-tooltip.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-dock.tsx",
+      "content": "\"use client\";\n\nimport { GlassSurface, type GlassSurfaceProps } from \"@/components/glass/glass-surface\";\nimport { GlassButton, type GlassButtonProps } from \"@/components/glass/glass-button\";\nimport { GlassTooltipContent, Tooltip, TooltipProvider, TooltipTrigger } from \"@/components/glass/glass-tooltip\";\nimport { cn } from \"@/lib/utils\";\n\n/** A single optical surface; app controls and tooltips retain their own semantics. */\nexport function GlassDock({ children, className, ...props }: GlassSurfaceProps) {\n  return <TooltipProvider delayDuration={250} skipDelayDuration={300}>\n    <GlassSurface as=\"nav\" kind=\"navbar\" shape=\"squircle\" radius={34} aria-label=\"Dock\" {...props}\n      className={cn(\"flex w-fit items-center gap-2 p-2.5\", className)}>{children}</GlassSurface>\n  </TooltipProvider>;\n}\nexport function GlassDockItem({ label, children, className, ...props }: GlassButtonProps & { label: string }) {\n  return <Tooltip><TooltipTrigger asChild>\n    <GlassButton variant=\"ghost\" shape=\"default\" aria-label={label} {...props}\n      className={cn(\"size-12 rounded-[13px] p-0 transition-transform duration-150 ease-(--ease-out) [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 motion-reduce:transform-none\", className)}>{children}</GlassButton>\n  </TooltipTrigger><GlassTooltipContent side=\"top\" sideOffset={12}>{label}</GlassTooltipContent></Tooltip>;\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-dock.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-dock",
+  "type": "registry:ui"
+}

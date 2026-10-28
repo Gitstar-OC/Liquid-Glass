@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-form",
+  "title": "Glass Form",
+  "description": "Form fields with connected labels, descriptions, and error messages.",
+  "registryDependencies": [
+    "field"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-form.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Field, FieldGroup, FieldLabel, FieldDescription, FieldError } from \"@/components/ui/field\";\ninterface FieldContextValue { id: string; invalid: boolean; describedBy?: string; }\nconst FieldContext = React.createContext<FieldContextValue | null>(null);\nexport function GlassForm({ className, children, ...props }: React.ComponentProps<\"form\">) {\n  return <form className={cn(className)} {...props}><FieldGroup>{children}</FieldGroup></form>;\n}\nexport function GlassFormField({ label, description, error, children, className, id, ...props }: Omit<React.ComponentProps<\"div\">,\"children\"> & { label:string; description?:string; error?:string; children:React.ReactNode; }) {\n  const generated = React.useId();\n  const fieldId = id ?? generated;\n  const describedBy = error ? `${fieldId}-error` : description ? `${fieldId}-description` : undefined;\n  return <FieldContext.Provider value={{ id:fieldId, invalid:!!error, describedBy }}><Field data-invalid={!!error || undefined} className={className} {...props}>\n    <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>{children}\n    {error ? <FieldError id={`${fieldId}-error`}>{error}</FieldError> : description ? <FieldDescription id={`${fieldId}-description`}>{description}</FieldDescription> : null}\n  </Field></FieldContext.Provider>;\n}\nexport function useGlassFormField() { return React.useContext(FieldContext); }\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-form.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-form",
+  "type": "registry:ui"
+}

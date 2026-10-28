@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-context-menu",
+  "title": "Glass Context Menu",
+  "description": "Context menu with every sub-component on one material.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "context-menu",
+    "http://localhost:3000/r/glass-materials.json",
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-context-menu.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { ContextMenu as ContextMenuPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\nimport type { GlassSurface as GlassSurfaceKind } from \"@/lib/glass-theme\";\n\nexport function GlassContextMenuContent({\n  className,\n  surface,\n  children,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.Content> & {\n  surface?: GlassSurfaceKind;\n}) {\n  return (\n    <ContextMenuPrimitive.Portal>\n      <ContextMenuPrimitive.Content\n        data-slot=\"context-menu-content\"\n        className={cn(\n          \"z-50 max-h-(--radix-context-menu-content-available-height) min-w-40 origin-(--radix-context-menu-content-transform-origin) duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface\n          kind=\"context-menu\"\n          surface={surface}\n          className=\"w-full p-1\"\n        >\n          {children}\n        </GlassSurface>\n      </ContextMenuPrimitive.Content>\n    </ContextMenuPrimitive.Portal>\n  );\n}\n\nexport function GlassContextMenuSubContent({\n  className,\n  surface,\n  children,\n  ...props\n}: React.ComponentProps<typeof ContextMenuPrimitive.SubContent> & {\n  surface?: GlassSurfaceKind;\n}) {\n  return (\n    <ContextMenuPrimitive.Portal>\n      <ContextMenuPrimitive.SubContent\n        data-slot=\"context-menu-sub-content\"\n        className={cn(\n          \"z-50 min-w-40 origin-(--radix-context-menu-content-transform-origin) duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface\n          kind=\"context-menu\"\n          surface={surface}\n          className=\"w-full p-1\"\n        >\n          {children}\n        </GlassSurface>\n      </ContextMenuPrimitive.SubContent>\n    </ContextMenuPrimitive.Portal>\n  );\n}\n\nexport {\n  ContextMenu,\n  ContextMenuTrigger,\n  ContextMenuGroup,\n  ContextMenuItem,\n  ContextMenuCheckboxItem,\n  ContextMenuRadioGroup,\n  ContextMenuRadioItem,\n  ContextMenuLabel,\n  ContextMenuSeparator,\n  ContextMenuShortcut,\n  ContextMenuSub,\n  ContextMenuSubTrigger,\n} from \"@/components/ui/context-menu\";\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-context-menu.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-context-menu",
+  "type": "registry:ui"
+}

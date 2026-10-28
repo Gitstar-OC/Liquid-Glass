@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-avatar",
+  "title": "Glass Avatar",
+  "description": "Avatar with a ringed glass portrait and a graceful fallback.",
+  "registryDependencies": [
+    "avatar",
+    "separator"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-avatar.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Avatar, AvatarImage, AvatarFallback } from \"@/components/ui/avatar\";\nimport { Separator } from \"@/components/ui/separator\";\n\nexport function GlassAvatar({\n  className,\n  ...props\n}: React.ComponentProps<typeof Avatar>) {\n  return (\n    <Avatar\n      {...props}\n      className={cn(\"ring-1 ring-foreground/20 \", className)}\n    />\n  );\n}\n\nexport {\n  AvatarImage as GlassAvatarImage,\n  AvatarFallback as GlassAvatarFallback,\n};\n\nexport function GlassSeparator({\n  className,\n  ...props\n}: React.ComponentProps<typeof Separator>) {\n  return (\n    <Separator\n      {...props}\n      className={cn(\"bg-foreground/15 dark:bg-white/12\", className)}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-avatar.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-avatar",
+  "type": "registry:ui"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-range-control",
+  "title": "Glass Range Control",
+  "description": "The range-control component, styled for liquid glass.",
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-icons.json",
+    "http://localhost:3000/r/glass-slider.json",
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-range-control.tsx",
+      "content": "\"use client\";\n\nimport { GlassIcon } from \"@/components/glass/glass-icons\";\nimport { GlassSurface, type GlassSurfaceProps } from \"@/components/glass/glass-surface\";\nimport { GlassSlider } from \"@/components/glass/glass-slider\";\nimport { cn } from \"@/lib/utils\";\n\nexport interface GlassRangeControlProps extends Omit<GlassSurfaceProps, \"children\" | \"onChange\" | \"defaultValue\"> {\n  label?: string;\n  value?: number;\n  defaultValue?: number;\n  onValueChange?: (value: number) => void;\n  kindOfControl?: \"sound\" | \"brightness\";\n  disabled?: boolean;\n  sliderTone?: \"neutral\" | \"accent\";\n}\n\n/** A compact, labelled range capsule. Nested instances share their panel's optics. */\nexport function GlassRangeControl({\n  label = \"Sound\", value, defaultValue = 65, onValueChange,\n  kindOfControl = \"sound\", sliderTone = \"neutral\", disabled, className, radius = 20, ...surfaceProps\n}: GlassRangeControlProps) {\n\n  return (\n    <GlassSurface {...surfaceProps} radius={radius} className={cn(\"glass-range-control w-full px-4 pt-3 pb-2\", className)}>\n      <p className=\"text-xs font-semibold leading-4\">{label}</p>\n      <div className=\"flex items-center gap-3\">\n        <GlassIcon name={kindOfControl === \"brightness\" ? \"sun\" : value === 0 ? \"muted\" : \"quiet\"} className=\"size-3.5 shrink-0 opacity-65\" />\n        <GlassSlider\n          aria-label={label} appearance=\"hud\" tone={sliderTone} disabled={disabled}\n          value={value === undefined ? undefined : [value]}\n          defaultValue={[defaultValue]} onValueChange={([next]) => onValueChange?.(next)}\n        />\n        <GlassIcon name={kindOfControl === \"brightness\" ? \"sun\" : \"speaker\"} className=\"size-4 shrink-0 opacity-85\" />\n      </div>\n    </GlassSurface>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-range-control.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-range-control",
+  "type": "registry:ui"
+}

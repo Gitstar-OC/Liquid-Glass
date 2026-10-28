@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-drawer",
+  "title": "Glass Drawer",
+  "description": "Drawer with the shared refracting surface.",
+  "dependencies": [
+    "vaul"
+  ],
+  "registryDependencies": [
+    "drawer",
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-drawer.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Drawer as DrawerPrimitive } from \"vaul\";\nimport { cn } from \"@/lib/utils\";\nimport { Drawer as BaseDrawer } from \"@/components/ui/drawer\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\n\nexport function GlassDrawerContent({\n  className,\n  children,\n  surface,\n  config,\n  container,\n  ...props\n}: React.ComponentProps<typeof DrawerPrimitive.Content> & {\n  container?: HTMLElement | null;\n  surface?: import(\"@/lib/glass-theme\").GlassSurface;\n  config?: Partial<import(\"@/lib/glass\").LensParams>;\n}) {\n  return (\n    <DrawerPrimitive.Portal container={container} data-slot=\"drawer-portal\">\n      <DrawerPrimitive.Overlay\n        data-slot=\"drawer-overlay\"\n        className={cn(\n          \"fixed inset-0 z-50 bg-black/20\",\n          container && \"absolute rounded-[20px]\",\n        )}\n      />\n      <DrawerPrimitive.Content\n        data-slot=\"drawer-content\"\n        className={cn(\n          \"group/drawer-content fixed z-50 flex h-auto flex-col text-sm outline-none data-[vaul-drawer-direction=bottom]:inset-x-3 data-[vaul-drawer-direction=bottom]:bottom-3 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=left]:sm:max-w-sm data-[vaul-drawer-direction=right]:sm:max-w-sm\",\n          container && \"absolute\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface\n          kind=\"drawer\"\n          surface={surface}\n          config={{ blur: 8, ...config }}\n          className=\"mx-auto flex w-full max-w-lg flex-1 flex-col gap-5 p-6\"\n        >\n          <div className=\"mx-auto -mt-2 mb-1 hidden h-1 w-10 shrink-0 rounded-full bg-foreground/25 group-data-[vaul-drawer-direction=bottom]/drawer-content:block\" />\n          {children}\n        </GlassSurface>\n      </DrawerPrimitive.Content>\n    </DrawerPrimitive.Portal>\n  );\n}\n\nexport {\n  DrawerTrigger,\n  DrawerClose,\n  DrawerHeader,\n  DrawerFooter,\n  DrawerTitle,\n  DrawerDescription,\n} from \"@/components/ui/drawer\";\n\nexport function Drawer(props: React.ComponentProps<typeof BaseDrawer>) {\n  return <BaseDrawer autoFocus {...props} />;\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-drawer.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-drawer",
+  "type": "registry:ui"
+}

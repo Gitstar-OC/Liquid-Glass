@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-sidebar",
+  "title": "Glass Sidebar",
+  "description": "A glass sidebar shell and navigation items with an active state.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-sidebar.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { Slot } from \"radix-ui\";\nimport {\n  GlassSurface,\n  type GlassSurfaceProps,\n} from \"@/components/glass/glass-surface\";\nimport { cn } from \"@/lib/utils\";\nexport function GlassSidebar({\n  className,\n  ...props\n}: Omit<GlassSurfaceProps, \"kind\" | \"as\">) {\n  return (\n    <GlassSurface\n      kind=\"card\"\n      as=\"aside\"\n      className={cn(\"flex w-52 shrink-0 flex-col gap-1 p-3\", className)}\n      {...props}\n    />\n  );\n}\nexport function GlassSidebarItem({\n  active,\n  asChild,\n  className,\n  ...props\n}: React.ComponentProps<\"button\"> & { active?: boolean; asChild?: boolean }) {\n  const Tag = asChild ? Slot.Root : \"button\";\n  return (\n    <Tag\n      type={asChild ? undefined : \"button\"}\n      aria-current={active ? \"page\" : undefined}\n      className={cn(\n        \"flex min-h-9 w-full items-center gap-2.5 rounded-[12px] px-3 text-left text-xs text-foreground/65 transition-colors hover:bg-foreground/8 hover:text-foreground\",\n        active && \"bg-foreground/10 text-foreground\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-sidebar.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-sidebar",
+  "type": "registry:ui"
+}

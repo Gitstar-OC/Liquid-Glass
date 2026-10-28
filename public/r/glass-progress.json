@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-progress",
+  "title": "Glass Progress",
+  "description": "A determinate progress meter with an inset glass track.",
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-utilities.json",
+    "progress"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-progress.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Progress } from \"@/components/ui/progress\";\n\nexport function GlassProgress({\n  className,\n  ...props\n}: React.ComponentProps<typeof Progress>) {\n  return <Progress {...props} className={cn(\"glass-inset\", className)} />;\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-progress.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-progress",
+  "type": "registry:ui"
+}

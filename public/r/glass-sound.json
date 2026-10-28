@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-sound",
+  "title": "Glass Sound",
+  "description": "The sound component, styled for liquid glass.",
+  "dependencies": [
+    "lucide-react",
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-slider.json",
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-utilities.json",
+    "separator"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-sound.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { RadioGroup } from \"radix-ui\";\nimport { Check, Monitor, Speaker, Volume1, Volume2 } from \"lucide-react\";\nimport { GlassSurface, type GlassSurfaceProps } from \"@/components/glass/glass-surface\";\nimport { GlassSlider } from \"@/components/glass/glass-slider\";\nimport { Separator } from \"@/components/ui/separator\";\nimport { cn } from \"@/lib/utils\";\n\nexport interface GlassSoundProps extends Omit<GlassSurfaceProps, \"children\" | \"onChange\" | \"onVolumeChange\" | \"defaultValue\"> {\n  volume?: number;\n  defaultVolume?: number;\n  onVolumeChange?: (value: number) => void;\n  onOutputChange?: (value: string) => void;\n}\n\nexport function GlassSound({ volume: controlledVolume, defaultVolume = 42, onVolumeChange, onOutputChange, className, ...props }: GlassSoundProps) {\n  const [localVolume, setVolume] = useState(defaultVolume);\n  const volume = controlledVolume ?? localVolume;\n  const [output, setOutput] = useState(\"speakers\");\n  return (\n    <GlassSurface {...props} className={cn(\"w-full max-w-[304px] p-3\", className)}>\n      <h3 className=\"px-1 text-[13px] font-semibold\">Sound</h3>\n      <div className=\"flex items-center gap-2 px-1\">\n        <Volume1 className=\"size-4 shrink-0 opacity-55\" aria-hidden=\"true\" />\n        <GlassSlider aria-label=\"Output volume\" tone=\"accent\" value={[volume]} onValueChange={([next]) => { setVolume(next); onVolumeChange?.(next); }} />\n        <Volume2 className=\"size-4 shrink-0 opacity-75\" aria-hidden=\"true\" />\n      </div>\n      <Separator className=\"my-2 bg-foreground/10\" />\n      <p className=\"mb-1 px-1 text-[11px] font-medium text-foreground/55\">Output</p>\n      <RadioGroup.Root aria-label=\"Audio output\" value={output} onValueChange={next => { setOutput(next); onOutputChange?.(next); }} className=\"flex flex-col gap-0.5\">\n        {[{ value: \"speakers\", label: \"Studio speakers\", icon: Speaker }, { value: \"display\", label: \"Studio display\", icon: Monitor }].map(({value,label,icon:Icon}) => (\n          <RadioGroup.Item key={value} value={value} className=\"glass-choice-row group flex min-h-10 w-full items-center gap-2.5 rounded-xl px-1.5 text-left text-xs outline-none hover:bg-foreground/6 focus-visible:ring-2 focus-visible:ring-ring/60\">\n            <span className=\"glass-control-icon size-7 group-data-[state=checked]:bg-(--glass-action) group-data-[state=checked]:text-white\"><Icon className=\"size-3.5\" /></span>\n            <span className=\"flex-1 font-medium\">{label}</span>\n            <RadioGroup.Indicator><Check className=\"size-3.5 opacity-65\" /></RadioGroup.Indicator>\n          </RadioGroup.Item>\n        ))}\n      </RadioGroup.Root>\n    </GlassSurface>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-sound.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-sound",
+  "type": "registry:ui"
+}

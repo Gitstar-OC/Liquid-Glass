@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-card",
+  "title": "Glass Card",
+  "description": "Card, header, title, action and footer sub-components on the shared clear lens.",
+  "registryDependencies": [
+    "card",
+    "http://localhost:3000/r/glass-materials.json",
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-card.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Card } from \"@/components/ui/card\";\nimport {\n  GlassSurface,\n  type GlassSurfaceProps,\n} from \"@/components/glass/glass-surface\";\nimport type { GlassSurface as GlassSurfaceKind } from \"@/lib/glass-theme\";\n\nexport function GlassCard({\n  className,\n  surface,\n  radius,\n  ink,\n  contrastProtection,\n  config,\n  children,\n  ...props\n}: React.ComponentProps<typeof Card> & {\n  surface?: GlassSurfaceKind;\n  radius?: number;\n} & Pick<GlassSurfaceProps, \"ink\" | \"contrastProtection\" | \"config\">) {\n  return (\n    <GlassSurface\n      kind=\"card\"\n      surface={surface}\n      radius={radius}\n      ink={ink}\n      contrastProtection={contrastProtection}\n      config={config}\n      asChild\n    >\n      <Card {...props} className={className}>\n        {children}\n      </Card>\n    </GlassSurface>\n  );\n}\n\nexport {\n  CardHeader,\n  CardTitle,\n  CardDescription,\n  CardAction,\n  CardContent,\n  CardFooter,\n} from \"@/components/ui/card\";\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-card.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-card",
+  "type": "registry:ui"
+}

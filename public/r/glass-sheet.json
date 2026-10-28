@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-sheet",
+  "title": "Glass Sheet",
+  "description": "Sheet with an edge-to-edge glass panel.",
+  "dependencies": [
+    "lucide-react",
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-surface.json",
+    "sheet"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-sheet.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Dialog as SheetPrimitive } from \"radix-ui\";\nimport { XIcon } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\n\nexport function GlassSheetContent({\n  className,\n  children,\n  side = \"right\",\n  showCloseButton = true,\n  surface,\n  container,\n  ...props\n}: React.ComponentProps<typeof SheetPrimitive.Content> & {\n  container?: HTMLElement | null;\n  side?: \"top\" | \"right\" | \"bottom\" | \"left\";\n  showCloseButton?: boolean;\n  surface?: import(\"@/lib/glass-theme\").GlassSurface;\n}) {\n  return (\n    <SheetPrimitive.Portal data-slot=\"sheet-portal\" container={container}>\n      <SheetPrimitive.Overlay\n        data-slot=\"sheet-overlay\"\n        className={cn(\n          \"fixed inset-0 z-50 bg-black/20 duration-100 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0\",\n          container && \"absolute\",\n        )}\n      />\n      <SheetPrimitive.Content\n        data-slot=\"sheet-content\"\n        data-side={side}\n        className={cn(\n          \"fixed z-50 flex flex-col gap-4 text-sm transition duration-200 ease-in-out data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-[side=bottom]:data-open:slide-in-from-bottom-10 data-[side=left]:data-open:slide-in-from-left-10 data-[side=right]:data-open:slide-in-from-right-10 data-[side=top]:data-open:slide-in-from-top-10 data-closed:animate-out data-closed:fade-out-0 data-[side=bottom]:data-closed:slide-out-to-bottom-10 data-[side=left]:data-closed:slide-out-to-left-10 data-[side=right]:data-closed:slide-out-to-right-10 data-[side=top]:data-closed:slide-out-to-top-10\",\n          container && \"absolute\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface\n          kind=\"sheet\"\n          surface={surface}\n          className=\"flex h-full w-full flex-col gap-4 p-4\"\n        >\n          {children}\n          {showCloseButton && (\n            <SheetPrimitive.Close\n              data-slot=\"sheet-close\"\n              className=\"absolute top-3 right-3 grid size-7 place-items-center rounded-lg opacity-60 transition-opacity hover:bg-foreground/10 hover:opacity-100 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none\"\n            >\n              <XIcon className=\"size-4\" />\n              <span className=\"sr-only\">Close</span>\n            </SheetPrimitive.Close>\n          )}\n        </GlassSurface>\n      </SheetPrimitive.Content>\n    </SheetPrimitive.Portal>\n  );\n}\n\nexport {\n  Sheet,\n  SheetTrigger,\n  SheetClose,\n  SheetHeader,\n  SheetFooter,\n  SheetTitle,\n  SheetDescription,\n} from \"@/components/ui/sheet\";\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-sheet.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-sheet",
+  "type": "registry:ui"
+}

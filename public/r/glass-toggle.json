@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-toggle",
+  "title": "Glass Toggle",
+  "description": "Toggle and toggle group with pressed-state glass.",
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-utilities.json",
+    "toggle",
+    "toggle-group"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-toggle.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  GlassSurface,\n  useWithinGlassSurface,\n} from \"@/components/glass/glass-surface\";\nimport { cn } from \"@/lib/utils\";\nimport { Toggle, toggleVariants } from \"@/components/ui/toggle\";\nimport { ToggleGroup, ToggleGroupItem } from \"@/components/ui/toggle-group\";\nimport { GlassSelectionIndicator, useGlassSelection } from \"@/components/glass/glass-selection\";\n\nexport function GlassToggle({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  asChild,\n  children,\n  ...props\n}: React.ComponentProps<typeof Toggle>) {\n  const within = useWithinGlassSurface();\n  const classes = cn(\n    toggleVariants({ variant, size }),\n    \"h-10 rounded-[12px] px-4 hover:bg-foreground/4 data-[state=on]:bg-foreground/9 aria-pressed:bg-foreground/9\",\n    within ? \"border-0 bg-transparent shadow-none\" : \"glass-chip\",\n    className,\n  );\n  if (!within)\n    return (\n      <Toggle\n        variant={variant}\n        size={size}\n        {...props}\n        asChild\n        className={classes}\n      >\n        <GlassSurface asChild shadow={false}>\n          {asChild ? children : <button type=\"button\">{children}</button>}\n        </GlassSurface>\n      </Toggle>\n    );\n  return (\n    <Toggle\n      variant={variant}\n      size={size}\n      {...props}\n      asChild={asChild}\n      className={classes}\n    >\n      {children}\n    </Toggle>\n  );\n}\n\nexport function GlassToggleGroup({\n  className, liquid = false, children,\n  ...props\n}: React.ComponentProps<typeof ToggleGroup> & { liquid?: boolean }) {\n  const ref = useGlassSelection(liquid && props.type === \"single\");\n  return <ToggleGroup {...props} ref={ref} data-liquid-selection={liquid || undefined} className={cn(liquid && \"relative isolate\", className)}>{liquid && <GlassSelectionIndicator/>}{children}</ToggleGroup>;\n}\n\nexport function GlassToggleGroupItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof ToggleGroupItem>) {\n  const within = useWithinGlassSurface();\n  return (\n    <ToggleGroupItem\n      {...props}\n      className={cn(\n        \"relative z-1 h-10 rounded-[12px] px-4 hover:bg-foreground/4 data-[state=on]:bg-foreground/9 aria-pressed:bg-foreground/9\",\n        within ? \"border-0 bg-transparent shadow-none\" : \"glass-chip\",\n        className,\n      )}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-toggle.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-toggle",
+  "type": "registry:ui"
+}

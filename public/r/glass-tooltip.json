@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-tooltip",
+  "title": "Glass Tooltip",
+  "description": "Tooltip provider and content.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-utilities.json",
+    "tooltip"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-tooltip.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Tooltip as TooltipPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\n\n/**\n * Tooltips share the playground optics, with the compact control radius.\n */\nexport function GlassTooltipContent({\n  className,\n  sideOffset = 6,\n  children,\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Content>) {\n  return (\n    <TooltipPrimitive.Portal>\n      <TooltipPrimitive.Content\n        data-slot=\"tooltip-content\"\n        sideOffset={sideOffset}\n        className={cn(\n          \"glass-tooltip-motion z-50 inline-flex w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) items-center gap-1.5\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface kind=\"tooltip\" className=\"px-3 py-2 text-xs font-medium\">\n          {children}\n        </GlassSurface>\n      </TooltipPrimitive.Content>\n    </TooltipPrimitive.Portal>\n  );\n}\n\nexport {\n  Tooltip,\n  TooltipTrigger,\n  TooltipProvider,\n} from \"@/components/ui/tooltip\";\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-tooltip.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-tooltip",
+  "type": "registry:ui"
+}

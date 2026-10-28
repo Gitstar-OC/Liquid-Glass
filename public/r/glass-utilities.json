@@ -1,0 +1,347 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-utilities",
+  "title": "Glass Utilities",
+  "description": "The CSS-level materials (.glass-chip, .glass-field, .glass-inset) every glass control is poured into. Pulled in automatically by any glass item.",
+  "files": [],
+  "css": {
+    ":root": {
+      "--glass-action": "#006de5",
+      "--ease-out": "cubic-bezier(0.23, 1, 0.32, 1)",
+      "--ease-in-out": "cubic-bezier(0.77, 0, 0.175, 1)",
+      "--ease-drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
+    },
+    "@layer components": {
+      ".glass-chip": {
+        "border": "0",
+        "background": "color-mix(in oklab, var(--foreground) 5%, transparent)",
+        "box-shadow": "none",
+        "backdrop-filter": "blur(0.75px) saturate(1)",
+        "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+      },
+      ".glass-state-swap": {
+        "display": "inline-grid",
+        "vertical-align": "middle"
+      },
+      ".glass-state-swap > [data-swap-layer]": {
+        "grid-area": "1 / 1",
+        "display": "inline-flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "gap": "0.5rem",
+        "transition": "opacity 180ms var(--ease-out), transform 180ms var(--ease-out), filter 180ms var(--ease-out)"
+      },
+      ".glass-state-swap > [data-swap-layer=\"to\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"from\"]": {
+        "opacity": "0",
+        "filter": "blur(2px)",
+        "transform": "translateY(8%) scale(.96)"
+      },
+      ".glass-state-swap > [data-swap-layer=\"from\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"to\"]": {
+        "opacity": "1",
+        "filter": "blur(0)",
+        "transform": "translateY(0) scale(1)"
+      },
+      ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
+        "transition": "none"
+      },
+      ".glass-control-icon": {
+        "display": "grid",
+        "place-items": "center",
+        "flex-shrink": "0",
+        "border-radius": "999px",
+        "background": "color-mix(in oklab, var(--foreground) 10%, transparent)"
+      },
+      ".glass-accent": {
+        "color": "white",
+        "background": "var(--glass-action)",
+        "border-color": "#ffffff24"
+      },
+      ".glass-accent:hover": {
+        "background": "color-mix(in oklab, var(--glass-action) 88%, white)"
+      },
+      ".glass-accent:active": {
+        "background": "color-mix(in oklab, var(--glass-action) 90%, black)"
+      },
+      ".glass-emphasis": {
+        "background": "color-mix(in oklab, var(--foreground) 13%, transparent)",
+        "font-weight": "500"
+      },
+      ".glass-plain-action": {
+        "border": "0",
+        "background": "color-mix(in oklab,var(--foreground) 8%,transparent)",
+        "background-image": "none",
+        "box-shadow": "none",
+        "backdrop-filter": "none",
+        "-webkit-backdrop-filter": "none"
+      },
+      ".glass-field": {
+        "border": "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+        "background": "color-mix(in oklab, var(--foreground) 3%, transparent)",
+        "box-shadow": "none",
+        "backdrop-filter": "blur(0.75px) saturate(1)",
+        "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+      },
+      ".glass-field::placeholder": {
+        "opacity": "0.62"
+      },
+      ".glass-inline-action": {
+        "border": "0",
+        "background": "color-mix(in oklab,var(--foreground) 9%,transparent)",
+        "backdrop-filter": "none",
+        "-webkit-backdrop-filter": "none"
+      },
+      ".glass-inset": {
+        "background": "color-mix(in oklab, var(--foreground) 8%, transparent)"
+      }
+    },
+    "[data-glass-button][data-input-modality=\"keyboard\"], .glass-hold-button[data-input-modality=\"keyboard\"]::before": {
+      "transition": "none"
+    },
+    "[data-glass-button=\"core\"][data-glass-compositor=\"atlas\"]": {
+      "transform": "none !important",
+      "background-color": "transparent !important"
+    },
+    ".glass-hold-button::before": {
+      "content": "\"\"",
+      "position": "absolute",
+      "inset": "0",
+      "border-radius": "inherit",
+      "background": "color-mix(in oklab,var(--foreground) 12%,transparent)",
+      "opacity": "1",
+      "transition": "opacity 180ms var(--ease-out)",
+      "pointer-events": "none",
+      "z-index": "-1"
+    },
+    ".glass-hold-button[data-liquid-held=\"true\"]::before": {
+      "opacity": "0"
+    },
+    ".glass-hold-button[data-liquid-held=\"true\"]": {
+      "transform": "scale(1.045)"
+    },
+    ".glass-slider-thumb": {
+      "background": "linear-gradient(145deg,#ffffff90,#ffffff05 45%,#ffffff40)"
+    },
+    ".glass-slider-thumb::before": {
+      "content": "\"\"",
+      "position": "absolute",
+      "inset": "0",
+      "border-radius": "inherit",
+      "background": "var(--slider-thumb-fill,var(--foreground))",
+      "opacity": "1",
+      "transition": "opacity 220ms var(--ease-out)"
+    },
+    "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+      "transform": "scale(1.14,1.14)",
+      "backdrop-filter": "blur(.75px)",
+      "-webkit-backdrop-filter": "blur(.75px)",
+      "opacity": "1",
+      "transition-duration": "260ms",
+      "transition-delay": "60ms"
+    },
+    "[data-liquid-pressed=\"true\"] .glass-slider-thumb::before": {
+      "opacity": "0",
+      "transition-delay": "60ms"
+    },
+    "[data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb, [data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb::before": {
+      "transition": "none"
+    },
+    ".glass-switch-thumb": {
+      "background": "linear-gradient(150deg,#ffffffb3,#ffffff18 42%,#ffffff66)",
+      "scale": "1"
+    },
+    ".glass-switch-thumb::before": {
+      "content": "\"\"",
+      "position": "absolute",
+      "inset": "0",
+      "border-radius": "inherit",
+      "background": "#fff",
+      "transition": "opacity 160ms var(--ease-out)"
+    },
+    "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
+      "scale": "1.12 1.36"
+    },
+    "[data-liquid-pressed=\"true\"] .glass-switch-thumb::before": {
+      "opacity": ".12"
+    },
+    ".glass-action-group[data-slot=\"button-group\"] > [data-glass-button]": {
+      "border-radius": "999px !important"
+    },
+    "[data-slot=\"switch\"][data-input-modality=\"keyboard\"] .glass-switch-thumb::before": {
+      "transition": "none"
+    },
+    ".glass-selection-indicator": {
+      "pointer-events": "none",
+      "position": "absolute",
+      "left": "0",
+      "top": "0",
+      "width": "var(--selection-w,0px)",
+      "height": "var(--selection-h,0px)",
+      "opacity": "var(--selection-opacity,0)",
+      "border-radius": "var(--selection-radius,999px)",
+      "transform": "translate(var(--selection-x,0px),var(--selection-y,0px))",
+      "background": "color-mix(in oklab,var(--foreground) 6%,transparent)",
+      "transition": "transform 300ms var(--ease-out), width 300ms var(--ease-out), height 300ms var(--ease-out), background-color 200ms var(--ease-out)"
+    },
+    "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
+      "background": "transparent"
+    },
+    "[data-liquid-selection] > [data-state]": {
+      "border": "0",
+      "background": "transparent !important",
+      "box-shadow": "none"
+    },
+    "[data-liquid-selection] > [data-state]:hover": {
+      "background": "transparent !important"
+    },
+    "[data-liquid-selection][data-input-modality=\"keyboard\"] > .glass-selection-indicator": {
+      "transition": "none"
+    },
+    ".glass-elastic-button": {
+      "transition": "transform 320ms var(--ease-out), background-color 150ms var(--ease-out)"
+    },
+    ".glass-elastic-button[data-elastic-held=\"true\"]": {
+      "transition-duration": "80ms"
+    },
+    ".glass-elastic-button:hover": {
+      "background-color": "color-mix(in oklab,var(--foreground) 4%,transparent)"
+    },
+    "[data-glass-await-optics=\"true\"]": {
+      "transition": "opacity 120ms var(--ease-out)"
+    },
+    "[data-glass-await-optics=\"true\"][data-refraction=\"css\"][data-glass-rendering=\"active\"]": {
+      "opacity": "0"
+    },
+    "[data-glass-await-optics=\"true\"][data-glass-admission=\"pending\"]": {
+      "opacity": "0"
+    },
+    ".glass-atlas-finish": {
+      "transition": "filter 240ms var(--ease-out)"
+    },
+    ".glass-tooltip-motion": {
+      "--tooltip-x": "0px",
+      "--tooltip-y": "3px"
+    },
+    ".glass-tooltip-motion[data-side=\"bottom\"]": {
+      "--tooltip-y": "-3px"
+    },
+    ".glass-tooltip-motion[data-side=\"left\"]": {
+      "--tooltip-x": "3px",
+      "--tooltip-y": "0px"
+    },
+    ".glass-tooltip-motion[data-side=\"right\"]": {
+      "--tooltip-x": "-3px",
+      "--tooltip-y": "0px"
+    },
+    ".glass-tooltip-motion[data-state=\"delayed-open\"], .glass-tooltip-motion[data-state=\"instant-open\"]": {
+      "animation": "glass-tooltip-in 220ms var(--ease-out) both"
+    },
+    ".glass-tooltip-motion[data-state=\"closed\"]": {
+      "animation": "glass-tooltip-out 140ms ease-out both"
+    },
+    "@keyframes glass-tooltip-in": {
+      "from": {
+        "opacity": "0",
+        "transform": "translate(var(--tooltip-x),var(--tooltip-y)) scale(.98)"
+      },
+      "to": {
+        "opacity": "1",
+        "transform": "translate(0,0) scale(1)"
+      }
+    },
+    "@keyframes glass-tooltip-out": {
+      "from": {
+        "opacity": "1"
+      },
+      "to": {
+        "opacity": "0",
+        "transform": "translate(calc(var(--tooltip-x) / 2),calc(var(--tooltip-y) / 2)) scale(.99)"
+      }
+    },
+    ".glass-player-details": {
+      "animation": "glass-player-reveal 180ms var(--ease-out) both"
+    },
+    "@keyframes glass-player-reveal": {
+      "from": {
+        "opacity": "0",
+        "transform": "translateY(3px)"
+      },
+      "to": {
+        "opacity": "1",
+        "transform": "translateY(0)"
+      }
+    },
+    ".glass-toast-host": {
+      "background": "transparent !important",
+      "border": "0 !important",
+      "padding": "0 !important",
+      "backdrop-filter": "none !important",
+      "-webkit-backdrop-filter": "none !important",
+      "box-shadow": "none !important"
+    },
+    "@media (prefers-reduced-motion: reduce)": {
+      ".glass-slider-thumb::before": {
+        "transition": "none"
+      },
+      ".glass-hold-button[data-liquid-held=\"true\"], [data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+        "transform": "none"
+      },
+      ".glass-state-swap > [data-swap-layer]": {
+        "transform": "none !important",
+        "filter": "none !important",
+        "transition": "opacity 100ms ease",
+        "transition-duration": "100ms !important"
+      },
+      ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
+        "transition": "none",
+        "transition-duration": "0s !important"
+      },
+      ".glass-switch-thumb::before, .glass-selection-indicator, .glass-atlas-finish": {
+        "transition": "none"
+      },
+      ".glass-elastic-button": {
+        "transform": "none !important",
+        "transition": "none"
+      },
+      ".glass-switch-thumb": {
+        "scale": "1 !important"
+      },
+      ".glass-tooltip-motion": {
+        "--tooltip-x": "0px !important",
+        "--tooltip-y": "0px !important",
+        "animation-duration": "80ms !important",
+        "transform": "none !important"
+      },
+      ".glass-player-details": {
+        "animation": "none"
+      }
+    },
+    "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
+      "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+        "background": "var(--foreground)",
+        "backdrop-filter": "none",
+        "-webkit-backdrop-filter": "none"
+      },
+      "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
+        "background": "white",
+        "backdrop-filter": "none",
+        "-webkit-backdrop-filter": "none"
+      },
+      ".glass-chip, .glass-field": {
+        "backdrop-filter": "none",
+        "-webkit-backdrop-filter": "none",
+        "background": "var(--background)",
+        "border-color": "var(--foreground)"
+      },
+      ".glass-switch-thumb::before": {
+        "opacity": "1 !important"
+      },
+      "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
+        "background": "color-mix(in oklab,var(--foreground) 15%,var(--background))",
+        "backdrop-filter": "none",
+        "-webkit-backdrop-filter": "none"
+      }
+    }
+  },
+  "docs": "http://localhost:3000/docs/glass-utilities",
+  "type": "registry:theme"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-button-group",
+  "title": "Glass Button Group",
+  "description": "A joined group of glass buttons, with horizontal and vertical layouts.",
+  "registryDependencies": [
+    "button-group",
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-utilities.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-button-group.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport {\n  ButtonGroup,\n  ButtonGroupSeparator,\n  ButtonGroupText,\n} from \"@/components/ui/button-group\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\nexport function GlassButtonGroup({\n  className,\n  ...props\n}: React.ComponentProps<typeof ButtonGroup>) {\n  return (\n    <GlassSurface asChild shape=\"round\" radius={999}><ButtonGroup\n      className={cn(\"glass-action-group gap-1 rounded-full p-1 [&>button]:shadow-none\", className)}\n      {...props}\n    /></GlassSurface>\n  );\n}\nexport {\n  ButtonGroupSeparator as GlassButtonGroupSeparator,\n  ButtonGroupText as GlassButtonGroupText,\n};\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-button-group.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-button-group",
+  "type": "registry:ui"
+}

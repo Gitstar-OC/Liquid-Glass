@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-accordion",
+  "title": "Glass Accordion",
+  "description": "Expandable sections built on the shadcn accordion.",
+  "registryDependencies": [
+    "accordion",
+    "http://localhost:3000/r/glass-utilities.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-accordion.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport {\n  Accordion,\n  AccordionItem,\n  AccordionTrigger,\n  AccordionContent,\n} from \"@/components/ui/accordion\";\nimport { cn } from \"@/lib/utils\";\nexport function GlassAccordion({\n  className,\n  ...props\n}: React.ComponentProps<typeof Accordion>) {\n  return (\n    <Accordion\n      className={cn(\n        \"glass-chip overflow-hidden rounded-[20px] px-5\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport {\n  AccordionItem as GlassAccordionItem,\n  AccordionTrigger as GlassAccordionTrigger,\n  AccordionContent as GlassAccordionContent,\n};\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-accordion.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-accordion",
+  "type": "registry:ui"
+}

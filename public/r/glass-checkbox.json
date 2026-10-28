@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-checkbox",
+  "title": "Glass Checkbox",
+  "description": "Checkbox and radio group rendered as glass chips.",
+  "registryDependencies": [
+    "checkbox",
+    "http://localhost:3000/r/glass-utilities.json",
+    "radio-group"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-checkbox.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Checkbox } from \"@/components/ui/checkbox\";\nimport { RadioGroup, RadioGroupItem } from \"@/components/ui/radio-group\";\n\nexport function GlassCheckbox({\n  className,\n  ...props\n}: React.ComponentProps<typeof Checkbox>) {\n  return (\n    <Checkbox\n      {...props}\n      className={cn(\n        \"glass-chip data-checked:bg-foreground data-checked:text-background\",\n        className,\n      )}\n    />\n  );\n}\n\nexport function GlassRadioGroup({\n  className,\n  ...props\n}: React.ComponentProps<typeof RadioGroup>) {\n  return <RadioGroup {...props} className={cn(className)} />;\n}\n\nexport function GlassRadioGroupItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof RadioGroupItem>) {\n  return (\n    <RadioGroupItem\n      {...props}\n      className={cn(\"glass-chip before:hidden\", className)}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-checkbox.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-checkbox",
+  "type": "registry:ui"
+}

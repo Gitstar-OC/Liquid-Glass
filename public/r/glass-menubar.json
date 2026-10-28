@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-menubar",
+  "title": "Glass Menubar",
+  "description": "Menubar with every sub-component on one material.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-materials.json",
+    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-utilities.json",
+    "menubar"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-menubar.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Menubar as MenubarPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\nimport type { GlassSurface as GlassSurfaceKind } from \"@/lib/glass-theme\";\n\nexport function GlassMenubar({\n  className,\n  ...props\n}: React.ComponentProps<typeof MenubarPrimitive.Root>) {\n  return (\n    <MenubarPrimitive.Root\n      data-slot=\"menubar\"\n      {...props}\n      className={cn(\n        \"glass-chip flex h-8 items-center gap-0.5 rounded-xl p-[3px]\",\n        className,\n      )}\n    />\n  );\n}\n\nexport function GlassMenubarContent({\n  className,\n  align = \"start\",\n  alignOffset = -4,\n  sideOffset = 8,\n  surface,\n  children,\n  ...props\n}: React.ComponentProps<typeof MenubarPrimitive.Content> & {\n  surface?: GlassSurfaceKind;\n}) {\n  return (\n    <MenubarPrimitive.Portal>\n      <MenubarPrimitive.Content\n        data-slot=\"menubar-content\"\n        align={align}\n        alignOffset={alignOffset}\n        sideOffset={sideOffset}\n        className={cn(\n          \"z-50 min-w-40 origin-(--radix-menubar-content-transform-origin) duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface kind=\"menubar\" surface={surface} className=\"w-full p-1\">\n          {children}\n        </GlassSurface>\n      </MenubarPrimitive.Content>\n    </MenubarPrimitive.Portal>\n  );\n}\n\nexport function GlassMenubarSubContent({\n  className,\n  children,\n  ...props\n}: React.ComponentProps<typeof MenubarPrimitive.SubContent>) {\n  return (\n    <MenubarPrimitive.Portal>\n      <MenubarPrimitive.SubContent\n        data-slot=\"menubar-sub-content\"\n        className={cn(\n          \"z-50 min-w-40 origin-(--radix-menubar-content-transform-origin) duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface kind=\"menubar\" className=\"w-full p-1\">\n          {children}\n        </GlassSurface>\n      </MenubarPrimitive.SubContent>\n    </MenubarPrimitive.Portal>\n  );\n}\n\nexport {\n  MenubarMenu,\n  MenubarTrigger,\n  MenubarGroup,\n  MenubarPortal,\n  MenubarRadioGroup,\n  MenubarItem,\n  MenubarCheckboxItem,\n  MenubarRadioItem,\n  MenubarLabel,\n  MenubarSeparator,\n  MenubarShortcut,\n  MenubarSub,\n  MenubarSubTrigger,\n} from \"@/components/ui/menubar\";\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-menubar.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-menubar",
+  "type": "registry:ui"
+}

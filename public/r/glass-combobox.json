@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-combobox",
+  "title": "Glass Combobox",
+  "description": "A searchable, keyboard-accessible option picker with controlled and uncontrolled state.",
+  "dependencies": [
+    "cmdk",
+    "lucide-react",
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-button.json",
+    "http://localhost:3000/r/glass-command.json",
+    "http://localhost:3000/r/glass-form.json",
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-combobox.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { Popover } from \"radix-ui\";\nimport { Check, ChevronsUpDown } from \"lucide-react\";\nimport { Command } from \"cmdk\";\nimport { GlassButton } from \"@/components/glass/glass-button\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\nimport { GlassCommandInput } from \"@/components/glass/glass-command\";\nimport { useGlassFormField } from \"@/components/glass/glass-form\";\nimport { cn } from \"@/lib/utils\";\nexport interface GlassComboboxOption {\n  value: string;\n  label: string;\n  disabled?: boolean;\n}\nexport interface GlassComboboxProps {\n  options: GlassComboboxOption[];\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string) => void;\n  placeholder?: string;\n  searchPlaceholder?: string;\n  emptyMessage?: string;\n  name?: string;\n  id?: string;\n  disabled?: boolean;\n  className?: string;\n  \"aria-label\"?: string;\n  \"aria-describedby\"?: string;\n  \"aria-invalid\"?: boolean;\n}\nexport function GlassCombobox({\n  options,\n  value,\n  defaultValue = \"\",\n  onValueChange,\n  placeholder = \"Select an option\",\n  searchPlaceholder = \"Search…\",\n  emptyMessage = \"No results found.\",\n  name,\n  className,\n  disabled,\n  id,\n  ...aria\n}: GlassComboboxProps) {\n  const field = useGlassFormField();\n  const [open, setOpen] = React.useState(false);\n  const [local, setLocal] = React.useState(defaultValue);\n  const selected = value ?? local;\n  const current = options.find((option) => option.value === selected);\n  const change = (next: string) => {\n    if (value === undefined) setLocal(next);\n    onValueChange?.(next);\n    setOpen(false);\n  };\n  return (\n    <>\n      {name && (\n        <input type=\"hidden\" name={name} value={selected} disabled={disabled} />\n      )}\n      <Popover.Root open={open} onOpenChange={setOpen}>\n        <Popover.Trigger asChild>\n          <GlassButton\n            id={id ?? field?.id}\n            aria-describedby={field?.describedBy}\n            aria-invalid={field?.invalid || undefined}\n            {...aria}\n            role=\"combobox\"\n            aria-expanded={open}\n            aria-label={aria[\"aria-label\"] ?? placeholder}\n            disabled={disabled}\n            className={cn(\"h-10 w-full justify-between font-normal\", className)}\n          >\n            {current?.label ?? (\n              <span className=\"text-muted-foreground\">{placeholder}</span>\n            )}\n            <ChevronsUpDown className=\"size-3.5 opacity-40\" />\n          </GlassButton>\n        </Popover.Trigger>\n        <Popover.Portal>\n          <Popover.Content\n            align=\"start\"\n            sideOffset={6}\n            className=\"z-60 w-(--radix-popover-trigger-width) outline-none\"\n          >\n            <GlassSurface kind=\"select\" className=\"overflow-hidden p-1\">\n              <Command>\n                <GlassCommandInput placeholder={searchPlaceholder} />\n                <Command.List className=\"max-h-56 overflow-auto p-1\">\n                  <Command.Empty className=\"px-3 py-5 text-center text-xs text-muted-foreground\">\n                    {emptyMessage}\n                  </Command.Empty>\n                  {options.map((option) => (\n                    <Command.Item\n                      key={option.value}\n                      value={option.label}\n                      disabled={option.disabled}\n                      onSelect={() => change(option.value)}\n                      className=\"flex cursor-pointer items-center justify-between rounded-md px-2 py-2.5 text-xs outline-none data-[disabled=true]:opacity-40 data-[selected=true]:bg-foreground/8\"\n                    >\n                      {option.label}\n                      {selected === option.value && (\n                        <Check className=\"size-3.5\" />\n                      )}\n                    </Command.Item>\n                  ))}\n                </Command.List>\n              </Command>\n            </GlassSurface>\n          </Popover.Content>\n        </Popover.Portal>\n      </Popover.Root>\n    </>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-combobox.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-combobox",
+  "type": "registry:ui"
+}

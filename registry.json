@@ -1,0 +1,2209 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "liquid-glass",
+  "homepage": "http://localhost:3000",
+  "items": [
+    {
+      "name": "glass-accordion",
+      "type": "registry:ui",
+      "title": "Glass Accordion",
+      "description": "Expandable sections built on the shadcn accordion.",
+      "docs": "http://localhost:3000/docs/glass-accordion",
+      "registryDependencies": [
+        "accordion",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-accordion.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-accordion.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-adaptive-ink",
+      "type": "registry:ui",
+      "title": "Adaptive Ink",
+      "description": "Estimates contrast from accessible source pixels and CSS paints, then chooses light or dark ink.",
+      "docs": "http://localhost:3000/docs/glass-adaptive-ink",
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "lib/contrast.ts",
+          "type": "registry:lib",
+          "target": "@lib/contrast.ts"
+        },
+        {
+          "path": "components/adaptive-contrast.tsx",
+          "type": "registry:ui",
+          "target": "@components/adaptive-contrast.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-alert",
+      "type": "registry:ui",
+      "title": "Glass Alert",
+      "description": "Alert with a glass title and description.",
+      "docs": "http://localhost:3000/docs/glass-alert",
+      "registryDependencies": [
+        "alert",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-alert.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-alert.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-alert-dialog",
+      "type": "registry:ui",
+      "title": "Glass Alert Dialog",
+      "description": "Alert dialog with the shared glass surface.",
+      "docs": "http://localhost:3000/docs/glass-alert-dialog",
+      "registryDependencies": [
+        "alert-dialog",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-alert-dialog.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-alert-dialog.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-avatar",
+      "type": "registry:ui",
+      "title": "Glass Avatar",
+      "description": "Avatar with a ringed glass portrait and a graceful fallback.",
+      "docs": "http://localhost:3000/docs/glass-avatar",
+      "registryDependencies": [
+        "avatar",
+        "separator"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-avatar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-avatar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-badge",
+      "type": "registry:ui",
+      "title": "Glass Badge",
+      "description": "Compact status pills in the same optical material.",
+      "docs": "http://localhost:3000/docs/glass-badge",
+      "registryDependencies": [
+        "badge",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-badge.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-badge.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-button",
+      "type": "registry:ui",
+      "title": "Glass Button",
+      "description": "A shadcn button with scene refraction, crisp labels, and visible focus states.",
+      "docs": "http://localhost:3000/docs/glass-button",
+      "registryDependencies": [
+        "button",
+        "http://localhost:3000/r/glass-lens.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-button.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-button-group",
+      "type": "registry:ui",
+      "title": "Glass Button Group",
+      "description": "A joined group of glass buttons, with horizontal and vertical layouts.",
+      "docs": "http://localhost:3000/docs/glass-button-group",
+      "registryDependencies": [
+        "button-group",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-button-group.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-button-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-card",
+      "type": "registry:ui",
+      "title": "Glass Card",
+      "description": "Card, header, title, action and footer sub-components on the shared clear lens.",
+      "docs": "http://localhost:3000/docs/glass-card",
+      "registryDependencies": [
+        "card",
+        "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-card.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-checkbox",
+      "type": "registry:ui",
+      "title": "Glass Checkbox",
+      "description": "Checkbox and radio group rendered as glass chips.",
+      "docs": "http://localhost:3000/docs/glass-checkbox",
+      "registryDependencies": [
+        "checkbox",
+        "http://localhost:3000/r/glass-utilities.json",
+        "radio-group"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-checkbox.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-checkbox.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-combobox",
+      "type": "registry:ui",
+      "title": "Glass Combobox",
+      "description": "A searchable, keyboard-accessible option picker with controlled and uncontrolled state.",
+      "docs": "http://localhost:3000/docs/glass-combobox",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-command.json",
+        "http://localhost:3000/r/glass-form.json",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "cmdk",
+        "lucide-react",
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-combobox.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-combobox.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-command",
+      "type": "registry:ui",
+      "title": "Glass Command",
+      "description": "Command palette, list, group, item and dialog.",
+      "docs": "http://localhost:3000/docs/glass-command",
+      "registryDependencies": [
+        "command",
+        "dialog",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "cmdk",
+        "lucide-react",
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-command.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-command.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-components",
+      "type": "registry:ui",
+      "title": "Glass Components",
+      "description": "The whole family re-exported from one place: import { GlassButton, GlassDialog, … } from \"@/components/glass\".",
+      "docs": "http://localhost:3000/docs/glass-components",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-accordion.json",
+        "http://localhost:3000/r/glass-alert-dialog.json",
+        "http://localhost:3000/r/glass-alert.json",
+        "http://localhost:3000/r/glass-avatar.json",
+        "http://localhost:3000/r/glass-badge.json",
+        "http://localhost:3000/r/glass-button-group.json",
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-card.json",
+        "http://localhost:3000/r/glass-checkbox.json",
+        "http://localhost:3000/r/glass-combobox.json",
+        "http://localhost:3000/r/glass-command.json",
+        "http://localhost:3000/r/glass-connectivity.json",
+        "http://localhost:3000/r/glass-context-menu.json",
+        "http://localhost:3000/r/glass-control-center.json",
+        "http://localhost:3000/r/glass-dialog.json",
+        "http://localhost:3000/r/glass-dock.json",
+        "http://localhost:3000/r/glass-drawer.json",
+        "http://localhost:3000/r/glass-dropdown.json",
+        "http://localhost:3000/r/glass-elastic-button.json",
+        "http://localhost:3000/r/glass-form.json",
+        "http://localhost:3000/r/glass-hover-card.json",
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-input.json",
+        "http://localhost:3000/r/glass-lens.json",
+        "http://localhost:3000/r/glass-menubar.json",
+        "http://localhost:3000/r/glass-music-player.json",
+        "http://localhost:3000/r/glass-navbar.json",
+        "http://localhost:3000/r/glass-navigation-menu.json",
+        "http://localhost:3000/r/glass-popover.json",
+        "http://localhost:3000/r/glass-power.json",
+        "http://localhost:3000/r/glass-preferences.json",
+        "http://localhost:3000/r/glass-progress.json",
+        "http://localhost:3000/r/glass-range-control.json",
+        "http://localhost:3000/r/glass-select.json",
+        "http://localhost:3000/r/glass-sheet.json",
+        "http://localhost:3000/r/glass-sidebar.json",
+        "http://localhost:3000/r/glass-slider.json",
+        "http://localhost:3000/r/glass-sound.json",
+        "http://localhost:3000/r/glass-spotlight.json",
+        "http://localhost:3000/r/glass-state-button.json",
+        "http://localhost:3000/r/glass-state-swap.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-switch.json",
+        "http://localhost:3000/r/glass-tabs.json",
+        "http://localhost:3000/r/glass-theme-provider.json",
+        "http://localhost:3000/r/glass-toaster.json",
+        "http://localhost:3000/r/glass-toggle.json",
+        "http://localhost:3000/r/glass-tooltip.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/index.ts",
+          "type": "registry:ui",
+          "target": "@components/glass/index.ts"
+        }
+      ]
+    },
+    {
+      "name": "glass-connectivity",
+      "type": "registry:ui",
+      "title": "Glass Sharing",
+      "description": "The connectivity component, styled for liquid glass.",
+      "docs": "http://localhost:3000/docs/glass-connectivity",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-switch.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "separator"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-connectivity.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-connectivity.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-context-menu",
+      "type": "registry:ui",
+      "title": "Glass Context Menu",
+      "description": "Context menu with every sub-component on one material.",
+      "docs": "http://localhost:3000/docs/glass-context-menu",
+      "registryDependencies": [
+        "context-menu",
+        "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-context-menu.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-context-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-control-center",
+      "type": "registry:ui",
+      "title": "Glass Control Center",
+      "description": "Connection toggles, brightness, sound, and focus in a controlled or uncontrolled panel.",
+      "docs": "http://localhost:3000/docs/glass-control-center",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-range-control.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-control-center.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-control-center.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-dialog",
+      "type": "registry:ui",
+      "title": "Glass Dialog",
+      "description": "Dialog overlay, content, header and footer.",
+      "docs": "http://localhost:3000/docs/glass-dialog",
+      "registryDependencies": [
+        "dialog",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-dialog.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-dialog.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-dock",
+      "type": "registry:ui",
+      "title": "Glass Dock",
+      "description": "A glass dock with labelled controls, native links, and keyboard-accessible tooltips.",
+      "docs": "http://localhost:3000/docs/glass-dock",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-tooltip.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-dock.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-dock.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-drawer",
+      "type": "registry:ui",
+      "title": "Glass Drawer",
+      "description": "Drawer with the shared refracting surface.",
+      "docs": "http://localhost:3000/docs/glass-drawer",
+      "registryDependencies": [
+        "drawer",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "vaul"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-drawer.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-drawer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-dropdown",
+      "type": "registry:ui",
+      "title": "Glass Dropdown Menu",
+      "description": "Dropdown menu with every sub-component on one material.",
+      "docs": "http://localhost:3000/docs/glass-dropdown",
+      "registryDependencies": [
+        "dropdown-menu",
+        "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-dropdown.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-dropdown.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-elastic-button",
+      "type": "registry:ui",
+      "title": "Elastic Glass Button",
+      "description": "The elastic-button component, styled for liquid glass.",
+      "docs": "http://localhost:3000/docs/glass-elastic-button",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-tooltip.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-elastic-button.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-elastic-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-form",
+      "type": "registry:ui",
+      "title": "Glass Form",
+      "description": "Form fields with connected labels, descriptions, and error messages.",
+      "docs": "http://localhost:3000/docs/glass-form",
+      "registryDependencies": [
+        "field"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-form.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-form.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-hover-card",
+      "type": "registry:ui",
+      "title": "Glass Hover Card",
+      "description": "Hover card trigger and content.",
+      "docs": "http://localhost:3000/docs/glass-hover-card",
+      "registryDependencies": [
+        "hover-card",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-hover-card.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-hover-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-icons",
+      "type": "registry:ui",
+      "title": "Glass Icons",
+      "description": "Original control glyphs on a consistent 24px grid. Label the parent button for accessibility.",
+      "docs": "http://localhost:3000/docs/glass-icons",
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/glass/glass-icons.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-icons.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-input",
+      "type": "registry:ui",
+      "title": "Glass Input",
+      "description": "Input, textarea, and label with shared form semantics and focus states.",
+      "docs": "http://localhost:3000/docs/glass-input",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-form.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "input",
+        "label",
+        "textarea"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-input.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-input.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-lens",
+      "type": "registry:ui",
+      "title": "Liquid Lens",
+      "description": "The optical engine and full DOM scene provider, with bounded capture, displacement maps, and live scene synchronization.",
+      "docs": "http://localhost:3000/docs/glass-lens",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "lib/glass-atlas.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-atlas.ts"
+        },
+        {
+          "path": "components/glass-atlas.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass-atlas.tsx"
+        },
+        {
+          "path": "lib/glass.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass.ts"
+        },
+        {
+          "path": "components/liquid-glass.tsx",
+          "type": "registry:ui",
+          "target": "@components/liquid-glass.tsx"
+        },
+        {
+          "path": "lib/glass-scene.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-scene.ts"
+        },
+        {
+          "path": "lib/glass-performance.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-performance.ts"
+        },
+        {
+          "path": "lib/glass-filter.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-filter.ts"
+        },
+        {
+          "path": "components/glass-scene.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass-scene.tsx"
+        },
+        {
+          "path": "components/glass-backdrop.ts",
+          "type": "registry:ui",
+          "target": "@components/glass-backdrop.ts"
+        }
+      ]
+    },
+    {
+      "name": "glass-materials",
+      "type": "registry:lib",
+      "title": "Glass Materials",
+      "description": "Optical presets and per-component light and dark defaults.",
+      "docs": "http://localhost:3000/docs/glass-materials",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-lens.json"
+      ],
+      "files": [
+        {
+          "path": "lib/glass-theme.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-theme.ts"
+        }
+      ]
+    },
+    {
+      "name": "glass-menubar",
+      "type": "registry:ui",
+      "title": "Glass Menubar",
+      "description": "Menubar with every sub-component on one material.",
+      "docs": "http://localhost:3000/docs/glass-menubar",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "menubar"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-menubar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-menubar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-music-player",
+      "type": "registry:ui",
+      "title": "Glass Music Player",
+      "description": "An independent audio player with track navigation, seeking, and volume control.",
+      "docs": "http://localhost:3000/docs/glass-music-player",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-slider.json",
+        "http://localhost:3000/r/glass-state-swap.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-music-player.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-music-player.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-navbar",
+      "type": "registry:ui",
+      "title": "Glass Navbar",
+      "description": "A refracting navigation surface for your brand, links, and actions.",
+      "docs": "http://localhost:3000/docs/glass-navbar",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-navbar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-navbar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-navigation-menu",
+      "type": "registry:ui",
+      "title": "Glass Navigation Menu",
+      "description": "Navigation menu with triggers, content and links.",
+      "docs": "http://localhost:3000/docs/glass-navigation-menu",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "navigation-menu"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "lucide-react",
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-navigation-menu.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-navigation-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-popover",
+      "type": "registry:ui",
+      "title": "Glass Popover",
+      "description": "Popover with header, title and description.",
+      "docs": "http://localhost:3000/docs/glass-popover",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "popover"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-popover.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-popover.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-power",
+      "type": "registry:ui",
+      "title": "Glass Power Controls",
+      "description": "Independent sleep, restart, and shutdown controls with an accessible confirmation dialog.",
+      "docs": "http://localhost:3000/docs/glass-power",
+      "registryDependencies": [
+        "field",
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-checkbox.json",
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-power.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-power.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-preferences",
+      "type": "registry:ui",
+      "title": "Glass Preferences",
+      "description": "An editable preferences form composed from standard shadcn controls, with adaptive ink and an async save callback.",
+      "docs": "http://localhost:3000/docs/glass-preferences",
+      "registryDependencies": [
+        "card",
+        "field",
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-input.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-switch.json"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-preferences.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-preferences.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-progress",
+      "type": "registry:ui",
+      "title": "Glass Progress",
+      "description": "A determinate progress meter with an inset glass track.",
+      "docs": "http://localhost:3000/docs/glass-progress",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-utilities.json",
+        "progress"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-progress.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-progress.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-range-control",
+      "type": "registry:ui",
+      "title": "Glass Range Control",
+      "description": "The range-control component, styled for liquid glass.",
+      "docs": "http://localhost:3000/docs/glass-range-control",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-slider.json",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-range-control.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-range-control.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-select",
+      "type": "registry:ui",
+      "title": "Glass Select",
+      "description": "Select trigger, content and items on one material.",
+      "docs": "http://localhost:3000/docs/glass-select",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "select"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-select.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-select.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-sheet",
+      "type": "registry:ui",
+      "title": "Glass Sheet",
+      "description": "Sheet with an edge-to-edge glass panel.",
+      "docs": "http://localhost:3000/docs/glass-sheet",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json",
+        "sheet"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-sheet.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-sheet.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-sidebar",
+      "type": "registry:ui",
+      "title": "Glass Sidebar",
+      "description": "A glass sidebar shell and navigation items with an active state.",
+      "docs": "http://localhost:3000/docs/glass-sidebar",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-sidebar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-sidebar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-slider",
+      "type": "registry:ui",
+      "title": "Glass Slider",
+      "description": "Range input with a glass thumb and rail.",
+      "docs": "http://localhost:3000/docs/glass-slider",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-slider.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-slider.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-sound",
+      "type": "registry:ui",
+      "title": "Glass Sound",
+      "description": "The sound component, styled for liquid glass.",
+      "docs": "http://localhost:3000/docs/glass-sound",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-slider.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "separator"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-sound.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-sound.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-spotlight",
+      "type": "registry:ui",
+      "title": "Glass Spotlight",
+      "description": "A searchable command panel and optional dialog, with keyboard navigation.",
+      "docs": "http://localhost:3000/docs/glass-spotlight",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-command.json",
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-lens.json",
+        "http://localhost:3000/r/glass-surface.json"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-spotlight.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-spotlight.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-state-button",
+      "type": "registry:ui",
+      "title": "glass-state-button",
+      "description": "The state-button component, styled for liquid glass.",
+      "docs": "http://localhost:3000/docs/glass-state-button",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-state-swap.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-state-button.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-state-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-state-swap",
+      "type": "registry:ui",
+      "title": "glass-state-swap",
+      "description": "The state-swap component, styled for liquid glass.",
+      "docs": "http://localhost:3000/docs/glass-state-swap",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-state-swap.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-state-swap.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-surface",
+      "type": "registry:ui",
+      "title": "Glass Surface",
+      "description": "GlassSurface — the component every glass part is built on — plus the material controls.",
+      "docs": "http://localhost:3000/docs/glass-surface",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-adaptive-ink.json",
+        "http://localhost:3000/r/glass-lens.json",
+        "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-theme-provider.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-surface.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-surface.tsx"
+        },
+        {
+          "path": "components/glass/glass-controls.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-controls.tsx"
+        },
+        {
+          "path": "components/glass/glass-selection.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-selection.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-switch",
+      "type": "registry:ui",
+      "title": "Glass Switch",
+      "description": "A switch whose track is a tinted glass channel.",
+      "docs": "http://localhost:3000/docs/glass-switch",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-switch.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-switch.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-tabs",
+      "type": "registry:ui",
+      "title": "Glass Tabs",
+      "description": "Tabs, tab list, trigger and content.",
+      "docs": "http://localhost:3000/docs/glass-tabs",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "tabs"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-tabs.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-tabs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-theme-provider",
+      "type": "registry:ui",
+      "title": "Glass Theme Provider",
+      "description": "Light/dark mode plus per-family material overrides, persisted to localStorage and applied before first paint.",
+      "docs": "http://localhost:3000/docs/glass-theme-provider",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-materials.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-theme-provider.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-theme-provider.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-toaster",
+      "type": "registry:ui",
+      "title": "Glass Toaster",
+      "description": "Sonner toaster styled with the glass materials.",
+      "docs": "http://localhost:3000/docs/glass-toaster",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-theme-provider.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "sonner"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-toaster.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-toaster.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-toggle",
+      "type": "registry:ui",
+      "title": "Glass Toggle",
+      "description": "Toggle and toggle group with pressed-state glass.",
+      "docs": "http://localhost:3000/docs/glass-toggle",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "toggle",
+        "toggle-group"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-toggle.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-toggle.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-tooltip",
+      "type": "registry:ui",
+      "title": "Glass Tooltip",
+      "description": "Tooltip provider and content.",
+      "docs": "http://localhost:3000/docs/glass-tooltip",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-utilities.json",
+        "tooltip"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-tooltip.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-tooltip.tsx"
+        }
+      ]
+    },
+    {
+      "name": "glass-utilities",
+      "type": "registry:theme",
+      "title": "Glass Utilities",
+      "description": "The CSS-level materials (.glass-chip, .glass-field, .glass-inset) every glass control is poured into. Pulled in automatically by any glass item.",
+      "docs": "http://localhost:3000/docs/glass-utilities",
+      "css": {
+        ":root": {
+          "--glass-action": "#006de5",
+          "--ease-out": "cubic-bezier(0.23, 1, 0.32, 1)",
+          "--ease-in-out": "cubic-bezier(0.77, 0, 0.175, 1)",
+          "--ease-drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
+        "@layer components": {
+          ".glass-chip": {
+            "border": "0",
+            "background": "color-mix(in oklab, var(--foreground) 5%, transparent)",
+            "box-shadow": "none",
+            "backdrop-filter": "blur(0.75px) saturate(1)",
+            "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+          },
+          ".glass-state-swap": {
+            "display": "inline-grid",
+            "vertical-align": "middle"
+          },
+          ".glass-state-swap > [data-swap-layer]": {
+            "grid-area": "1 / 1",
+            "display": "inline-flex",
+            "align-items": "center",
+            "justify-content": "center",
+            "gap": "0.5rem",
+            "transition": "opacity 180ms var(--ease-out), transform 180ms var(--ease-out), filter 180ms var(--ease-out)"
+          },
+          ".glass-state-swap > [data-swap-layer=\"to\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"from\"]": {
+            "opacity": "0",
+            "filter": "blur(2px)",
+            "transform": "translateY(8%) scale(.96)"
+          },
+          ".glass-state-swap > [data-swap-layer=\"from\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"to\"]": {
+            "opacity": "1",
+            "filter": "blur(0)",
+            "transform": "translateY(0) scale(1)"
+          },
+          ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
+            "transition": "none"
+          },
+          ".glass-control-icon": {
+            "display": "grid",
+            "place-items": "center",
+            "flex-shrink": "0",
+            "border-radius": "999px",
+            "background": "color-mix(in oklab, var(--foreground) 10%, transparent)"
+          },
+          ".glass-accent": {
+            "color": "white",
+            "background": "var(--glass-action)",
+            "border-color": "#ffffff24"
+          },
+          ".glass-accent:hover": {
+            "background": "color-mix(in oklab, var(--glass-action) 88%, white)"
+          },
+          ".glass-accent:active": {
+            "background": "color-mix(in oklab, var(--glass-action) 90%, black)"
+          },
+          ".glass-emphasis": {
+            "background": "color-mix(in oklab, var(--foreground) 13%, transparent)",
+            "font-weight": "500"
+          },
+          ".glass-plain-action": {
+            "border": "0",
+            "background": "color-mix(in oklab,var(--foreground) 8%,transparent)",
+            "background-image": "none",
+            "box-shadow": "none",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          ".glass-field": {
+            "border": "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+            "background": "color-mix(in oklab, var(--foreground) 3%, transparent)",
+            "box-shadow": "none",
+            "backdrop-filter": "blur(0.75px) saturate(1)",
+            "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+          },
+          ".glass-field::placeholder": {
+            "opacity": "0.62"
+          },
+          ".glass-inline-action": {
+            "border": "0",
+            "background": "color-mix(in oklab,var(--foreground) 9%,transparent)",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          ".glass-inset": {
+            "background": "color-mix(in oklab, var(--foreground) 8%, transparent)"
+          }
+        },
+        "[data-glass-button][data-input-modality=\"keyboard\"], .glass-hold-button[data-input-modality=\"keyboard\"]::before": {
+          "transition": "none"
+        },
+        "[data-glass-button=\"core\"][data-glass-compositor=\"atlas\"]": {
+          "transform": "none !important",
+          "background-color": "transparent !important"
+        },
+        ".glass-hold-button::before": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background": "color-mix(in oklab,var(--foreground) 12%,transparent)",
+          "opacity": "1",
+          "transition": "opacity 180ms var(--ease-out)",
+          "pointer-events": "none",
+          "z-index": "-1"
+        },
+        ".glass-hold-button[data-liquid-held=\"true\"]::before": {
+          "opacity": "0"
+        },
+        ".glass-hold-button[data-liquid-held=\"true\"]": {
+          "transform": "scale(1.045)"
+        },
+        ".glass-slider-thumb": {
+          "background": "linear-gradient(145deg,#ffffff90,#ffffff05 45%,#ffffff40)"
+        },
+        ".glass-slider-thumb::before": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background": "var(--slider-thumb-fill,var(--foreground))",
+          "opacity": "1",
+          "transition": "opacity 220ms var(--ease-out)"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+          "transform": "scale(1.14,1.14)",
+          "backdrop-filter": "blur(.75px)",
+          "-webkit-backdrop-filter": "blur(.75px)",
+          "opacity": "1",
+          "transition-duration": "260ms",
+          "transition-delay": "60ms"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-slider-thumb::before": {
+          "opacity": "0",
+          "transition-delay": "60ms"
+        },
+        "[data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb, [data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb::before": {
+          "transition": "none"
+        },
+        ".glass-switch-thumb": {
+          "background": "linear-gradient(150deg,#ffffffb3,#ffffff18 42%,#ffffff66)",
+          "scale": "1"
+        },
+        ".glass-switch-thumb::before": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background": "#fff",
+          "transition": "opacity 160ms var(--ease-out)"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
+          "scale": "1.12 1.36"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-switch-thumb::before": {
+          "opacity": ".12"
+        },
+        ".glass-action-group[data-slot=\"button-group\"] > [data-glass-button]": {
+          "border-radius": "999px !important"
+        },
+        "[data-slot=\"switch\"][data-input-modality=\"keyboard\"] .glass-switch-thumb::before": {
+          "transition": "none"
+        },
+        ".glass-selection-indicator": {
+          "pointer-events": "none",
+          "position": "absolute",
+          "left": "0",
+          "top": "0",
+          "width": "var(--selection-w,0px)",
+          "height": "var(--selection-h,0px)",
+          "opacity": "var(--selection-opacity,0)",
+          "border-radius": "var(--selection-radius,999px)",
+          "transform": "translate(var(--selection-x,0px),var(--selection-y,0px))",
+          "background": "color-mix(in oklab,var(--foreground) 6%,transparent)",
+          "transition": "transform 300ms var(--ease-out), width 300ms var(--ease-out), height 300ms var(--ease-out), background-color 200ms var(--ease-out)"
+        },
+        "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
+          "background": "transparent"
+        },
+        "[data-liquid-selection] > [data-state]": {
+          "border": "0",
+          "background": "transparent !important",
+          "box-shadow": "none"
+        },
+        "[data-liquid-selection] > [data-state]:hover": {
+          "background": "transparent !important"
+        },
+        "[data-liquid-selection][data-input-modality=\"keyboard\"] > .glass-selection-indicator": {
+          "transition": "none"
+        },
+        ".glass-elastic-button": {
+          "transition": "transform 320ms var(--ease-out), background-color 150ms var(--ease-out)"
+        },
+        ".glass-elastic-button[data-elastic-held=\"true\"]": {
+          "transition-duration": "80ms"
+        },
+        ".glass-elastic-button:hover": {
+          "background-color": "color-mix(in oklab,var(--foreground) 4%,transparent)"
+        },
+        "[data-glass-await-optics=\"true\"]": {
+          "transition": "opacity 120ms var(--ease-out)"
+        },
+        "[data-glass-await-optics=\"true\"][data-refraction=\"css\"][data-glass-rendering=\"active\"]": {
+          "opacity": "0"
+        },
+        "[data-glass-await-optics=\"true\"][data-glass-admission=\"pending\"]": {
+          "opacity": "0"
+        },
+        ".glass-atlas-finish": {
+          "transition": "filter 240ms var(--ease-out)"
+        },
+        ".glass-tooltip-motion": {
+          "--tooltip-x": "0px",
+          "--tooltip-y": "3px"
+        },
+        ".glass-tooltip-motion[data-side=\"bottom\"]": {
+          "--tooltip-y": "-3px"
+        },
+        ".glass-tooltip-motion[data-side=\"left\"]": {
+          "--tooltip-x": "3px",
+          "--tooltip-y": "0px"
+        },
+        ".glass-tooltip-motion[data-side=\"right\"]": {
+          "--tooltip-x": "-3px",
+          "--tooltip-y": "0px"
+        },
+        ".glass-tooltip-motion[data-state=\"delayed-open\"], .glass-tooltip-motion[data-state=\"instant-open\"]": {
+          "animation": "glass-tooltip-in 220ms var(--ease-out) both"
+        },
+        ".glass-tooltip-motion[data-state=\"closed\"]": {
+          "animation": "glass-tooltip-out 140ms ease-out both"
+        },
+        "@keyframes glass-tooltip-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translate(var(--tooltip-x),var(--tooltip-y)) scale(.98)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translate(0,0) scale(1)"
+          }
+        },
+        "@keyframes glass-tooltip-out": {
+          "from": {
+            "opacity": "1"
+          },
+          "to": {
+            "opacity": "0",
+            "transform": "translate(calc(var(--tooltip-x) / 2),calc(var(--tooltip-y) / 2)) scale(.99)"
+          }
+        },
+        ".glass-player-details": {
+          "animation": "glass-player-reveal 180ms var(--ease-out) both"
+        },
+        "@keyframes glass-player-reveal": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(3px)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translateY(0)"
+          }
+        },
+        ".glass-toast-host": {
+          "background": "transparent !important",
+          "border": "0 !important",
+          "padding": "0 !important",
+          "backdrop-filter": "none !important",
+          "-webkit-backdrop-filter": "none !important",
+          "box-shadow": "none !important"
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".glass-slider-thumb::before": {
+            "transition": "none"
+          },
+          ".glass-hold-button[data-liquid-held=\"true\"], [data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+            "transform": "none"
+          },
+          ".glass-state-swap > [data-swap-layer]": {
+            "transform": "none !important",
+            "filter": "none !important",
+            "transition": "opacity 100ms ease",
+            "transition-duration": "100ms !important"
+          },
+          ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
+            "transition": "none",
+            "transition-duration": "0s !important"
+          },
+          ".glass-switch-thumb::before, .glass-selection-indicator, .glass-atlas-finish": {
+            "transition": "none"
+          },
+          ".glass-elastic-button": {
+            "transform": "none !important",
+            "transition": "none"
+          },
+          ".glass-switch-thumb": {
+            "scale": "1 !important"
+          },
+          ".glass-tooltip-motion": {
+            "--tooltip-x": "0px !important",
+            "--tooltip-y": "0px !important",
+            "animation-duration": "80ms !important",
+            "transform": "none !important"
+          },
+          ".glass-player-details": {
+            "animation": "none"
+          }
+        },
+        "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
+          "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+            "background": "var(--foreground)",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
+            "background": "white",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          ".glass-chip, .glass-field": {
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none",
+            "background": "var(--background)",
+            "border-color": "var(--foreground)"
+          },
+          ".glass-switch-thumb::before": {
+            "opacity": "1 !important"
+          },
+          "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
+            "background": "color-mix(in oklab,var(--foreground) 15%,var(--background))",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          }
+        }
+      },
+      "files": []
+    },
+    {
+      "name": "liquid-glass",
+      "type": "registry:component",
+      "title": "Liquid Glass",
+      "description": "The optical engine, full DOM scene provider, adaptive ink, and every glass component.",
+      "docs": "http://localhost:3000/docs/liquid-glass",
+      "css": {
+        ":root": {
+          "--glass-action": "#006de5",
+          "--ease-out": "cubic-bezier(0.23, 1, 0.32, 1)",
+          "--ease-in-out": "cubic-bezier(0.77, 0, 0.175, 1)",
+          "--ease-drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
+        "@layer components": {
+          ".glass-chip": {
+            "border": "0",
+            "background": "color-mix(in oklab, var(--foreground) 5%, transparent)",
+            "box-shadow": "none",
+            "backdrop-filter": "blur(0.75px) saturate(1)",
+            "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+          },
+          ".glass-state-swap": {
+            "display": "inline-grid",
+            "vertical-align": "middle"
+          },
+          ".glass-state-swap > [data-swap-layer]": {
+            "grid-area": "1 / 1",
+            "display": "inline-flex",
+            "align-items": "center",
+            "justify-content": "center",
+            "gap": "0.5rem",
+            "transition": "opacity 180ms var(--ease-out), transform 180ms var(--ease-out), filter 180ms var(--ease-out)"
+          },
+          ".glass-state-swap > [data-swap-layer=\"to\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"from\"]": {
+            "opacity": "0",
+            "filter": "blur(2px)",
+            "transform": "translateY(8%) scale(.96)"
+          },
+          ".glass-state-swap > [data-swap-layer=\"from\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"to\"]": {
+            "opacity": "1",
+            "filter": "blur(0)",
+            "transform": "translateY(0) scale(1)"
+          },
+          ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
+            "transition": "none"
+          },
+          ".glass-control-icon": {
+            "display": "grid",
+            "place-items": "center",
+            "flex-shrink": "0",
+            "border-radius": "999px",
+            "background": "color-mix(in oklab, var(--foreground) 10%, transparent)"
+          },
+          ".glass-accent": {
+            "color": "white",
+            "background": "var(--glass-action)",
+            "border-color": "#ffffff24"
+          },
+          ".glass-accent:hover": {
+            "background": "color-mix(in oklab, var(--glass-action) 88%, white)"
+          },
+          ".glass-accent:active": {
+            "background": "color-mix(in oklab, var(--glass-action) 90%, black)"
+          },
+          ".glass-emphasis": {
+            "background": "color-mix(in oklab, var(--foreground) 13%, transparent)",
+            "font-weight": "500"
+          },
+          ".glass-plain-action": {
+            "border": "0",
+            "background": "color-mix(in oklab,var(--foreground) 8%,transparent)",
+            "background-image": "none",
+            "box-shadow": "none",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          ".glass-field": {
+            "border": "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+            "background": "color-mix(in oklab, var(--foreground) 3%, transparent)",
+            "box-shadow": "none",
+            "backdrop-filter": "blur(0.75px) saturate(1)",
+            "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+          },
+          ".glass-field::placeholder": {
+            "opacity": "0.62"
+          },
+          ".glass-inline-action": {
+            "border": "0",
+            "background": "color-mix(in oklab,var(--foreground) 9%,transparent)",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          ".glass-inset": {
+            "background": "color-mix(in oklab, var(--foreground) 8%, transparent)"
+          }
+        },
+        "[data-glass-button][data-input-modality=\"keyboard\"], .glass-hold-button[data-input-modality=\"keyboard\"]::before": {
+          "transition": "none"
+        },
+        "[data-glass-button=\"core\"][data-glass-compositor=\"atlas\"]": {
+          "transform": "none !important",
+          "background-color": "transparent !important"
+        },
+        ".glass-hold-button::before": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background": "color-mix(in oklab,var(--foreground) 12%,transparent)",
+          "opacity": "1",
+          "transition": "opacity 180ms var(--ease-out)",
+          "pointer-events": "none",
+          "z-index": "-1"
+        },
+        ".glass-hold-button[data-liquid-held=\"true\"]::before": {
+          "opacity": "0"
+        },
+        ".glass-hold-button[data-liquid-held=\"true\"]": {
+          "transform": "scale(1.045)"
+        },
+        ".glass-slider-thumb": {
+          "background": "linear-gradient(145deg,#ffffff90,#ffffff05 45%,#ffffff40)"
+        },
+        ".glass-slider-thumb::before": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background": "var(--slider-thumb-fill,var(--foreground))",
+          "opacity": "1",
+          "transition": "opacity 220ms var(--ease-out)"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+          "transform": "scale(1.14,1.14)",
+          "backdrop-filter": "blur(.75px)",
+          "-webkit-backdrop-filter": "blur(.75px)",
+          "opacity": "1",
+          "transition-duration": "260ms",
+          "transition-delay": "60ms"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-slider-thumb::before": {
+          "opacity": "0",
+          "transition-delay": "60ms"
+        },
+        "[data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb, [data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb::before": {
+          "transition": "none"
+        },
+        ".glass-switch-thumb": {
+          "background": "linear-gradient(150deg,#ffffffb3,#ffffff18 42%,#ffffff66)",
+          "scale": "1"
+        },
+        ".glass-switch-thumb::before": {
+          "content": "\"\"",
+          "position": "absolute",
+          "inset": "0",
+          "border-radius": "inherit",
+          "background": "#fff",
+          "transition": "opacity 160ms var(--ease-out)"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
+          "scale": "1.12 1.36"
+        },
+        "[data-liquid-pressed=\"true\"] .glass-switch-thumb::before": {
+          "opacity": ".12"
+        },
+        ".glass-action-group[data-slot=\"button-group\"] > [data-glass-button]": {
+          "border-radius": "999px !important"
+        },
+        "[data-slot=\"switch\"][data-input-modality=\"keyboard\"] .glass-switch-thumb::before": {
+          "transition": "none"
+        },
+        ".glass-selection-indicator": {
+          "pointer-events": "none",
+          "position": "absolute",
+          "left": "0",
+          "top": "0",
+          "width": "var(--selection-w,0px)",
+          "height": "var(--selection-h,0px)",
+          "opacity": "var(--selection-opacity,0)",
+          "border-radius": "var(--selection-radius,999px)",
+          "transform": "translate(var(--selection-x,0px),var(--selection-y,0px))",
+          "background": "color-mix(in oklab,var(--foreground) 6%,transparent)",
+          "transition": "transform 300ms var(--ease-out), width 300ms var(--ease-out), height 300ms var(--ease-out), background-color 200ms var(--ease-out)"
+        },
+        "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
+          "background": "transparent"
+        },
+        "[data-liquid-selection] > [data-state]": {
+          "border": "0",
+          "background": "transparent !important",
+          "box-shadow": "none"
+        },
+        "[data-liquid-selection] > [data-state]:hover": {
+          "background": "transparent !important"
+        },
+        "[data-liquid-selection][data-input-modality=\"keyboard\"] > .glass-selection-indicator": {
+          "transition": "none"
+        },
+        ".glass-elastic-button": {
+          "transition": "transform 320ms var(--ease-out), background-color 150ms var(--ease-out)"
+        },
+        ".glass-elastic-button[data-elastic-held=\"true\"]": {
+          "transition-duration": "80ms"
+        },
+        ".glass-elastic-button:hover": {
+          "background-color": "color-mix(in oklab,var(--foreground) 4%,transparent)"
+        },
+        "[data-glass-await-optics=\"true\"]": {
+          "transition": "opacity 120ms var(--ease-out)"
+        },
+        "[data-glass-await-optics=\"true\"][data-refraction=\"css\"][data-glass-rendering=\"active\"]": {
+          "opacity": "0"
+        },
+        "[data-glass-await-optics=\"true\"][data-glass-admission=\"pending\"]": {
+          "opacity": "0"
+        },
+        ".glass-atlas-finish": {
+          "transition": "filter 240ms var(--ease-out)"
+        },
+        ".glass-tooltip-motion": {
+          "--tooltip-x": "0px",
+          "--tooltip-y": "3px"
+        },
+        ".glass-tooltip-motion[data-side=\"bottom\"]": {
+          "--tooltip-y": "-3px"
+        },
+        ".glass-tooltip-motion[data-side=\"left\"]": {
+          "--tooltip-x": "3px",
+          "--tooltip-y": "0px"
+        },
+        ".glass-tooltip-motion[data-side=\"right\"]": {
+          "--tooltip-x": "-3px",
+          "--tooltip-y": "0px"
+        },
+        ".glass-tooltip-motion[data-state=\"delayed-open\"], .glass-tooltip-motion[data-state=\"instant-open\"]": {
+          "animation": "glass-tooltip-in 220ms var(--ease-out) both"
+        },
+        ".glass-tooltip-motion[data-state=\"closed\"]": {
+          "animation": "glass-tooltip-out 140ms ease-out both"
+        },
+        "@keyframes glass-tooltip-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translate(var(--tooltip-x),var(--tooltip-y)) scale(.98)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translate(0,0) scale(1)"
+          }
+        },
+        "@keyframes glass-tooltip-out": {
+          "from": {
+            "opacity": "1"
+          },
+          "to": {
+            "opacity": "0",
+            "transform": "translate(calc(var(--tooltip-x) / 2),calc(var(--tooltip-y) / 2)) scale(.99)"
+          }
+        },
+        ".glass-player-details": {
+          "animation": "glass-player-reveal 180ms var(--ease-out) both"
+        },
+        "@keyframes glass-player-reveal": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(3px)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translateY(0)"
+          }
+        },
+        ".glass-toast-host": {
+          "background": "transparent !important",
+          "border": "0 !important",
+          "padding": "0 !important",
+          "backdrop-filter": "none !important",
+          "-webkit-backdrop-filter": "none !important",
+          "box-shadow": "none !important"
+        },
+        "@media (prefers-reduced-motion: reduce)": {
+          ".glass-slider-thumb::before": {
+            "transition": "none"
+          },
+          ".glass-hold-button[data-liquid-held=\"true\"], [data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+            "transform": "none"
+          },
+          ".glass-state-swap > [data-swap-layer]": {
+            "transform": "none !important",
+            "filter": "none !important",
+            "transition": "opacity 100ms ease",
+            "transition-duration": "100ms !important"
+          },
+          ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
+            "transition": "none",
+            "transition-duration": "0s !important"
+          },
+          ".glass-switch-thumb::before, .glass-selection-indicator, .glass-atlas-finish": {
+            "transition": "none"
+          },
+          ".glass-elastic-button": {
+            "transform": "none !important",
+            "transition": "none"
+          },
+          ".glass-switch-thumb": {
+            "scale": "1 !important"
+          },
+          ".glass-tooltip-motion": {
+            "--tooltip-x": "0px !important",
+            "--tooltip-y": "0px !important",
+            "animation-duration": "80ms !important",
+            "transform": "none !important"
+          },
+          ".glass-player-details": {
+            "animation": "none"
+          }
+        },
+        "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
+          "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
+            "background": "var(--foreground)",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
+            "background": "white",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          },
+          ".glass-chip, .glass-field": {
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none",
+            "background": "var(--background)",
+            "border-color": "var(--foreground)"
+          },
+          ".glass-switch-thumb::before": {
+            "opacity": "1 !important"
+          },
+          "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
+            "background": "color-mix(in oklab,var(--foreground) 15%,var(--background))",
+            "backdrop-filter": "none",
+            "-webkit-backdrop-filter": "none"
+          }
+        }
+      },
+      "registryDependencies": [
+        "accordion",
+        "alert",
+        "alert-dialog",
+        "avatar",
+        "badge",
+        "button",
+        "button-group",
+        "card",
+        "checkbox",
+        "command",
+        "context-menu",
+        "dialog",
+        "drawer",
+        "dropdown-menu",
+        "field",
+        "hover-card",
+        "input",
+        "label",
+        "menubar",
+        "navigation-menu",
+        "popover",
+        "progress",
+        "radio-group",
+        "select",
+        "separator",
+        "sheet",
+        "tabs",
+        "textarea",
+        "toggle",
+        "toggle-group",
+        "tooltip"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cmdk",
+        "lucide-react",
+        "radix-ui",
+        "sonner",
+        "vaul"
+      ],
+      "files": [
+        {
+          "path": "lib/glass-atlas.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-atlas.ts"
+        },
+        {
+          "path": "components/glass-atlas.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass-atlas.tsx"
+        },
+        {
+          "path": "lib/glass.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass.ts"
+        },
+        {
+          "path": "components/liquid-glass.tsx",
+          "type": "registry:ui",
+          "target": "@components/liquid-glass.tsx"
+        },
+        {
+          "path": "lib/glass-scene.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-scene.ts"
+        },
+        {
+          "path": "lib/glass-performance.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-performance.ts"
+        },
+        {
+          "path": "lib/glass-filter.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-filter.ts"
+        },
+        {
+          "path": "components/glass-scene.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass-scene.tsx"
+        },
+        {
+          "path": "components/glass-backdrop.ts",
+          "type": "registry:ui",
+          "target": "@components/glass-backdrop.ts"
+        },
+        {
+          "path": "lib/contrast.ts",
+          "type": "registry:lib",
+          "target": "@lib/contrast.ts"
+        },
+        {
+          "path": "components/adaptive-contrast.tsx",
+          "type": "registry:ui",
+          "target": "@components/adaptive-contrast.tsx"
+        },
+        {
+          "path": "lib/glass-theme.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-theme.ts"
+        },
+        {
+          "path": "components/glass/glass-theme-provider.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-theme-provider.tsx"
+        },
+        {
+          "path": "components/glass/glass-surface.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-surface.tsx"
+        },
+        {
+          "path": "components/glass/glass-controls.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-controls.tsx"
+        },
+        {
+          "path": "components/glass/glass-selection.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-selection.tsx"
+        },
+        {
+          "path": "components/glass/glass-accordion.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-accordion.tsx"
+        },
+        {
+          "path": "components/glass/glass-alert-dialog.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-alert-dialog.tsx"
+        },
+        {
+          "path": "components/glass/glass-alert.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-alert.tsx"
+        },
+        {
+          "path": "components/glass/glass-avatar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-avatar.tsx"
+        },
+        {
+          "path": "components/glass/glass-badge.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-badge.tsx"
+        },
+        {
+          "path": "components/glass/glass-button-group.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-button-group.tsx"
+        },
+        {
+          "path": "components/glass/glass-button.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-button.tsx"
+        },
+        {
+          "path": "components/glass/glass-card.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-card.tsx"
+        },
+        {
+          "path": "components/glass/glass-checkbox.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-checkbox.tsx"
+        },
+        {
+          "path": "components/glass/glass-combobox.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-combobox.tsx"
+        },
+        {
+          "path": "components/glass/glass-command.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-command.tsx"
+        },
+        {
+          "path": "components/glass/glass-connectivity.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-connectivity.tsx"
+        },
+        {
+          "path": "components/glass/glass-context-menu.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-context-menu.tsx"
+        },
+        {
+          "path": "components/glass/glass-control-center.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-control-center.tsx"
+        },
+        {
+          "path": "components/glass/glass-dialog.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-dialog.tsx"
+        },
+        {
+          "path": "components/glass/glass-dock.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-dock.tsx"
+        },
+        {
+          "path": "components/glass/glass-drawer.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-drawer.tsx"
+        },
+        {
+          "path": "components/glass/glass-dropdown.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-dropdown.tsx"
+        },
+        {
+          "path": "components/glass/glass-elastic-button.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-elastic-button.tsx"
+        },
+        {
+          "path": "components/glass/glass-form.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-form.tsx"
+        },
+        {
+          "path": "components/glass/glass-hover-card.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-hover-card.tsx"
+        },
+        {
+          "path": "components/glass/glass-icons.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-icons.tsx"
+        },
+        {
+          "path": "components/glass/glass-input.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-input.tsx"
+        },
+        {
+          "path": "components/glass/glass-menubar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-menubar.tsx"
+        },
+        {
+          "path": "components/glass/glass-music-player.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-music-player.tsx"
+        },
+        {
+          "path": "components/glass/glass-navbar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-navbar.tsx"
+        },
+        {
+          "path": "components/glass/glass-navigation-menu.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-navigation-menu.tsx"
+        },
+        {
+          "path": "components/glass/glass-popover.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-popover.tsx"
+        },
+        {
+          "path": "components/glass/glass-power.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-power.tsx"
+        },
+        {
+          "path": "components/glass/glass-preferences.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-preferences.tsx"
+        },
+        {
+          "path": "components/glass/glass-progress.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-progress.tsx"
+        },
+        {
+          "path": "components/glass/glass-range-control.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-range-control.tsx"
+        },
+        {
+          "path": "components/glass/glass-select.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-select.tsx"
+        },
+        {
+          "path": "components/glass/glass-sheet.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-sheet.tsx"
+        },
+        {
+          "path": "components/glass/glass-sidebar.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-sidebar.tsx"
+        },
+        {
+          "path": "components/glass/glass-slider.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-slider.tsx"
+        },
+        {
+          "path": "components/glass/glass-sound.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-sound.tsx"
+        },
+        {
+          "path": "components/glass/glass-spotlight.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-spotlight.tsx"
+        },
+        {
+          "path": "components/glass/glass-state-button.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-state-button.tsx"
+        },
+        {
+          "path": "components/glass/glass-state-swap.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-state-swap.tsx"
+        },
+        {
+          "path": "components/glass/glass-switch.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-switch.tsx"
+        },
+        {
+          "path": "components/glass/glass-tabs.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-tabs.tsx"
+        },
+        {
+          "path": "components/glass/glass-toaster.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-toaster.tsx"
+        },
+        {
+          "path": "components/glass/glass-toggle.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-toggle.tsx"
+        },
+        {
+          "path": "components/glass/glass-tooltip.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-tooltip.tsx"
+        },
+        {
+          "path": "components/glass/index.ts",
+          "type": "registry:ui",
+          "target": "@components/glass/index.ts"
+        }
+      ]
+    }
+  ]
+}

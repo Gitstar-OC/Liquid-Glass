@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-slider",
+  "title": "Glass Slider",
+  "description": "Range input with a glass thumb and rail.",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "http://localhost:3000/r/glass-utilities.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-slider.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Slider as SliderPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\n\nexport function GlassSlider({\n  className, appearance = \"line\", tone = \"neutral\", value, defaultValue,\n  min = 0, max = 100, onPointerDown, onPointerUp, onPointerCancel, onLostPointerCapture, onKeyDown, onKeyUp, onBlur, ...props\n}: React.ComponentProps<typeof SliderPrimitive.Root> & {\n  appearance?: \"line\" | \"well\" | \"hud\";\n  tone?: \"neutral\" | \"accent\";\n}) {\n  const [pointerMotion, setPointerMotion] = React.useState(true);\n  const [pressed, setPressed] = React.useState(false);\n  const values = value ?? defaultValue ?? [min];\n  return (\n    <SliderPrimitive.Root data-slot=\"slider\" data-appearance={appearance} data-liquid-pressed={pressed && !props.disabled} data-input-modality={pointerMotion ? \"pointer\" : \"keyboard\"}\n      onPointerDown={event=>{setPointerMotion(true);if(!props.disabled)setPressed(true);onPointerDown?.(event);}}\n      onPointerUp={event=>{setPressed(false);onPointerUp?.(event);}}\n      onPointerCancel={event=>{setPressed(false);onPointerCancel?.(event);}}\n      onLostPointerCapture={event=>{setPressed(false);onLostPointerCapture?.(event);}}\n      onKeyDown={event=>{setPointerMotion(false);setPressed(false);onKeyDown?.(event);}}\n      onKeyUp={event=>{setPressed(false);onKeyUp?.(event);}}\n      onBlur={event=>{setPressed(false);onBlur?.(event);}}\n      value={value} defaultValue={value === undefined ? (defaultValue ?? [min]) : undefined}\n      min={min} max={max}\n      className={cn(\"group/slider relative flex min-h-8 w-full touch-none items-center data-disabled:opacity-35 data-vertical:h-full data-vertical:min-h-32 data-vertical:w-8 data-vertical:flex-col\", className)} {...props}>\n      <SliderPrimitive.Track data-slot=\"slider-track\" className={cn(\n        \"relative grow overflow-hidden rounded-full bg-foreground/18 data-horizontal:h-1 data-horizontal:w-full data-vertical:h-full data-vertical:w-1\",\n        appearance === \"well\" && \"glass-inset data-horizontal:h-7 data-vertical:w-7\",\n      )}>\n        <SliderPrimitive.Range data-slot=\"slider-range\" className={cn(\n          \"absolute rounded-full data-horizontal:h-full data-vertical:w-full\",\n          tone === \"accent\" ? \"bg-(--glass-action)\" : \"bg-foreground/90\",\n          appearance === \"well\" && \"opacity-75\",\n        )} />\n      </SliderPrimitive.Track>\n      {values.map((_, index) => (\n        <SliderPrimitive.Thumb key={index} data-slot=\"slider-thumb\"\n          aria-label={props[\"aria-label\"] ?? (values.length > 1 ? `Value ${index + 1}` : \"Value\")}\n          aria-labelledby={props[\"aria-labelledby\"]}\n          style={{\"--slider-thumb-fill\": tone === \"accent\" ? \"#ffffff\" : \"var(--foreground)\"} as React.CSSProperties}\n          className={cn(\n            \"relative block h-3.5 w-[18px] shrink-0 rounded-[6px] border-0 outline-none transition-[transform,opacity] duration-200 ease-(--ease-out) after:absolute after:-inset-3 focus-visible:ring-2 focus-visible:ring-(--glass-action) focus-visible:ring-offset-2 focus-visible:ring-offset-transparent glass-slider-thumb motion-reduce:transform-none disabled:pointer-events-none\",\n            appearance === \"well\" && \"h-6 w-3\",\n          )} />\n      ))}\n    </SliderPrimitive.Root>\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-slider.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-slider",
+  "type": "registry:ui"
+}

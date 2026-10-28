@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-badge",
+  "title": "Glass Badge",
+  "description": "Compact status pills in the same optical material.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "badge",
+    "http://localhost:3000/r/glass-utilities.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-badge.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Badge, badgeVariants } from \"@/components/ui/badge\";\nimport type { VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\n\ntype BadgeVariant = VariantProps<typeof badgeVariants>[\"variant\"];\n\nexport function GlassBadge({\n  className,\n  variant = \"glass\",\n  ...props\n}: Omit<React.ComponentProps<typeof Badge>, \"variant\"> & {\n  variant?: BadgeVariant | \"glass\";\n}) {\n  if (variant !== \"glass\") {\n    return <Badge variant={variant} className={className} {...props} />;\n  }\n  return (\n    <Badge\n      variant=\"outline\"\n      {...props}\n      className={cn(\"glass-chip border-none text-foreground\", className)}\n    />\n  );\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-badge.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-badge",
+  "type": "registry:ui"
+}

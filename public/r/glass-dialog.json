@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glass-dialog",
+  "title": "Glass Dialog",
+  "description": "Dialog overlay, content, header and footer.",
+  "dependencies": [
+    "lucide-react",
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "dialog",
+    "http://localhost:3000/r/glass-surface.json"
+  ],
+  "files": [
+    {
+      "path": "components/glass/glass-dialog.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Dialog as DialogPrimitive } from \"radix-ui\";\nimport { XIcon } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\n\nexport function GlassDialogOverlay({\n  className,\n  ...props\n}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {\n  return (\n    <DialogPrimitive.Overlay\n      data-slot=\"dialog-overlay\"\n      className={cn(\n        \"fixed inset-0 z-50 bg-black/15 backdrop-blur-[6px] duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 motion-reduce:duration-75\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nexport function GlassDialogContent({\n  className,\n  children,\n  showCloseButton = true,\n  surface,\n  container,\n  ...props\n}: React.ComponentProps<typeof DialogPrimitive.Content> & {\n  container?: HTMLElement | null;\n  showCloseButton?: boolean;\n  surface?: import(\"@/lib/glass-theme\").GlassSurface;\n}) {\n  return (\n    <DialogPortal container={container}>\n      <GlassDialogOverlay\n        className={container ? \"absolute rounded-[20px]\" : undefined}\n      />\n      <DialogPrimitive.Content\n        data-slot=\"dialog-content\"\n        className={cn(\n          \"fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 text-sm outline-none duration-100 sm:max-w-sm data-open:animate-in data-open:fade-in-0  data-closed:animate-out data-closed:fade-out-0 \",\n          container && \"absolute\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface\n          kind=\"dialog\"\n          surface={surface}\n          className=\"grid gap-5 p-6\"\n        >\n          {children}\n          {showCloseButton && (\n            <DialogPrimitive.Close\n              data-slot=\"dialog-close\"\n              className=\"absolute top-2 right-2 grid size-7 place-items-center rounded-lg opacity-60 transition-opacity hover:bg-foreground/10 hover:opacity-100 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none\"\n            >\n              <XIcon className=\"size-4\" />\n              <span className=\"sr-only\">Close</span>\n            </DialogPrimitive.Close>\n          )}\n        </GlassSurface>\n      </DialogPrimitive.Content>\n    </DialogPortal>\n  );\n}\n\nexport {\n  Dialog,\n  DialogTrigger,\n  DialogClose,\n  DialogHeader,\n  DialogFooter,\n  DialogTitle,\n  DialogDescription,\n} from \"@/components/ui/dialog\";\n\nfunction DialogPortal(\n  props: React.ComponentProps<typeof DialogPrimitive.Portal>,\n) {\n  return <DialogPrimitive.Portal {...props} />;\n}\n",
+      "type": "registry:ui",
+      "target": "@components/glass/glass-dialog.tsx"
+    }
+  ],
+  "docs": "http://localhost:3000/docs/glass-dialog",
+  "type": "registry:ui"
+}
