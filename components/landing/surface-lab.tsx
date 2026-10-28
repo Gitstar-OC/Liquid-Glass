@@ -24,7 +24,7 @@ export function SurfaceLab() {
 
   return (
     <section id="surfaces" className="relative scroll-mt-24 px-6 py-24 sm:py-32">
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
           eyebrow="Materials"
           title="One lens. Five expressions."

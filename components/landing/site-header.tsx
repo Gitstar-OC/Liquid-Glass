@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Layers2 } from "lucide-react";
 import { SiteSearch } from "@/components/site/site-search";
 import { SiteThemeToggle } from "@/components/site/theme-toggle";
 import { MobileSiteNavigation } from "@/components/site/mobile-navigation";
 import { cn } from "@/lib/utils";
+import { LiquidMark } from "@/components/landing/liquid-mark";
 
 export function SiteHeader({
   active,
@@ -11,13 +11,16 @@ export function SiteHeader({
   active?: "playground" | "components" | "docs";
 }) {
   return (
-    <header className="relative z-30 mx-auto flex h-16 w-full max-w-5xl items-center gap-2 sm:gap-8">
+    <header className="relative z-30 mx-auto flex h-16 w-full max-w-6xl items-center gap-2 sm:gap-8">
       <Link
         href="/"
         aria-label="Liquid Glass home"
-        className="flex shrink-0 items-center gap-2 text-sm font-semibold tracking-tight"
+        className="group flex shrink-0 items-center gap-2 text-sm font-semibold tracking-tight"
       >
-        <Layers2 className="size-[19px]" strokeWidth={1.6} />
+        <LiquidMark
+          variant="header"
+          className="transition-transform duration-300 group-hover:rotate-12"
+        />
         <span className="hidden md:inline">Liquid Glass</span>
       </Link>
       <nav
@@ -36,16 +39,16 @@ export function SiteHeader({
             className={cn(
               "relative flex h-16 items-center text-muted-foreground transition-colors hover:text-foreground",
               active === item.id &&
-                "text-foreground",
+              "text-foreground",
             )}
           >
             <span>{item.label}</span>
           </Link>
         ))}
       </nav>
-      <MobileSiteNavigation/>
+      <MobileSiteNavigation />
       <SiteSearch />
-      <SiteThemeToggle/>
+      <SiteThemeToggle />
     </header>
   );
 }

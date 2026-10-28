@@ -13,7 +13,7 @@ export default function ComponentsPage() {
   return (
     <main className="site-shell min-h-screen bg-background px-5 pb-10 text-foreground sm:px-8">
       <SiteHeader active="components" />
-      <section className="mx-auto w-full max-w-5xl">
+      <section className="mx-auto w-full max-w-6xl">
         <PageHeader
           title="Components"
           description="Preview components, adjust the glass, and install the source."

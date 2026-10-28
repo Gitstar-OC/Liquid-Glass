@@ -6,7 +6,6 @@ import { GlassIcon } from "@/components/glass/glass-icons";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipTrigger, TooltipProvider, GlassTooltipContent } from "@/components/glass/glass-tooltip";
 
-/** A deliberate, bounded pull distorts the scene beneath a small independent lens. */
 export function GlassElasticButton({className}: {className?: string}) {
   const [held, setHeld] = useState(false), [pull, setPull] = useState({x: 0, y: 0});
   const [settling, setSettling] = useState(false);

@@ -10,7 +10,7 @@ export default function PlaygroundPage() {
   return (
     <main className="site-shell min-h-screen bg-background px-5 text-foreground sm:px-8">
       <SiteHeader active="playground" />
-      <section className="mx-auto w-full max-w-5xl pt-10 pb-10 sm:pt-12">
+      <section className="mx-auto w-full max-w-6xl pt-10 pb-10 sm:pt-12">
         <PageHeader
           title="Playground"
           description="Move the lens, edit the scene, and adjust the optics."
