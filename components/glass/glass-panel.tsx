@@ -17,7 +17,7 @@ import { attachSceneMirror, type SceneMirror } from "@/lib/glass-scene";
 import { registerGlassLens } from "@/lib/glass-performance";
 import { cn } from "@/lib/utils";
 
-type PanelKind = "tooltip" | "hover-card" | "popover" | "dropdown" | "drawer" | "card" | "button" | "dock";
+type PanelKind = "tooltip" | "hover-card" | "popover" | "dropdown" | "drawer" | "dialog" | "card" | "button" | "dock";
 export interface GlassPanelProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
   kind?: PanelKind;
@@ -39,7 +39,10 @@ const subscribe = (listener: () => void) => {
 };
 const reduced = () => matchMedia(PREFERENCE).matches;
 const server = () => false;
-const BLUR: Record<PanelKind, number> = { tooltip: 0.35, "hover-card": 1, popover: 1.25, dropdown: 1.25, drawer: 2, card: 0.7, button: 0.25, dock: 0.6 };
+const BLUR: Record<PanelKind, number> = { tooltip: 0.35, "hover-card": 1, popover: 1.25, dropdown: 1.25, drawer: 2, dialog: 2.5, card: 0.7, button: 0.25, dock: 10 };
+// A wide stationary dock needs a shallow lens, not a magnified control thumb.
+const DOCK_LENS = { ...CONTROL_LENS_PRESETS.surface, blur: 10, scale: 0.018, depth: 9,
+  curvature: 40, splay: 1, magnification: 1.025, rimStrength: 0.7, edgeHighlight: 0.32 };
 const OPPOSITE = { top: "bottom", bottom: "top", left: "right", right: "left" } as const;
 
 /** The shared curved field over a bounded scene or the native backdrop where
@@ -68,15 +71,16 @@ export function GlassPanel({
   const resolvedInk = ink === "auto" ? settings.ink ?? "auto" : ink;
   const dark = resolvedInk === "auto" ? (scene?.appearance ?? resolvedMode) === "dark" : resolvedInk === "light";
   const parameterKey = JSON.stringify(resolveControlLens({
-    ...(kind === "button" || kind === "dock" ? CONTROL_LENS_PRESETS.button : CONTROL_LENS_PRESETS.surface),
-    blur: BLUR[kind], magnification: kind === "tooltip" ? 1.04 : kind === "drawer" ? 1.06 : 1.12,
+    ...(kind === "button" ? CONTROL_LENS_PRESETS.button : CONTROL_LENS_PRESETS.surface),
+    blur: BLUR[kind], magnification: kind === "tooltip" ? 1.04 : kind === "drawer" || kind === "dialog" ? 1.06 : 1.12,
     rimStrength: 1, edgeHighlight: 0.46,
+    ...(kind === "dock" ? DOCK_LENS : {}),
     ...lensParameters,
   }));
   const optical = JSON.parse(parameterKey) as ReturnType<typeof resolveControlLens>;
   const safeRadius = Number.isFinite(radius) ? Math.max(0, Math.min(radius,
     size.width ? size.width / 2 : Infinity, size.height ? size.height / 2 : Infinity)) : 20;
-  const geometry = { shape, rimWidth: kind === "dock" ? 2 : 1.1, ...(beak ? { beak: { side: size.side, offset: size.offset } } : {}) };
+  const geometry = { shape, rimWidth: kind === "dock" ? 1.25 : 1.1, ...(beak ? { beak: { side: size.side, offset: size.offset } } : {}) };
   const metrics = controlLensMetrics(size.width, size.height, optical, geometry);
   const key = JSON.stringify([size.width, size.height, safeRadius, parameterKey, geometry]);
   // Radius edits keep the last complete contour + field + glint together until
@@ -178,7 +182,8 @@ export function GlassPanel({
       map: textures.displacement, width: fullWidth, height: fullHeight,
       depth: settings.refraction === false ? 0 : metrics.displacementScale,
       chroma: 0, blur: optical.blur, opticalTransmission: settings.refraction !== false,
-      rim: textures.rim, rimScale: 0, colorBleed: kind === "dock" ? 0.65 : 0.3, glint: 1,
+      rim: textures.rim, rimScale: 0, colorBleed: kind === "dock" ? 0.5 : 0.3, glint: 1,
+      colorSaturation: 1, colorGain: 1, colorSpread: kind === "dock" ? 12 : 8,
     });
     if (!portable) {
       setReady(true);
@@ -223,7 +228,10 @@ export function GlassPanel({
           <div ref={backdrop} aria-hidden="true" data-glass-ignore="" className="glass-panel-backdrop"
             data-panel-source={active && portable ? "dom" : solid ? "solid" : "backdrop"}
             style={{ "--panel-blur": `${optical.blur}px`, position: "absolute", inset: -metrics.pad, zIndex: -1, pointerEvents: "none", ...mask,
-            background: solid ? "var(--background)" : active ? "transparent" : dark
+            background: solid ? "var(--background)" : active ? kind === "dock"
+              ? "color-mix(in srgb,var(--foreground) 3%,transparent)" : "transparent"
+              : kind === "dock" || portable
+                ? "color-mix(in srgb,var(--background) 14%,transparent)" : dark
               ? "color-mix(in srgb,color-mix(in srgb,var(--background) 86%,var(--foreground) 14%) 86%,transparent)"
               : "color-mix(in srgb,var(--background) 94%,transparent)" } as CSSProperties}>
             <div ref={layer} style={{ position: "absolute", inset: 0, opacity: active && portable ? 1 : 0 }}>
@@ -231,7 +239,7 @@ export function GlassPanel({
                 <div ref={host} data-glass-mirror-host="" inert style={{ position: "absolute" }} />
               </div>
             </div>
-            {active && dark && contrastProtection && <div style={{ position: "absolute", inset: 0, background: "color-mix(in srgb,var(--foreground) 3%,transparent)" }} />}
+            {active && dark && kind !== "dock" && contrastProtection && <div style={{ position: "absolute", inset: 0, background: "color-mix(in srgb,var(--foreground) 3%,transparent)" }} />}
             {textures && !solid && <div style={{ position: "absolute", inset: 0, backgroundImage: `url("${textures.reflection}")`, backgroundSize: "100% 100%" }} />}
           </div>
         </>}

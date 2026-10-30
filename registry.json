@@ -399,7 +399,7 @@
       "docs": "http://localhost:3000/docs/glass-dialog",
       "registryDependencies": [
         "dialog",
-        "http://localhost:3000/r/glass-surface.json"
+        "http://localhost:3000/r/glass-panel.json"
       ],
       "dependencies": [
         "lucide-react",
@@ -1716,6 +1716,32 @@
         ".glass-bubble-motion[data-state=\"closed\"]": {
           "animation": "glass-bubble-out 160ms ease-out both"
         },
+        ".glass-dialog-motion[data-state=\"open\"]": {
+          "animation": "glass-dialog-in 300ms var(--ease-out) both"
+        },
+        ".glass-dialog-motion[data-state=\"closed\"]": {
+          "animation": "glass-dialog-out 180ms ease-out both"
+        },
+        "@keyframes glass-dialog-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(8px) scale(.98)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translateY(0) scale(1)"
+          }
+        },
+        "@keyframes glass-dialog-out": {
+          "from": {
+            "opacity": "1",
+            "transform": "translateY(0) scale(1)"
+          },
+          "to": {
+            "opacity": "0",
+            "transform": "translateY(4px) scale(.99)"
+          }
+        },
         "@keyframes glass-bubble-in": {
           "from": {
             "opacity": "0",
@@ -1776,6 +1802,10 @@
           "box-shadow": "none !important"
         },
         "@media (prefers-reduced-motion: reduce)": {
+          ".glass-dialog-motion": {
+            "animation-duration": "100ms !important",
+            "transform": "none !important"
+          },
           ".glass-bubble-motion": {
             "--bubble-offset": "0px",
             "--bubble-scale": "1",
@@ -2329,6 +2359,32 @@
         ".glass-bubble-motion[data-state=\"closed\"]": {
           "animation": "glass-bubble-out 160ms ease-out both"
         },
+        ".glass-dialog-motion[data-state=\"open\"]": {
+          "animation": "glass-dialog-in 300ms var(--ease-out) both"
+        },
+        ".glass-dialog-motion[data-state=\"closed\"]": {
+          "animation": "glass-dialog-out 180ms ease-out both"
+        },
+        "@keyframes glass-dialog-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(8px) scale(.98)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translateY(0) scale(1)"
+          }
+        },
+        "@keyframes glass-dialog-out": {
+          "from": {
+            "opacity": "1",
+            "transform": "translateY(0) scale(1)"
+          },
+          "to": {
+            "opacity": "0",
+            "transform": "translateY(4px) scale(.99)"
+          }
+        },
         "@keyframes glass-bubble-in": {
           "from": {
             "opacity": "0",
@@ -2389,6 +2445,10 @@
           "box-shadow": "none !important"
         },
         "@media (prefers-reduced-motion: reduce)": {
+          ".glass-dialog-motion": {
+            "animation-duration": "100ms !important",
+            "transform": "none !important"
+          },
           ".glass-bubble-motion": {
             "--bubble-offset": "0px",
             "--bubble-scale": "1",

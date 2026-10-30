@@ -6,11 +6,10 @@ import { GlassButton } from "@/components/glass/glass-button";
 import { GlassIcon } from "@/components/glass/glass-icons";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { LiquidMark } from "@/components/landing/liquid-mark";
-import { ShowcaseDock } from "@/components/landing/showcase-dock";
 
 /** Identity stays quiet; examples have their own aligned section below. */
 export function GlassCollection() {
-  const { resolvedMode, setMode } = useGlassTheme();
+  const { resolvedMode } = useGlassTheme();
   const dark = resolvedMode === "dark";
   return (
     <section className="home-glass" data-theme={resolvedMode} aria-label="Liquid Glass">
@@ -28,9 +27,6 @@ export function GlassCollection() {
               </div>
             </GlassScene>
           </div>
-        </div>
-        <div className="home-dock-position">
-          <ShowcaseDock dark={dark} onThemeChange={() => setMode(dark ? "light" : "dark")} />
         </div>
       </GlassSettingsProvider>
     </section>

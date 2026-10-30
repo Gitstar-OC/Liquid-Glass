@@ -29,10 +29,11 @@ The default tooltip is 26px high with 0.35px background softening and 1.04× sou
 zoom. Light surfaces have no gray body tint or added source brightness.
 Dark surfaces retain a faint neutral reflection. These are material defaults,
 not a claim about Apple's renderer. `lensParameters` overrides the shared field.
-Larger panels use 0.7–2px background softening and 1.06–1.12× source zoom, while
+Larger panels use 0.7–2.5px background softening and 1.04–1.12× source zoom, while
 their foreground stays sharp. Source-colored shoulders reuse the bounded
-source and cached rim mask. The dock has a fixed 2px local-color band and
-22px squircle corners; there is no painted accent border.
+source and cached rim mask without boosting source saturation or RGB. The dock
+has a fixed 1.25px local-color band, 24px rounded corners, 10px blur and a shallow
+1.025× lens; there is no painted accent border.
 
 Put a small, complete background in `GlassScene` for portable DOM refraction,
 and keep portals within that source's bounds. Backgrounds must paint their
@@ -51,7 +52,7 @@ their parent's surface. Primary and secondary actions remain plain controls.
 The homepage uses interaction tabs and three lower sections: Profile, Overlays
 and Details. Each section mounts one example at a time and releases it outside
 the viewport. Frames use the dimensions that suit the component. The profile
-lens refracts a centered illustration over its paper plane, with two actions.
+lens refracts a centered circular avatar over its paper plane, with two actions.
 Docs retain radius/shape and refraction controls. Normal-glass comparisons are
 deferred; these examples focus on the actual lens.
 
@@ -59,7 +60,10 @@ The six lower examples share an asset-workspace context. A toolbar icon owns
 the tooltip, a collaborator link owns the hover card, and the View popover
 changes the grid/list layout and file details. File-row ellipses expose copy,
 duplicate and download actions. Filenames open a native details drawer. The
-collection card uses its cover as the optical source and opens its asset grid.
+collection card uses its cover as the optical source. Its entire cover and glass
+caption open an asset-grid dialog. Image tiles and review images likewise open
+their previews from the whole surface, with native focus return and Escape.
+Shared dialogs now use the same compact lens, without a whole-viewport blur.
 These are ordinary product layouts; the overlay or collection caption is the
 only lens. On the homepage, tooltips and hover cards open on hover/focus. The
 documentation inspector can still pin them for shape and refraction editing.

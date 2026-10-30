@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { GlassSettingsProvider } from "@/components/glass-scene";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { GlassSlider } from "@/components/glass/glass-slider";
@@ -46,9 +46,14 @@ export function PanelShowcase({ initialExample = "slider", compact = false, mini
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
   const section = useRef<HTMLElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const node = section.current;
     if (!node || !enabled) return;
+    // Mount visible tab controls before the next paint, so Tab reaches them
+    // without waiting for the observer's first asynchronous notification.
+    const box = node.getBoundingClientRect();
+    const margin = minimal ? 0 : 80;
+    setVisible(box.bottom > -margin && box.top < innerHeight + margin && box.right > 0 && box.left < innerWidth);
     const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { rootMargin: minimal ? "0px" : "80px" });
     observer.observe(node);
     return () => observer.disconnect();
@@ -61,7 +66,7 @@ export function PanelShowcase({ initialExample = "slider", compact = false, mini
     : example === "navigation" ? "Choose a section." : example === "video" ? "Play, seek or skip through the flowers."
     : example === "buttons" ? "Two actions over the same background." : example === "profile" ? "Open the profile actions."
     : example === "tooltip" ? "Hover or focus the copy-link action." : example === "hover-card" ? "Hover or focus Maya’s name."
-    : example === "card" ? "Open the collection from its title." : example === "drawer" ? "Choose a filename to view its details."
+    : example === "card" ? "Click the collection to open it." : example === "drawer" ? "Choose a filename to view its details."
     : example === "dropdown" ? "Open a file’s action menu." : "Change the asset layout with View.";
   return (
     <section ref={section} className={cn("panel-showcase", compact && "panel-showcase-compact", minimal && "panel-showcase-minimal", resolvedMode === "dark" ? "showcase-dark" : "showcase-light")} aria-label={`${selected.name} example`}>

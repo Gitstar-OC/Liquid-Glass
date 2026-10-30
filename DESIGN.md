@@ -60,9 +60,10 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Homepage hover surfaces respond to pointer/focus; docs can pin them open.
   Keep only the short Aave/Apple attribution below the
   hero heading; remove Controls and explanatory example subtext.
-  The profile has a centered, local illustration on a complete paper plane,
+  The profile has a centered 168px circular avatar (160px on phones), containing
+  the local illustration on a complete paper plane,
   and a visible lens with two actions: Edit profile and Share profile. The
-  popover uses 1.18× actual DOM refraction so the portrait's colors and features
+  popover uses 1.08× actual DOM refraction so the portrait's colors and features
   visibly bend. It opens without taking focus and retains a native edit dialog.
   The non-refracting component family is deferred; do not show normal-glass
   material choices in these previews.
@@ -121,6 +122,11 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - Do not use `select-none` or `user-select: none` in authored styles.
 - Preserve visible keyboard focus, labels, pressed/checked state, disabled behavior,
   validation, Escape dismissal, and focus return. Dialogs require titles.
+- Tab follows actual controls in document order; the fixed dock comes last.
+  Native tabs use arrow keys and automatic selection. Their panel wrapper adds
+  no extra Tab stop. Keyboard example changes use a short fade without a lateral
+  slide; pointer changes retain the gentle slide. Entire collection/image tiles
+  open previews, including their glass caption. Keep content through dialog exit.
 - Motion is brief and purposeful. Respect reduced motion/transparency and higher contrast.
 
 ## Change checklist
@@ -179,14 +185,15 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   while appearance changes the optical finish; contrast protection still runs.
   The homepage chooses black ink in light Duotheme and white ink in dark Duotheme,
   independent of the photo. Changing appearance must update this chosen ink.
-- A drawer/dialog/command uses at least 8px blur by default, menus/popovers 6px,
-  tooltips 4px. Local blur overrides remain available. Higher layers soften the
-  lower content they capture. Reveal overlays after admission/texture readiness
-  to avoid a bright CSS fallback flashing before the actual glass.
-  Image buttons and the profile menu use the video's actual WebGL finish over
-  a displayed image. Buttons are clear; the menu uses only 1.25px softening.
+- Larger `GlassSurface` commands retain their stronger background softening.
+  Compact panels use their own 0.35–2.5px blur defaults. Shared dialogs use the
+  same compact lens, with a dim overlay and no whole-viewport blur. Local blur
+  overrides remain available. Pending image lenses keep the actual backdrop
+  with a faint neutral reflection; do not flash an almost-white opaque panel.
+  Image buttons use the video's actual WebGL finish over a displayed image.
+  The profile menu uses its bounded DOM lens with 1.5px softening.
   Keep the image's own pixels and source-colored rim, without a white body fill.
-  Its native actions and checkbox controls share one optical layer. Profile
+  Its native actions and controls share one optical layer. Profile
   identity stays outside the image so it is not replaced with sampled text.
 - The homepage's two intro links and floating dock use the shared compact field.
   A pressed control adds one compact target lens. The
@@ -220,15 +227,19 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - Sound and AirDrop use the same 20px rounded rectangle. They are not full capsules.
 - The homepage dock has four blank 52px square placeholders (48px on phones) for
   future icons, with accessible action names, keyboard focus and tooltips. They
-  share one stationary compact lens with 22px squircle corners; do not give
+  share one stationary compact lens with 24px softly rounded corners; do not give
   each placeholder its own glass. No hover lift, translation or press scale on
   the dock items; only tooltips animate. The floating dock uses the real native
   backdrop where SVG backdrop filtering is supported, with a bounded CSS blur
   fallback elsewhere. Other docks can retain their app glyphs.
-  Use the same compact, joined lens tooltip for dock hints. The dock's 2px
+  Separate the appearance utility with one quiet vertical divider. Use the same
+  compact, joined lens tooltip for dock hints. The dock's 1.25px
   source-colored edge diffuses actual local background columns; it is not a
   painted accent border or an invented white source. Neutral glints retain
-  its silhouette on light backgrounds.
+  its silhouette on light backgrounds. Its shallow field uses 1.025× zoom and
+  10px background softening, rather than the stronger control-thumb optics.
+  Preserve actual source RGB in compact color glints, without saturation or
+  brightness gain. Image collection captions use a restrained 1.06× lens.
 - Action button groups use a capsule silhouette and individually rounded hit
   areas within one shared glass surface; do not inherit square shadcn group joins.
 - `liquidOnHold` reveals a standalone lens after 180ms of pointer intent. Release,

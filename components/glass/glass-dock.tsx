@@ -41,9 +41,9 @@ export type GlassDockProps =
 /** A single optical surface; app controls and tooltips retain their own semantics. */
 export function GlassDock(props: GlassDockProps) {
   if (props.material === "backdrop") {
-    const { children, className, radius = 22, material, ...nativeProps } = props;
+    const { children, className, radius = 24, material, ...nativeProps } = props;
     return <TooltipProvider delayDuration={250} skipDelayDuration={300}>
-      <GlassPanel kind="dock" radius={radius} shape="squircle" asChild>
+      <GlassPanel kind="dock" radius={radius} shape="round" asChild>
         <nav {...nativeProps} aria-label={props["aria-label"] ?? "Dock"} data-glass-dock={material}
           className={cn("flex w-fit items-center gap-3 p-3", className)}>{children}</nav>
       </GlassPanel>

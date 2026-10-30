@@ -617,6 +617,16 @@ const UTILITIES_CSS = {
   '.glass-bubble-motion[data-side="bottom"]': { "--bubble-offset": "-3px" },
   '.glass-bubble-motion[data-state="open"]': { animation: "glass-bubble-in 240ms var(--ease-out) both" },
   '.glass-bubble-motion[data-state="closed"]': { animation: "glass-bubble-out 160ms ease-out both" },
+  '.glass-dialog-motion[data-state="open"]': { animation: "glass-dialog-in 300ms var(--ease-out) both" },
+  '.glass-dialog-motion[data-state="closed"]': { animation: "glass-dialog-out 180ms ease-out both" },
+  "@keyframes glass-dialog-in": {
+    from: { opacity: "0", transform: "translateY(8px) scale(.98)" },
+    to: { opacity: "1", transform: "translateY(0) scale(1)" },
+  },
+  "@keyframes glass-dialog-out": {
+    from: { opacity: "1", transform: "translateY(0) scale(1)" },
+    to: { opacity: "0", transform: "translateY(4px) scale(.99)" },
+  },
   "@keyframes glass-bubble-in": {
     from: { opacity: "0", transform: "translateY(var(--bubble-offset)) scale(var(--bubble-scale))" },
     to: { opacity: "1", transform: "translateY(0) scale(1)" },
@@ -667,6 +677,7 @@ const UTILITIES_CSS = {
     "box-shadow": "none !important",
   },
   "@media (prefers-reduced-motion: reduce)": {
+    ".glass-dialog-motion": { "animation-duration": "100ms !important", transform: "none !important" },
     ".glass-bubble-motion": { "--bubble-offset": "0px", "--bubble-scale": "1", "animation-duration": "100ms !important" },
     ".glass-lens-action": { scale: "1 !important", transition: "none" },
     ".glass-lens-action [data-glass-target-lens]": { transition: "none" },

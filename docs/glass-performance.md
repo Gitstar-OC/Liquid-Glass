@@ -148,11 +148,14 @@ scroll viewport. There are no new renderers or background animation callbacks.
 No idle RAF loop runs.
 Clip the page's sampling margins so the bottom lens cannot extend scroll height.
 
-The compact panel lens uses 0.35–2px blur and 1.04–1.12× source magnification,
+The compact panel lens uses 0.35–2.5px blur and 1.04–1.12× source magnification,
 with no source brightness boost. Its thin source-color band reuses the existing
 cached rim PNG and bounded SourceGraphic through the existing colorBleed graph.
-The narrow 1px horizontal / 24px vertical kernel preserves neighboring columns.
-Dock geometry requests a fixed 2px band; other panels retain 1.1px. This adds no
+The narrow horizontal kernel preserves neighboring columns. Compact panels use
+1px horizontal / 8px vertical diffusion; the dock uses 1px / 12px. Saturation
+and RGB gain remain at 1, retaining the actual source colors. Legacy surface
+callers keep their existing defaults. Dock geometry requests a fixed 1.25px band;
+other panels retain 1.1px. This adds no
 new map, CPU pixel readback, whole-page mirror or idle animation. Slider/switch
 and video maps omit this geometry option and retain their approved output.
 Background softening stays inside the SVG transmission pass, before the colored
@@ -262,13 +265,15 @@ Decoded map, rounded contour and reflection are accepted together, never stretch
 The highlighted DOM retains native dimensions. One bounded travel callback ends
 on arrival, hidden-document changes, cancellation or unmount; no idle loop runs.
 Their persistent lens remains admitted until hidden/unmounted or deselected.
-The homepage dock uses one stationary `GlassPanel` with the slider's compact
-optics and 22px corners. Four native square placeholders stay sharp, without
+The homepage dock uses one stationary `GlassPanel` with a shallow compact
+field: 0.018 scale, 9px depth, 1.025× zoom, 10px blur and 24px rounded corners.
+Four native square placeholders stay sharp, with an appearance divider and without
 hover lift or press scale. Resize/position events update geometry, without an
 idle frame loop, whole-page capture or per-item optical layer. The native
 backdrop route is Chromium-only; the accessible fallback blurs the true backdrop
 and retains the cached contour glint. Existing explicit-target and scene-backed
 dock consumers retain their renderers. The homepage still has one dock slot.
+It appears last in DOM order while staying fixed at the viewport bottom.
 Slider dragging follows its native value immediately. Elastic endpoint release
 returns over 180ms; endpoint offsets
 are coalesced to one update per input frame. Value/position/offset changes reuse
@@ -339,14 +344,15 @@ optical sampling margins never belong in that scrolling container.
 
 The profile example now portals a native popover into its 640 × 400px bounded
 scene (380px high on phones). A local 720px transparent WebP illustration is
-displayed at 300px over a complete opaque paper plane. One compact DOM lens
-refracts that composition at 1.18× magnification and 1px blur; foreground actions
+displayed in a 168px circular avatar (160px on phones) over an opaque paper plane.
+One compact DOM lens refracts that composition at 1.08× magnification and 1.5px
+blur; foreground actions
 remain sharp. No separate WebGL context, custom image-coordinate observer or
 whole-document capture is needed. The two actions edit the name or copy a link.
 Initial open prevents autofocus. Closing, scrolling out or unmounting releases
 its source/filter work under the same document budget.
 The Surface playground preset retains its supplied 0.5px blur; the menu has a
-local 1px override. The former checkbox rows and per-image alignment observer
+local 1.5px override. The former checkbox rows and per-image alignment observer
 were removed from the profile demonstration.
 
 `GlassLensButton imageRef` retains the video's shader and a displayed-image ref.
@@ -355,6 +361,17 @@ keeps cached maps. The two-button example requests two lenses, so the homepage
 with its intro/dock can request five; admission still caps this at five/fine
 or three/coarse. Lower visible examples share this same document cap.
 No document-wide filter or capture is added.
+The main image scene opens its real preview from either the entire image or
+Preview. Copy link uses the actual local asset URL. Its compact DOM dialog adds
+one admitted lens while open, sharing the existing bounded image source.
+Workspace image/collection tiles likewise open one controlled native dialog.
+Selecting an asset inside a collection replaces its dialog content instead of
+opening another modal. The selected content survives the closing animation;
+focus returns to the original tile without scrolling. Dialogs use 2.5px local
+blur and a dim overlay, replacing the former full-overlay 6px backdrop blur.
+Example tabs perform one initial visibility read before paint, then use the
+existing IntersectionObserver; this makes newly selected controls available to
+Tab immediately. No focus trap or custom Tab-key interception is added.
 Image-backed fallback buttons use transparent 1.5px blur, never an 80% solid
 plane. The active photo material uses 1.12× zoom with zero blur and the video rim;
 it has no white body fill. Reduced transparency retains the opaque fallback.

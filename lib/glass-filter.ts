@@ -15,6 +15,10 @@ export interface GlassFilterConfig {
   rim?: string;
   rimScale?: number;
   colorBleed?: number;
+  /** Compact image surfaces retain actual RGB instead of boosting it. */
+  colorSaturation?: number;
+  colorGain?: number;
+  colorSpread?: number;
   glint?: number;
   /** A small moving map in a larger, original DOM source. Outside stays neutral. */
   mapRegion?: { x: number; y: number; width: number; height: number };
@@ -278,7 +282,7 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
     filter.append(
       element("feGaussianBlur", {
         in: "SourceGraphic",
-        stdDeviation: "1 24",
+        stdDeviation: `1 ${Math.max(0, Math.min(32, config.colorSpread ?? 24))}`,
         edgeMode: "duplicate",
         result: "ambient",
       }),
@@ -287,7 +291,7 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
       element("feColorMatrix", {
         in: "ambient",
         type: "saturate",
-        values: 1.5,
+        values: Math.max(0, Math.min(2, config.colorSaturation ?? 1.5)),
         result: "ambientColor",
       }),
     );
@@ -296,7 +300,7 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
       result: "ambientLight",
     });
     for (const channel of ["feFuncR", "feFuncG", "feFuncB"] as const)
-      energy.append(element(channel, { type: "linear", slope: 1.15 }));
+      energy.append(element(channel, { type: "linear", slope: Math.max(0, Math.min(2, config.colorGain ?? 1.15)) }));
     filter.append(energy);
     const light = element("feImage", {
       href: rimMap,

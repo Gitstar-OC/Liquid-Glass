@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import { ArrowDownToLine, ArrowUpRight, Check, Copy, Grid2X2, Link, List, MoreHorizontal, SlidersHorizontal, X } from "lucide-react";
 import { GlassScene } from "@/components/glass-scene";
 import { GlassButton } from "@/components/glass/glass-button";
@@ -11,6 +11,7 @@ import { HoverCard, HoverCardTrigger, GlassHoverCardContent } from "@/components
 import { Popover, PopoverTrigger, PopoverHeader, PopoverTitle, PopoverDescription, GlassPopoverContent } from "@/components/glass/glass-popover";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuItem, GlassDropdownMenuContent } from "@/components/glass/glass-dropdown";
 import { Drawer, DrawerTrigger, DrawerClose, DrawerTitle, DrawerDescription, DrawerHeader, GlassDrawerContent } from "@/components/glass/glass-drawer";
+import { Dialog, DialogTitle, DialogDescription, GlassDialogContent } from "@/components/glass/glass-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -75,12 +76,18 @@ function AssetList({ assets, name, action, details = true }: {
   );
 }
 
-function AssetGrid({ assets, details = true }: { assets: Asset[]; details?: boolean }) {
-  return <div className="workspace-asset-grid">{assets.map(asset => <a key={asset.id} href={DEMO_PHOTOS[asset.photo].src} target="_blank" rel="noreferrer" className="workspace-asset-link">
-    <div className="workspace-grid-image"><SceneBackdrop photo={asset.photo} /></div>
-    <p>{asset.name}<ArrowUpRight aria-hidden="true" /></p>
-    {details && <span>WebP image</span>}
-  </a>)}</div>;
+function AssetGrid({ assets, details = true, onOpen, dialogId }: {
+  assets: Asset[]; details?: boolean;
+  onOpen: (asset: Asset, trigger: HTMLButtonElement) => void;
+  dialogId: string;
+}) {
+  return <div className="workspace-asset-grid">{assets.map(asset => <button key={asset.id} type="button"
+    aria-label={`Preview ${asset.name}`} aria-haspopup="dialog" aria-controls={dialogId}
+    onClick={event => onOpen(asset, event.currentTarget)} className="workspace-asset-link">
+    <span className="workspace-grid-image"><SceneBackdrop photo={asset.photo} /></span>
+    <span className="workspace-asset-name">{asset.name}<ArrowUpRight aria-hidden="true" /></span>
+    {details && <span className="workspace-asset-kind">WebP image</span>}
+  </button>)}</div>;
 }
 
 function AssetDetails({ asset }: { asset: Asset }) {
@@ -115,8 +122,16 @@ export function WorkspacePanelExample({ example, appearance, container, radius, 
   const [assets, setAssets] = useState(ASSETS);
   const [status, setStatus] = useState("");
   const [copied, setCopied] = useState(false);
-  const [collectionOpen, setCollectionOpen] = useState(false);
+  const [selection, setSelection] = useState<Asset | "collection" | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const lastTrigger = useRef<HTMLElement | null>(null);
   const detailsId = useId();
+  const dialogId = useId();
+  const openAsset = (asset: Asset, trigger: HTMLButtonElement) => {
+    lastTrigger.current = trigger;
+    setSelection(asset);
+    setDialogOpen(true);
+  };
   const geometry = { radius, shape };
   const positioning: Positioning = { container, collisionBoundary: container, collisionPadding: 16 };
   const copyLink = async (asset: Asset) => {
@@ -141,12 +156,12 @@ export function WorkspacePanelExample({ example, appearance, container, radius, 
         </Tooltip>
       </TooltipProvider>
     }>
-      <div className="workspace-review-image"><SceneBackdrop photo="dunes" /></div>
+      <button type="button" className="workspace-review-image workspace-image-action" aria-label="Preview Dunes.webp" aria-haspopup="dialog" aria-controls={dialogId} onClick={event => openAsset(ASSETS[0], event.currentTarget)}><SceneBackdrop photo="dunes" /></button>
       <div className="workspace-review-caption"><span>Version 03</span><span>Photo by <a href={DEMO_PHOTOS.dunes.href} target="_blank" rel="noreferrer">Royce Fonseca</a></span></div>
     </Workspace>;
   } else if (example === "hover-card") {
     content = <Workspace title="Landscape studies" path="Studio / Review">
-      <div className="workspace-review-image"><SceneBackdrop photo="ocean" /></div>
+      <button type="button" className="workspace-review-image workspace-image-action" aria-label="Preview Ocean.webp" aria-haspopup="dialog" aria-controls={dialogId} onClick={event => openAsset(ASSETS[1], event.currentTarget)}><SceneBackdrop photo="ocean" /></button>
       <div className="workspace-activity">
         <Avatar size="sm"><AvatarFallback>MC</AvatarFallback></Avatar>
         <p><HoverCard openDelay={250} closeDelay={160} open={pinned || hovered} onOpenChange={setHovered}>
@@ -180,9 +195,9 @@ export function WorkspacePanelExample({ example, appearance, container, radius, 
           </FieldGroup>
         </GlassPopoverContent>
       </Popover>
-    }>{layout === "grid" ? <AssetGrid assets={assets} details={showDetails} /> : <AssetList assets={assets} details={showDetails} name={asset => <a className="workspace-text-action" href={DEMO_PHOTOS[asset.photo].src} target="_blank" rel="noreferrer">{asset.name}</a>} />}</Workspace>;
+    }>{layout === "grid" ? <AssetGrid assets={assets} details={showDetails} onOpen={openAsset} dialogId={dialogId} /> : <AssetList assets={assets} details={showDetails} name={asset => <button type="button" className="workspace-text-action" aria-haspopup="dialog" aria-controls={dialogId} onClick={event => openAsset(asset, event.currentTarget)}>{asset.name}</button>} />}</Workspace>;
   } else if (example === "dropdown") {
-    content = <Workspace title="Landscape studies"><AssetList assets={assets} action={asset =>
+    content = <Workspace title="Landscape studies"><AssetList assets={assets} name={asset => <button type="button" className="workspace-text-action" aria-haspopup="dialog" aria-controls={dialogId} onClick={event => openAsset(asset, event.currentTarget)}>{asset.name}</button>} action={asset =>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild><GlassButton variant="ghost" size="icon" aria-label={`Actions for ${asset.name}`}><MoreHorizontal /></GlassButton></DropdownMenuTrigger>
         <GlassDropdownMenuContent {...positioning} {...geometry} className="w-52" sideOffset={8} align="end">
@@ -201,20 +216,38 @@ export function WorkspacePanelExample({ example, appearance, container, radius, 
   } else if (example === "drawer") {
     content = <Workspace title="Landscape studies"><AssetList assets={assets} name={asset => <FileDrawer asset={asset} container={container} geometry={geometry} />} /></Workspace>;
   } else {
-    content = <Workspace title={collectionOpen ? "Landscape studies" : "Collections"} path="Studio / Library" action={collectionOpen && <GlassButton variant="ghost" size="sm" onClick={() => setCollectionOpen(false)}>Back</GlassButton>}>
-      {collectionOpen ? <AssetGrid assets={assets} /> : <div className="workspace-collection-cover"><SceneBackdrop photo={appearance === "dark" ? "ocean" : "dunes"} /></div>}
+    content = <Workspace title="Collections" path="Studio / Library">
+      <button type="button" className="workspace-collection-cover workspace-image-action" aria-label="Open Landscape studies collection"
+        aria-haspopup="dialog" aria-controls={dialogId} onClick={event => { lastTrigger.current = event.currentTarget; setSelection("collection"); setDialogOpen(true); }}>
+        <SceneBackdrop photo={appearance === "dark" ? "ocean" : "dunes"} />
+      </button>
     </Workspace>;
-    foreground = !collectionOpen && <div className="workspace-collection-layer">
-      <GlassCard {...geometry} size="sm" className="workspace-collection-card">
-        <CardHeader><CardTitle><button type="button" onClick={() => setCollectionOpen(true)} className="workspace-collection-title">Landscape studies<ArrowUpRight aria-hidden="true" /></button></CardTitle><CardDescription>Brand photography</CardDescription></CardHeader>
+    foreground = <div className="workspace-collection-layer">
+      <GlassCard {...geometry} size="sm" className="workspace-collection-card"
+        lensParameters={{ scale: 0.025, depth: 10, magnification: 1.06, blur: 1.25, rimStrength: 0.8, edgeHighlight: 0.38 }}>
+        <CardHeader><CardTitle><span className="workspace-collection-title">Landscape studies<ArrowUpRight aria-hidden="true" /></span></CardTitle><CardDescription>Brand photography</CardDescription></CardHeader>
         <CardContent><p className="text-xs">Dunes, open water and ice.</p></CardContent>
         <CardFooter className="justify-between border-0 bg-transparent"><Badge variant="secondary">3 assets</Badge><span className="text-xs text-muted-foreground">Updated today</span></CardFooter>
       </GlassCard>
     </div>;
   }
 
-  return <GlassScene appearance={appearance} className="workspace-scene size-full" content={content}>
+  return <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <GlassScene appearance={appearance} className="workspace-scene size-full" content={content}>
     {foreground}
     {status && <p role="status" className="workspace-status">{status}</p>}
-  </GlassScene>;
+    <GlassDialogContent id={dialogId} container={container} className="workspace-preview-dialog"
+      onCloseAutoFocus={event => { event.preventDefault(); lastTrigger.current?.focus({ preventScroll: true }); }}>
+      {selection === "collection" ? <>
+        <div><DialogTitle>Landscape studies</DialogTitle><DialogDescription>Brand photography · {assets.length} assets</DialogDescription></div>
+        <AssetGrid assets={assets} onOpen={asset => setSelection(asset)} dialogId={dialogId} />
+      </> : selection && <>
+        <div><DialogTitle>{selection.name}</DialogTitle><DialogDescription>Landscape studies</DialogDescription></div>
+        <div className="workspace-dialog-image"><SceneBackdrop photo={selection.photo} /></div>
+        <p className="text-xs text-muted-foreground">Photo by <a href={DEMO_PHOTOS[selection.photo].href} target="_blank" rel="noreferrer" className="underline underline-offset-4">{DEMO_PHOTOS[selection.photo].credit}</a></p>
+        <GlassButton variant="secondary" asChild><a href={DEMO_PHOTOS[selection.photo].src} download={selection.name}><ArrowDownToLine data-icon="inline-start" />Download image</a></GlassButton>
+      </>}
+    </GlassDialogContent>
+    </GlassScene>
+  </Dialog>;
 }

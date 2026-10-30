@@ -1297,3 +1297,41 @@ packaging completed with 58 entries and 70 shared source files.
   the new composition and native-device timings have not been visually verified.
   No installable shared component changed, so no registry regeneration was needed.
 
+## 2026-10-30 — restrained dock and complete preview interactions
+
+- The fixed dock retains one admitted lens and no JavaScript scroll listener.
+  Its four 52px slots use 10px padding/gaps and a 1px appearance divider: 269 ×
+  72 CSS pixels on desktop. The default backdrop contour has 24px rounded corners.
+  The dock field now uses 0.018 scale, 9px depth, 1.025× zoom and 10px blur;
+  its source-color shoulder is 1.25px, with restrained diagonal neutral glints.
+  Phones retain 48px slots with 9px padding and 8px gaps. Items remain stationary.
+- Compact panels retain the same existing source-color filter passes. Optional
+  saturation/gain/spread inputs replace constants; compact callers use saturation
+  and RGB gain of 1, with 8px vertical diffusion (dock: 12px). No CPU color sampling,
+  additional source capture or filter primitive was added. Image-panel readiness
+  fallback now uses the actual blurred backdrop with 14% neutral coverage instead
+  of the former 94% white coverage. Active image panels remain transparent.
+- The collection caption uses a shallow 1.06× field. The profile uses the same
+  local illustration in a 168px circular avatar (160px on phones), with a 1.08×
+  menu lens and 1.5px local blur. Source planes remain opaque and bounded.
+- Whole collection covers, image tiles and review images open a native dialog.
+  One dialog replaces its content when navigating inside a collection; no nested
+  asset dialog is added. Closing retains the selected content through its 180ms
+  exit, then releases its panel. The original tile receives focus without scroll.
+  Dialogs now use one compact SVG panel with 2.5px local blur, replacing the
+  previous larger surface and full-overlay 6px backdrop blur. Entry is 300ms;
+  reduced motion uses a 100ms fade with no scale or translation.
+- Main image buttons retain the approved video/image shader. Preview and the
+  entire image open the same modal; Copy link copies the real asset URL with a
+  bounded state swap. Opening adds one compact dialog lens, governed by the
+  existing five/fine, three/coarse cap; no additional WebGL context is created.
+- Keyboard example changes use a 160ms fade. Native arrow-key selection remains;
+  Tab skips panel wrappers and reaches real controls. A single initial visibility
+  read mounts controls before paint, followed by the existing IntersectionObserver.
+  The dock is last in DOM order. No Tab interception or idle animation was added.
+- Evidence is a source review and passive development-log compilation entries,
+  not a frame benchmark. No tests, lint, typecheck, production build or registry
+  verification were run, as requested. Development-URL browser access remains
+  blocked, so appearance and native-device timings are unverified. Registry
+  packaging completed with 58 items and 70 shared source files.
+

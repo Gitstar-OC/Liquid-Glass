@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PreviewToolbar } from "@/components/site/preview-toolbar";
 import { PanelShowcase, SHOWCASE_EXAMPLES, type ShowcaseExample } from "@/components/landing/panel-showcase";
@@ -14,23 +14,30 @@ const DETAILS: ShowcaseExample[] = ["tooltip", "hover-card", "card"];
 function ExampleSection({ title, examples, id }: { title?: string; examples: ShowcaseExample[]; id?: string }) {
   const [selected, setSelected] = useState<ShowcaseExample>(examples[0]);
   const [direction, setDirection] = useState(1);
+  const [keyboard, setKeyboard] = useState(false);
+  const input = useRef<"pointer" | "keyboard">("pointer");
+  const keyboardHint = useId();
   const example = SHOWCASE_EXAMPLES.find(item => item.id === selected)!;
   return (
     <section className="landing-example-section" id={id} aria-label={title ?? "Interaction examples"}>
       <Tabs value={selected} onValueChange={next => {
+        setKeyboard(input.current === "keyboard");
         setDirection(examples.indexOf(next as ShowcaseExample) > examples.indexOf(selected) ? 1 : -1);
         setSelected(next as ShowcaseExample);
-      }} className="landing-interactions">
+      }} activationMode="automatic" className="landing-interactions">
         <header className="landing-interactions-heading">
           {title && <h2>{title}</h2>}
-          {examples.length > 1 && <TabsList variant="line" aria-label={title ?? "Component interactions"} className="landing-interaction-tabs">
+          {examples.length > 1 && <TabsList variant="line" aria-label={title ?? "Component interactions"} aria-describedby={keyboardHint} className="landing-interaction-tabs"
+            onPointerDownCapture={() => { input.current = "pointer"; }}
+            onKeyDownCapture={() => { input.current = "keyboard"; }}>
             {examples.map(value => <TabsTrigger key={value} value={value}>{SHOWCASE_EXAMPLES.find(item => item.id === value)!.name}</TabsTrigger>)}
           </TabsList>}
+          {examples.length > 1 && <p id={keyboardHint} className="sr-only">Arrow keys change examples. Tab moves to the selected example’s controls.</p>}
         </header>
-        <div className="landing-interaction-window" data-example={selected} style={{ "--slide-direction": direction } as CSSProperties}>
+        <div className="landing-interaction-window" data-example={selected} data-keyboard={keyboard || undefined} style={{ "--slide-direction": direction } as CSSProperties}>
           {examples.map(value => examples.length === 1 ? <div key={value} className="landing-interaction-panel" data-state="active">
             <PanelShowcase compact minimal initialExample={value} />
-          </div> : <TabsContent key={value} value={value} className="landing-interaction-panel">
+          </div> : <TabsContent key={value} value={value} tabIndex={-1} className="landing-interaction-panel">
             <PanelShowcase compact minimal initialExample={value} />
           </TabsContent>)}
         </div>

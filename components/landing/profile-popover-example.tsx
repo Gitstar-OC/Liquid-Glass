@@ -9,6 +9,7 @@ import { Dialog, DialogClose, DialogTitle, DialogDescription, GlassDialogContent
 import { GlassInput } from "@/components/glass/glass-input";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 /** The actual portrait and its complete paper plane are the refraction source.
  * One lens bends them together; there is no copied photo or custom alignment. */
@@ -35,9 +36,11 @@ export function ProfilePopoverExample() {
     <div id="profile-preview" ref={setContainer} className="profile-illustration-preview">
       <GlassScene appearance={resolvedMode} className="profile-illustration-scene" content={
         <div className="profile-illustration-source">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/profile-illustration.webp" width={720} height={720}
-            alt="Sculpted portrait with teal hair and a terracotta jacket" className="profile-illustration" decoding="async" />
+          <Avatar className="profile-illustration-avatar">
+            <AvatarImage src="/images/profile-illustration.webp" width={720} height={720}
+              alt={name} className="profile-illustration" decoding="async" />
+            <AvatarFallback>{name.split(/\s+/).slice(0, 2).map(part => part[0]).join("")}</AvatarFallback>
+          </Avatar>
         </div>
       }>
         <Popover open={open} onOpenChange={setOpen}>
@@ -45,9 +48,9 @@ export function ProfilePopoverExample() {
             <PopoverTrigger asChild><GlassButton ref={trigger} variant="glass" shape="circle" aria-label="Profile actions"><GlassIcon name="more" /></GlassButton></PopoverTrigger>
           </div>
           <GlassPopoverContent container={container} collisionBoundary={container ?? undefined} collisionPadding={20}
-            side="right" align="center" sideOffset={12} radius={24} shape="squircle"
+            side="left" align="center" sideOffset={12} radius={24} shape="squircle"
             aria-label="Profile actions" className="profile-illustration-menu"
-            lensParameters={{ magnification: 1.18, blur: 1, rimStrength: 1.1 }}
+            lensParameters={{ scale: 0.025, depth: 10, magnification: 1.08, blur: 1.5, rimStrength: 0.8, edgeHighlight: 0.38 }}
             onOpenAutoFocus={event => event.preventDefault()}
             onCloseAutoFocus={event => { if (editing) event.preventDefault(); }}>
             <div className="flex flex-col gap-1">
