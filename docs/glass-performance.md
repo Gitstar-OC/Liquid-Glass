@@ -223,15 +223,22 @@ a second opacity transition. There is no compact black shade texture/layer.
 Maps decode
 before reveal and are reused through the press. Pointer switch travel uses a
 400ms spring and a matching 400ms settling window; keyboard travel is zero. Tabs/groups
-keep one selected glass pill. Explicit highlighted options use a 650ms spring
+keep one selected glass pill. Explicit highlighted options use a 1000ms spring
 with retained velocity. Travel opens the lens by up to 4px width / 24px height;
-a 115ms decay softens contraction after positional arrival. Its real shape is
+a 205ms release softens contraction after positional arrival, and the final
+180ms closes with a zero-slope envelope. Its real shape is
 computed on a half-pixel geometry grid with the existing quadrant generator.
 Only shape changes request maps; translation reuses the field and SVG graph.
 Decoded map, rounded contour and reflection are accepted together, never stretched.
 The highlighted DOM retains native dimensions. One bounded travel callback ends
 on arrival, hidden-document changes, cancellation or unmount; no idle loop runs.
 Their persistent lens remains admitted until hidden/unmounted or deselected.
+The homepage dock uses one stationary `GlassLens` with the slider's compact
+optics and 22px corners. Its explicit source is only the surrounding neutral
+plane; four native square placeholders are sharp foreground children. A resize
+observer updates its fractional layout geometry, without an idle frame loop,
+scene mirror or per-item optical layer. Existing scene-backed docks retain
+their current renderer. The homepage still has one dock slot, not four.
 Slider dragging follows its native value immediately. Elastic endpoint release
 returns over 180ms; endpoint offsets
 are coalesced to one update per input frame. Value/position/offset changes reuse

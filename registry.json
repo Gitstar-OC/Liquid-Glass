@@ -418,7 +418,9 @@
       "docs": "http://localhost:3000/docs/glass-dock",
       "registryDependencies": [
         "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-lens.json",
         "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-target-lens.json",
         "http://localhost:3000/r/glass-tooltip.json"
       ],
       "files": [

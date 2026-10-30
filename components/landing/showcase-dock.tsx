@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { GlassDock, GlassDockItem } from "@/components/glass/glass-dock";
-import { GlassButton } from "@/components/glass/glass-button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -20,12 +19,17 @@ export function ShowcaseDock({
   onThemeChange: () => void;
 }) {
   return (
-    <GlassDock aria-label="Explore Liquid Glass" className="showcase-dock">
+    <GlassDock
+      material="lens"
+      refractionTarget={<div className="absolute -inset-32 bg-background" />}
+      aria-label="Explore Liquid Glass"
+      className="showcase-dock"
+    >
       {(
         [
-          { href: "/components", label: "Components", short: "UI" },
-          { href: "/playground", label: "Playground", short: "Playground" },
-          { href: "/docs", label: "Documentation", short: "Docs" },
+          { href: "/components", label: "Components" },
+          { href: "/playground", label: "Playground" },
+          { href: "/docs", label: "Documentation" },
         ] as const
       ).map((item) => (
         <GlassDockItem
@@ -35,28 +39,20 @@ export function ShowcaseDock({
           className="showcase-dock-link"
         >
           <Link href={item.href}>
-            {item.href === "/components" ? (
-              <>
-                <span className="dock-label-wide">Components</span>
-                <span className="dock-label-small">UI</span>
-              </>
-            ) : (
-              item.short
-            )}
+            <span aria-hidden="true" className="showcase-dock-placeholder" />
           </Link>
         </GlassDockItem>
       ))}
-      <span aria-hidden="true" className="mx-1 h-5 w-px bg-foreground/12" />
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <GlassButton
-            variant="ghost"
-            aria-label="Appearance and theme"
-            className="showcase-dock-link"
-          >
-            Theme
-          </GlassButton>
-        </DropdownMenuTrigger>
+        <GlassDockItem
+          label="Appearance and theme"
+          asChild
+          className="showcase-dock-link"
+        >
+          <DropdownMenuTrigger>
+            <span aria-hidden="true" className="showcase-dock-placeholder" />
+          </DropdownMenuTrigger>
+        </GlassDockItem>
         <GlassDropdownMenuContent
           side="top"
           sideOffset={14}

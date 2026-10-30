@@ -169,6 +169,10 @@ const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").match
 const server = () => false;
 const PADDING = 64;
 const OPTICS = CONTROL_LENS_PRESETS.selection;
+// Selection has its own pacing; the approved slider/switch springs stay intact.
+const SELECTION_DURATION = 1000;
+const CAP_RELEASE = 205;
+const CAP_SETTLE = 180;
 type Rect = { left: number; top: number; width: number; height: number };
 
 /** Native controls never resize. Only this small lens changes shape, using
@@ -271,7 +275,7 @@ function SelectionLens({ selection, owner, children }: {
     const to = { left: selection.left, top: selection.top, width: selection.width, height: selection.height };
     const from = pose.current ?? to, momentum = { ...velocity.current };
     const moving = Math.hypot(from.left - to.left, from.top - to.top) > 0.1;
-    const duration = selection.pointer && moving && admitted && !still && !solid ? 650 : 0;
+    const duration = selection.pointer && moving && admitted && !still && !solid ? SELECTION_DURATION : 0;
     let frame = 0, lift = 0;
     const start = performance.now();
     let last = start;
@@ -285,12 +289,15 @@ function SelectionLens({ selection, owner, children }: {
       }
       const distance = Math.max(0.1, Math.hypot(to.left - from.left, to.top - from.top));
       const arrival = 1 - Math.min(1, Math.hypot(to.left - next.left, to.top - next.top) / distance);
-      // Travel opens the cap; a short decay lets it close delicately after the
-      // positional spring arrives. It never grows before movement begins.
-      lift = elapsed < duration ? Math.max(Math.sin(Math.PI * arrival), lift * Math.exp(-(now - last) / 115)) : 0;
+      // Travel opens the cap. A slower release keeps its actual curved shape
+      // inspectable as the spring arrives, then closes with a zero-slope finish.
+      // There is no opening delay or separate grow-then-slide animation.
+      lift = elapsed < duration ? Math.max(Math.sin(Math.PI * arrival), lift * Math.exp(-(now - last) / CAP_RELEASE)) : 0;
       last = now;
-      const width = next.width + lift * 4, height = Math.min(to.height + 24, next.height + lift * 24);
-      const rect = { left: next.left - lift * 2, top: next.top - lift * 12, width, height };
+      const tail = duration ? Math.max(0, Math.min(1, (duration - elapsed) / CAP_SETTLE)) : 0;
+      const expansion = lift * tail * tail * (3 - 2 * tail);
+      const width = next.width + expansion * 4, height = Math.min(to.height + 24, next.height + expansion * 24);
+      const rect = { left: next.left - expansion * 2, top: next.top - expansion * 12, width, height };
       pose.current = rect;
       paint.current(rect);
       if (elapsed < duration) frame = requestAnimationFrame(draw);

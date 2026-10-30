@@ -196,8 +196,10 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - Music transport buttons are bare glyphs in one glass panel. Do not add a glass
   circle behind each playback icon. Keep accessible labels and 44px targets.
 - Sound and AirDrop use the same 20px rounded rectangle. They are not full capsules.
-- The homepage dock uses labelled 44px links, a single softly rounded 22px glass slab,
-  keyboard focus, and tooltips. Other docks can use 44px app glyphs.
+- The homepage dock has four blank 52px square placeholders (48px on phones) for
+  future icons, with accessible action names, keyboard focus and tooltips. They
+  share one stationary compact slider-style lens with 22px corners; do not give
+  each placeholder its own glass. Other docks can retain their app glyphs.
 - Action button groups use a capsule silhouette and individually rounded hit
   areas within one shared glass surface; do not inherit square shadcn group joins.
 - `liquidOnHold` reveals a standalone lens after 180ms of pointer intent. Release,
@@ -218,9 +220,11 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Cancellation, disabling and unmount clear work.
   Keyboard changes are instant; reduced motion removes travel and expansion.
 - Single-selection tabs/groups keep one persistent glass selection indicator.
-  Explicit targets use an interruptible 650ms spring, preserving momentum when
+  Explicit targets use an interruptible 1000ms spring, preserving momentum when
   retargeted. Travel opens the cap by up to 4px width / 24px height; it closes
-  delicately to normal dimensions while staying glass. Generate its real curved
+  delicately to normal dimensions while staying glass. A 205ms cap release and
+  a smooth final 180ms contraction keep the expanded optics inspectable without
+  a grow-before-slide delay. Generate its real curved
   shape on half-pixel geometry changes, never by stretching a tall bitmap.
   Pure translation reuses the field. The highlighted source retains its native
   size; a 46px navigation rail uses a 42px optical rail and 36px source items.

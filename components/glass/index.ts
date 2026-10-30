@@ -324,6 +324,7 @@ export {
 export { GlassIcon, type GlassIconName } from "@/components/glass/glass-icons";
 
 export { GlassDock, GlassDockItem } from "@/components/glass/glass-dock";
+export type { GlassDockProps } from "@/components/glass/glass-dock";
 
 export { GlassAtlas } from "@/components/glass-atlas";
 export { GlassElasticButton } from "@/components/glass/glass-elastic-button";

@@ -189,6 +189,18 @@ const API: Record<string, Prop[]> = {
     ],
     ["aria-label", "string", '"Dock"', "Names the navigation region."],
     [
+      "material / refractionTarget",
+      '"scene" | "lens" / ReactNode',
+      '"scene"',
+      "Scene material uses the bounded scene. Lens material requires a small, aligned refractionTarget and uses the slider's compact optical field around the whole dock. Items remain sharp; no per-item lens is added.",
+    ],
+    [
+      "radius",
+      "number",
+      "22",
+      "Corner radius in CSS pixels, shared by the lens and its contour.",
+    ],
+    [
       "GlassDockItem label",
       "string",
       "Required",

@@ -1135,3 +1135,37 @@ The public Aave navigation was inspected through its DOM and screenshots.
 Local visual parity, physical-device timing and the new media path remain
 unverified because browser policy blocks the development URL.
 Registry packaging completed with 57 entries and 68 shared source files.
+
+## 2026-10-30 — slower selection travel and four-slot compact dock
+
+- Navigation's explicit-target spring now runs for 1000ms instead of 650ms.
+  Its cap release is 205ms instead of 115ms, with a smooth final 180ms envelope
+  that reaches the resting dimensions without a last-frame scale jump. Growth
+  still follows positional travel; it does not expand before moving. Retargeting
+  retains current geometry and spring velocity. Reduced motion and keyboard
+  selection remain immediate. The slider, switch, shared sampler and presets
+  are unchanged.
+- This reuses selection's one interaction-bounded callback and seven-primitive
+  SVG graph. Half-pixel shape changes still use the quarter-map generator,
+  twelve-bundle cache and coordinated decode; translation does not request a
+  new field. The longer gesture can present more frames, but does not add an
+  observer, optical slot, React frame loop or idle work. This is a structural
+  comparison, not measured frame-time evidence.
+- The homepage dock now has four blank 52px squares (48px on phones) inside one
+  stationary compact `GlassLens`, using slider optics without the slider's
+  track-specific 21/6 interior zoom. Its neutral explicit plane matches the
+  surrounding homepage. Native links, theme menu and tooltips remain usable;
+  there are no separate item lenses, cloned page content or scene mirrors.
+  Existing scene-backed dock consumers retain their renderer.
+- At the nominal desktop layout, four 52px items, three 12px gaps and 12px
+  padding produce a 268 × 76px lens. Its 36px sampling pad produces a 340 × 148px
+  field, or 680 × 296 storage pixels per texture at 2× (201,280 pixels). This is
+  derived from the layout and optical formula, not a captured runtime size.
+  A resize observer changes geometry only when layout changes; static docking
+  starts no animation. The homepage retains one dock slot and the same five/fine,
+  three/coarse document budget.
+
+No tests, lint, typecheck, production build or benchmark were run, as requested.
+Local visual appearance and interaction timing remain unverified because browser
+policy blocks the development URL. Registry packaging completed with 57 entries
+and 68 shared source files.

@@ -468,34 +468,31 @@ summary {
 .showcase-dock {
   width: fit-content;
   max-width: calc(100vw - 32px);
-  gap: 2px;
-  padding: 10px;
-  background: transparent;
+  gap: 12px;
+  padding: 12px;
 }
 .showcase-dock .showcase-dock-link {
-  width: auto;
-  height: 44px;
-  padding-inline: 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border-radius: 13px;
   transform: none;
+  translate: none;
 }
-.dock-label-small {
-  display: none;
+.showcase-dock-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
 }
 @media (max-width: 479px) {
   .showcase-dock {
-    padding: 8px;
+    gap: 10px;
+    padding: 10px;
   }
   .showcase-dock .showcase-dock-link {
-    padding-inline: 10px;
-  }
-  .dock-label-wide {
-    display: none;
-  }
-  .dock-label-small {
-    display: inline;
+    width: 48px;
+    height: 48px;
   }
 }
 [data-glass-button][data-glass-compositor="atlas"] {
