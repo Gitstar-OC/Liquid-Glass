@@ -12,6 +12,117 @@
       "--ease-drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
     },
     "@layer components": {
+      ".glass-video-player": {
+        "position": "relative",
+        "isolation": "isolate",
+        "width": "100%",
+        "aspect-ratio": "16 / 9",
+        "overflow": "hidden",
+        "border-radius": "20px",
+        "background": "#171a12",
+        "color": "#fff"
+      },
+      ".glass-video-player > video, .glass-video-player > canvas": {
+        "position": "absolute",
+        "inset": "0",
+        "width": "100%",
+        "height": "100%",
+        "object-fit": "cover"
+      },
+      ".glass-video-player > canvas": {
+        "pointer-events": "none",
+        "opacity": "0"
+      },
+      ".glass-video-player[data-optical=\"true\"] > canvas": {
+        "opacity": "1"
+      },
+      ".glass-video-controls": {
+        "position": "absolute",
+        "inset": "0",
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "gap": "20px",
+        "pointer-events": "none"
+      },
+      ".glass-video-player .glass-video-button": {
+        "width": "46px",
+        "height": "46px",
+        "min-width": "46px",
+        "padding": "0",
+        "border": "0",
+        "border-radius": "999px",
+        "color": "#fff !important",
+        "background": "rgb(0 0 0 / .2)",
+        "box-shadow": "none",
+        "pointer-events": "auto"
+      },
+      ".glass-video-player .glass-video-play": {
+        "width": "76px",
+        "height": "76px"
+      },
+      ".glass-video-player .glass-video-button:hover": {
+        "background": "rgb(255 255 255 / .06)"
+      },
+      ".glass-video-player .glass-video-button:focus-visible, .glass-video-seek:has(input:focus-visible)": {
+        "outline": "2px solid white",
+        "outline-offset": "4px"
+      },
+      ".glass-video-player .glass-video-button svg": {
+        "width": "26px",
+        "height": "26px"
+      },
+      ".glass-video-player .glass-video-play svg": {
+        "width": "32px",
+        "height": "32px"
+      },
+      ".glass-video-seek": {
+        "position": "absolute",
+        "left": "18px",
+        "right": "18px",
+        "bottom": "18px",
+        "display": "flex",
+        "align-items": "center",
+        "height": "26px",
+        "padding-inline": "12px",
+        "border-radius": "999px",
+        "background": "rgb(0 0 0 / .2)"
+      },
+      ".glass-video-player[data-optical=\"true\"] :is(.glass-video-button,.glass-video-seek)": {
+        "background": "transparent !important"
+      },
+      ".glass-video-track": {
+        "width": "100%",
+        "height": "4px",
+        "overflow": "hidden",
+        "border-radius": "999px",
+        "background": "rgb(255 255 255 / .35)"
+      },
+      ".glass-video-track > span": {
+        "display": "block",
+        "height": "100%",
+        "border-radius": "inherit",
+        "background": "white"
+      },
+      ".glass-video-seek > input": {
+        "position": "absolute",
+        "inset-inline": "0",
+        "top": "-9px",
+        "width": "100%",
+        "height": "44px",
+        "margin": "0",
+        "opacity": "0",
+        "cursor": "pointer"
+      },
+      ".glass-video-error": {
+        "position": "absolute",
+        "top": "12px",
+        "left": "12px",
+        "padding": "6px 10px",
+        "border-radius": "8px",
+        "background": "rgb(0 0 0 / .6)",
+        "font-size": "12px"
+      },
       ".glass-chip": {
         "border": "0",
         "background": "color-mix(in oklab, var(--foreground) 5%, transparent)",
@@ -120,125 +231,114 @@
       "transform": "scale(1.045)"
     },
     ".glass-slider-thumb": {
-      "background": "linear-gradient(145deg,#ffffff90,#ffffff05 45%,#ffffff40)"
+      "background": "var(--slider-thumb-fill,var(--foreground))"
     },
-    ".glass-slider-thumb::before": {
-      "content": "\"\"",
-      "position": "absolute",
-      "inset": "0",
-      "border-radius": "inherit",
-      "background": "var(--slider-thumb-fill,var(--foreground))",
-      "opacity": "1",
-      "transition": "opacity 220ms var(--ease-out)"
+    "[data-appearance=\"lens\"] .glass-slider-thumb": {
+      "box-shadow": "0 2px 8px rgb(24 20 48 / .12)"
     },
-    "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
-      "transform": "scale(1.14,1.14)",
-      "backdrop-filter": "blur(.75px)",
-      "-webkit-backdrop-filter": "blur(.75px)",
-      "opacity": "1",
-      "transition-duration": "260ms",
-      "transition-delay": "60ms"
+    "[data-slot=\"slider\"]:has([data-lens-visible=\"true\"]) .glass-slider-thumb[data-lens-thumb=\"true\"]": {
+      "opacity": "0"
     },
-    "[data-liquid-pressed=\"true\"] .glass-slider-thumb::before": {
-      "opacity": "0",
-      "transition-delay": "60ms"
+    "[data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb:focus-visible": {
+      "outline": "2px solid var(--glass-action)",
+      "outline-offset": "3px"
     },
-    "[data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb, [data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb::before": {
-      "transition": "none"
+    "[data-slot=\"slider\"][data-input-modality=\"keyboard\"]:has([data-lens-visible=\"true\"]) > span:has(> [data-slot=\"slider-thumb\"]:focus-visible)": {
+      "z-index": "3",
+      "border-radius": "999px",
+      "outline": "2px solid var(--glass-action)",
+      "outline-offset": "3px"
     },
     ".glass-switch-thumb": {
-      "background": "#ffffff1a",
+      "background": "#fff",
       "scale": "1"
     },
-    ".glass-switch-thumb::before": {
+    ".glass-switch[data-input-modality=\"keyboard\"]:focus-visible": {
+      "outline": "2px solid var(--glass-action,var(--ring))",
+      "outline-offset": "4px"
+    },
+    ".glass-menu-panel :is([role^=\"menuitem\"],[role=\"option\"])": {
+      "min-height": "36px",
+      "padding": "8px 28px 8px 10px",
+      "border-radius": "10px",
+      "font-size": "13px",
+      "line-height": "20px"
+    },
+    ".glass-menu-panel :is([role^=\"menuitem\"],[role=\"option\"])[data-highlighted]": {
+      "background": "color-mix(in oklab,var(--foreground) 7%,transparent)",
+      "color": "var(--foreground)"
+    },
+    ".glass-menu-panel [data-slot=\"dropdown-menu-label\"]": {
+      "padding": "5px 10px 6px",
+      "font-size": "11px"
+    },
+    ".glass-selection-source > [data-glass-target-root] > [data-lens-original]": {
+      "display": "flex",
+      "align-items": "center",
+      "gap": "inherit",
+      "flex-direction": "inherit"
+    },
+    ".glass-selection-source": {
+      "gap": "inherit",
+      "flex-direction": "inherit"
+    },
+    ".glass-options-source": {
+      "position": "absolute",
+      "inset": "0",
+      "isolation": "isolate",
+      "display": "flex",
+      "align-items": "center",
+      "gap": "calc(var(--gap,2) * .25rem)"
+    },
+    ".glass-options-source[data-orientation=\"vertical\"]": {
+      "flex-direction": "column",
+      "align-items": "stretch"
+    },
+    ".glass-options-source::before": {
+      "content": "\"\"",
+      "position": "absolute",
+      "inset": "-128px",
+      "z-index": "-2",
+      "background": "var(--glass-lens-plane,var(--background))"
+    },
+    ".glass-options-source::after": {
       "content": "\"\"",
       "position": "absolute",
       "inset": "0",
-      "border-radius": "inherit",
-      "background": "#fff",
-      "transition": "opacity 160ms var(--ease-out)"
+      "z-index": "-1",
+      "border-radius": "999px",
+      "background": "var(--glass-selection-track,var(--muted))"
     },
-    "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
-      "scale": "1.3"
+    ".glass-options-source .glass-options-source-item": {
+      "color": "var(--glass-action)"
     },
-    "[data-liquid-pressed=\"true\"] .glass-switch-thumb::before": {
-      "opacity": ".12"
-    },
-    ".glass-switch-thumb::after": {
-      "content": "\"\"",
-      "position": "absolute",
-      "inset": "0",
-      "border-radius": "inherit",
-      "background-image": "var(--switch-light,none),var(--switch-shade,none)",
-      "background-size": "100% 100%",
-      "opacity": ".5",
-      "transition": "opacity 160ms var(--ease-out)"
-    },
-    "[data-liquid-pressed=\"true\"] .glass-switch-thumb::after": {
+    ".glass-options-source .glass-options-source-item svg": {
+      "color": "inherit",
       "opacity": "1"
     },
-    ".glass-command-dialog, .glass-command-overlay": {
-      "pointer-events": "auto",
-      "animation": "glass-command-enter 160ms var(--ease-out) both"
+    ".glass-options-source-item[data-disabled]": {
+      "opacity": ".4"
     },
-    "@keyframes glass-command-enter": {
-      "from": {
-        "opacity": "0"
-      },
-      "to": {
-        "opacity": "1"
-      }
+    ".glass-selection-source > [data-glass-target-root]": {
+      "display": "flex",
+      "align-items": "center",
+      "min-width": "0",
+      "gap": "inherit",
+      "flex-direction": "inherit"
     },
-    "[data-slot=\"switch\"][data-input-modality=\"keyboard\"] .glass-switch-thumb::before": {
-      "transition": "none"
+    ".glass-selection-source:has([data-lens-visible=\"true\"]) > [data-selection-fallback]": {
+      "opacity": "0 !important"
     },
-    ".glass-selection-indicator": {
-      "pointer-events": "none",
-      "position": "absolute",
-      "left": "0",
-      "top": "0",
-      "width": "var(--selection-w,0px)",
-      "height": "var(--selection-h,0px)",
-      "opacity": "var(--selection-opacity,0)",
-      "border-radius": "var(--selection-radius,999px)",
-      "transform": "translate(var(--selection-x,0px),var(--selection-y,0px))",
-      "background": "color-mix(in oklab,var(--foreground) 6%,transparent)",
-      "transition": "transform 300ms var(--ease-out), width 300ms var(--ease-out), height 300ms var(--ease-out), background-color 200ms var(--ease-out)"
-    },
-    "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
-      "background": "transparent"
-    },
-    "[data-liquid-selection] > [data-state]": {
+    "[data-liquid-selection] [data-state]": {
       "border": "0",
       "background": "transparent !important",
       "box-shadow": "none"
     },
-    "[data-liquid-selection] > [data-state]:hover": {
-      "background": "transparent !important"
+    "[data-liquid-selection] [data-state]:hover": {
+      "background": "color-mix(in oklab,var(--foreground) 4%,transparent) !important"
     },
-    "[data-liquid-selection][data-input-modality=\"keyboard\"] > .glass-selection-indicator": {
-      "transition": "none"
-    },
-    ".glass-elastic-button": {
-      "transition": "transform 320ms var(--ease-out), background-color 150ms var(--ease-out)"
-    },
-    ".glass-elastic-button[data-elastic-held=\"true\"]": {
-      "transition-duration": "80ms"
-    },
-    ".glass-elastic-button:hover": {
-      "background-color": "color-mix(in oklab,var(--foreground) 4%,transparent)"
-    },
-    "[data-glass-await-optics=\"true\"]": {
-      "transition": "opacity 120ms var(--ease-out)"
-    },
-    "[data-glass-await-optics=\"true\"][data-refraction=\"css\"][data-glass-rendering=\"active\"]": {
+    ".glass-switch:has([data-lens-visible=\"true\"]) .glass-switch-thumb": {
       "opacity": "0"
-    },
-    "[data-glass-await-optics=\"true\"][data-glass-admission=\"pending\"]": {
-      "opacity": "0"
-    },
-    ".glass-atlas-finish": {
-      "transition": "filter 240ms var(--ease-out)"
     },
     ".glass-tooltip-motion": {
       "--tooltip-x": "0px",
@@ -318,7 +418,7 @@
         "transition": "none",
         "transition-duration": "0s !important"
       },
-      ".glass-switch-thumb::before, .glass-switch-thumb::after, .glass-selection-indicator, .glass-atlas-finish": {
+      ".glass-switch-thumb::before, .glass-switch-thumb::after, .glass-atlas-finish": {
         "transition": "none"
       },
       ".glass-elastic-button": {
@@ -336,6 +436,14 @@
       },
       ".glass-player-details": {
         "animation": "none"
+      }
+    },
+    "@media (max-width: 479px)": {
+      ".glass-video-player": {
+        "aspect-ratio": "4 / 3"
+      },
+      ".glass-video-controls": {
+        "gap": "16px"
       }
     },
     "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
@@ -358,8 +466,8 @@
       ".glass-switch-thumb::before": {
         "opacity": "1 !important"
       },
-      "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
-        "background": "color-mix(in oklab,var(--foreground) 15%,var(--background))",
+      ".glass-selection-source > [data-selection-fallback]": {
+        "background": "color-mix(in oklab,var(--foreground) 15%,var(--background)) !important",
         "backdrop-filter": "none",
         "-webkit-backdrop-filter": "none"
       }

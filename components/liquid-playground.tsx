@@ -77,7 +77,14 @@ const GROUPS: { title: string; sliders: SliderDef[] }[] = [
   {
     title: "Material",
     sliders: [
-      { key: "blur", label: "Blur", min: 0, max: 30, step: 0.5, fmt: (v) => v.toFixed(1) },
+      {
+        key: "blur",
+        label: "Blur",
+        min: 0,
+        max: 30,
+        step: 0.5,
+        fmt: (v) => v.toFixed(1),
+      },
       {
         key: "saturate",
         label: "Saturate",
@@ -95,7 +102,14 @@ const GROUPS: { title: string; sliders: SliderDef[] }[] = [
         fmt: (v) => v.toFixed(2),
       },
       { key: "glint", label: "Glint", min: 0, max: 100, step: 1 },
-      { key: "tint", label: "Tint", min: 0, max: 1, step: 0.01, fmt: (v) => v.toFixed(2) },
+      {
+        key: "tint",
+        label: "Tint",
+        min: 0,
+        max: 1,
+        step: 0.01,
+        fmt: (v) => v.toFixed(2),
+      },
     ],
   },
   {
@@ -260,7 +274,7 @@ export default function LiquidPlayground({
               "cursor-pointer rounded-full px-2.5 py-1 text-[11px] font-medium",
               "text-muted-foreground transition-colors",
               "hover:bg-foreground/10 hover:text-foreground",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             )}
           >
             Reset
@@ -272,7 +286,7 @@ export default function LiquidPlayground({
             key={group.title}
             className={cn(
               "space-y-2.5 py-3",
-              gi > 0 && "border-t border-foreground/10"
+              gi > 0 && "border-t border-foreground/10",
             )}
           >
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
@@ -319,7 +333,7 @@ export default function LiquidPlayground({
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   mode === m.id
                     ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {m.label}

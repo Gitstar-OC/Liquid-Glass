@@ -1,40 +1,167 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { GlassLens } from "@/components/glass/glass-target-lens";
+import { CONTROL_LENS_PRESETS } from "@/lib/glass-lens-optics";
 
-/** One moving highlight for a single-selection Radix group. No extra lens. */
-export function useGlassSelection(enabled = true) {
-  const ref = useRef<HTMLDivElement>(null);
+const EMPTY = {
+  left: 0,
+  top: 0,
+  width: 2,
+  height: 2,
+  x: 0,
+  y: 0,
+  visible: false,
+  pointer: false,
+};
+
+/** The glass is the selected pill, including after its spring has settled. */
+export function GlassSelection({
+  children,
+  refractionTarget,
+}: {
+  children: ReactNode;
+  refractionTarget?: ReactNode;
+  /** @deprecated Selection glass is now persistent. */
+  opticalIdle?: boolean;
+}) {
+  const root = useRef<HTMLDivElement>(null);
+  const [selection, setSelection] = useState(EMPTY);
   useLayoutEffect(() => {
-    const root = ref.current;
-    if (!root || !enabled) return;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    let pointer = false, initialized = false, previous = "";
-    const stop = () => { clearTimeout(timer); root.dataset.liquidMoving = "false"; };
+    const node = root.current;
+    if (!node) return;
+    let pointer = false,
+      previous = "";
     const measure = () => {
-      const active = root.querySelector<HTMLElement>('[data-state="on"], [data-state="active"]');
-      if (!active) { root.style.setProperty("--selection-opacity", "0"); return; }
-      const a = active.getBoundingClientRect(), b = root.getBoundingClientRect();
-      const geometry = [a.left - b.left, a.top - b.top, a.width, a.height];
-      const key = geometry.join(",");
+      const item = node.querySelector<HTMLElement>(
+        '[data-state="on"], [data-state="active"]',
+      );
+      if (!item) {
+        previous = "";
+        setSelection((state) =>
+          state.visible ? { ...state, visible: false } : state,
+        );
+        return;
+      }
+      const a = item.getBoundingClientRect(),
+        b = node.getBoundingClientRect();
+      const left = a.left - b.left,
+        top = a.top - b.top;
+      const key = [left, top, a.width, a.height].join(",");
       if (key === previous) return;
-      root.dataset.inputModality = pointer && initialized ? "pointer" : "keyboard";
-      if (pointer && initialized) { root.dataset.liquidMoving = "true"; clearTimeout(timer); timer = setTimeout(stop, 300); }
-      geometry.forEach((value, i) => root.style.setProperty(["--selection-x", "--selection-y", "--selection-w", "--selection-h"][i], `${value}px`));
-      root.style.setProperty("--selection-opacity", "1");
-      initialized = true; previous = key;
+      previous = key;
+      setSelection({
+        left,
+        top,
+        width: a.width,
+        height: a.height,
+        x: left / Math.max(1, b.width - a.width),
+        y: top / Math.max(1, b.height - a.height),
+        visible: true,
+        pointer,
+      });
     };
     const onPointer = () => { pointer = true; };
-    const onKey = () => { pointer = false; stop(); };
-    const observer = new MutationObserver(measure);
-    observer.observe(root, {subtree: true, attributes: true, attributeFilter: ["data-state"]});
-    const resize = new ResizeObserver(() => { pointer = false; measure(); });
-    resize.observe(root); for (const item of root.querySelectorAll<HTMLElement>('[data-slot$="trigger"], [data-slot="toggle-group-item"]')) resize.observe(item);
-    root.addEventListener("pointerdown", onPointer, true); root.addEventListener("keydown", onKey, true);
+    const onKey = () => { pointer = false; };
+    const observer = new MutationObserver((records) => {
+      // Dynamic options may reorder/resize; optical filter mutations are not
+      // layout changes to the real controls and must not trigger measurement.
+      if (records.some(({ target }) => {
+        const element = target instanceof Element ? target : target.parentElement;
+        return !element?.closest("[data-glass-target-lens]");
+      })) measure();
+    });
+    observer.observe(node, {
+      subtree: true,
+      attributes: true,
+      childList: true,
+      characterData: true,
+      attributeFilter: ["data-state"],
+    });
+    const resize = typeof ResizeObserver === "undefined" ? null :
+      new ResizeObserver(() => {
+        pointer = false;
+        measure();
+      });
+    resize?.observe(node);
+    for (const item of node.querySelectorAll<HTMLElement>("[data-state]"))
+      resize?.observe(item);
+    node.addEventListener("pointerdown", onPointer, true);
+    node.addEventListener("keydown", onKey, true);
     measure();
-    return () => { stop(); observer.disconnect(); resize.disconnect(); root.removeEventListener("pointerdown", onPointer, true); root.removeEventListener("keydown", onKey, true); };
-  }, [enabled]);
-  return ref;
-}
+    return () => {
+      observer.disconnect();
+      resize?.disconnect();
+      node.removeEventListener("pointerdown", onPointer, true);
+      node.removeEventListener("keydown", onKey, true);
+    };
+  }, []);
 
-export function GlassSelectionIndicator() { return <span aria-hidden="true" className="glass-selection-indicator"/>; }
+  const indicator = {
+    lens: {
+      lensW: selection.width + (refractionTarget ? 8 : 0),
+      lensH: selection.height + (refractionTarget ? 16 : 0),
+      borderRadius: 999,
+    },
+    x: selection.x,
+    y: selection.y,
+    active: selection.visible,
+    parameters: CONTROL_LENS_PRESETS.selection,
+    duration: selection.pointer ? 500 : 0,
+  };
+  return (
+    <div
+      ref={root}
+      className="glass-selection-source relative flex min-w-0 flex-1 self-stretch"
+    >
+      <span
+        aria-hidden="true"
+        data-selection-fallback=""
+        style={{
+          position: "absolute",
+          pointerEvents: "none",
+          left: selection.left,
+          top: selection.top,
+          width: selection.width,
+          height: selection.height,
+          borderRadius: 999,
+          background: "color-mix(in oklab,var(--foreground) 8%,transparent)",
+          opacity: selection.visible ? 1 : 0,
+        }}
+      />
+      {refractionTarget ? (
+        <>
+          {children}
+          <GlassLens
+            {...indicator}
+            settledScale={{
+              x: selection.width / (selection.width + 8),
+              y: selection.height / (selection.height + 16),
+            }}
+            style={{
+              position: "absolute",
+              inset: "-8px -4px",
+              zIndex: 2,
+              pointerEvents: "none",
+            }}
+            refractionTarget={
+              <div style={{
+                position: "absolute",
+                left: 4,
+                top: 8,
+                width: "calc(100% - 8px)",
+                height: "calc(100% - 16px)",
+              }}>
+                {refractionTarget}
+              </div>
+            }
+          />
+        </>
+      ) : (
+        <GlassLens {...indicator} className="size-full">
+          {children}
+        </GlassLens>
+      )}
+    </div>
+  );
+}

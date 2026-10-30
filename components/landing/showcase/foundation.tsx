@@ -271,13 +271,13 @@ export function FoundationShowcase() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {(
-              ["default", "secondary", "outline", "destructive"] as const
-            ).map((variant) => (
-              <GlassBadge key={variant} variant={variant}>
-                {variant}
-              </GlassBadge>
-            ))}
+            {(["default", "secondary", "outline", "destructive"] as const).map(
+              (variant) => (
+                <GlassBadge key={variant} variant={variant}>
+                  {variant}
+                </GlassBadge>
+              ),
+            )}
           </div>
         </div>
       </Scene>

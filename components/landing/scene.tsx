@@ -50,7 +50,7 @@ export function Scene({
         span === 7 && "lg:col-span-7",
         span === 6 && "lg:col-span-6",
         span === 5 && "lg:col-span-5",
-        span === 4 && "lg:col-span-4"
+        span === 4 && "lg:col-span-4",
       )}
     >
       <header className="mb-5 flex items-start justify-between gap-6">
@@ -75,7 +75,7 @@ export function Scene({
       <div
         className={cn(
           "scene-stage relative flex min-h-[300px] flex-1 items-center justify-center overflow-hidden rounded-[var(--surface-radius)] border border-foreground/8 bg-[#08080d] p-6 sm:p-8",
-          stageClassName
+          stageClassName,
         )}
       >
         <div

@@ -153,12 +153,7 @@ export function NavigationShowcase() {
                 ],
                 [
                   "Edit",
-                  [
-                    ["Undo", "⌘Z"],
-                    ["Redo", "⇧⌘Z"],
-                    null,
-                    ["Paste", "⇧⌘V"],
-                  ],
+                  [["Undo", "⌘Z"], ["Redo", "⇧⌘Z"], null, ["Paste", "⇧⌘V"]],
                 ],
                 [
                   "View",
@@ -183,7 +178,7 @@ export function NavigationShowcase() {
                             </GlassMenubarShortcut>
                           ) : null}
                         </GlassMenubarItem>
-                      )
+                      ),
                     )}
                   </GlassMenubarContent>
                 </GlassMenubarMenu>
@@ -247,7 +242,9 @@ export function NavigationShowcase() {
               <GlassNavigationMenu className="flex-1">
                 <GlassNavigationMenuList>
                   <GlassNavigationMenuItem>
-                    <GlassNavigationMenuTrigger>Components</GlassNavigationMenuTrigger>
+                    <GlassNavigationMenuTrigger>
+                      Components
+                    </GlassNavigationMenuTrigger>
                     <GlassNavigationMenuContent>
                       <ul className="grid w-[min(38rem,80vw)] gap-1 sm:grid-cols-2">
                         {[
@@ -272,10 +269,14 @@ export function NavigationShowcase() {
                   </GlassNavigationMenuItem>
 
                   <GlassNavigationMenuItem>
-                    <GlassNavigationMenuTrigger>Materials</GlassNavigationMenuTrigger>
+                    <GlassNavigationMenuTrigger>
+                      Materials
+                    </GlassNavigationMenuTrigger>
                   </GlassNavigationMenuItem>
                   <GlassNavigationMenuItem>
-                    <GlassNavigationMenuTrigger>Docs</GlassNavigationMenuTrigger>
+                    <GlassNavigationMenuTrigger>
+                      Docs
+                    </GlassNavigationMenuTrigger>
                   </GlassNavigationMenuItem>
                 </GlassNavigationMenuList>
               </GlassNavigationMenu>

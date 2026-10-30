@@ -17,8 +17,10 @@ export interface GlassTrack {
   src: string;
   artwork?: string;
 }
-export interface GlassMusicPlayerProps
-  extends Omit<GlassSurfaceProps, "kind" | "children"> {
+export interface GlassMusicPlayerProps extends Omit<
+  GlassSurfaceProps,
+  "kind" | "children"
+> {
   tracks: readonly GlassTrack[];
   compact?: boolean;
   footer?: ReactNode;
@@ -26,7 +28,7 @@ export interface GlassMusicPlayerProps
   trackIndex?: number;
   expandable?: boolean;
   expanded?: boolean;
-  onExpandedChange?: (expanded:boolean)=>void;
+  onExpandedChange?: (expanded: boolean) => void;
   defaultVolume?: number;
   volume?: number;
   onVolumeValueChange?: (volume: number) => void;
@@ -68,13 +70,28 @@ export function GlassMusicPlayer({
       ? Math.max(0, Math.min(1, defaultVolume))
       : 0.4,
   );
-  const volume = Math.max(0, Math.min(1, Number.isFinite(controlledVolume) ? controlledVolume! : localVolume));
+  const volume = Math.max(
+    0,
+    Math.min(
+      1,
+      Number.isFinite(controlledVolume) ? controlledVolume! : localVolume,
+    ),
+  );
   const [error, setError] = useState(false);
-  const [localExpanded,setExpanded]=useState(!expandable);
-  const expanded=!expandable || (controlledExpanded ?? localExpanded);
-  const changeExpanded=(next:boolean)=>{setExpanded(next);onExpandedChange?.(next);};
-  const selectedIndex=trackIndex!==undefined && Number.isFinite(trackIndex) ? Math.trunc(trackIndex) : index;
-  const activeIndex = Math.max(0,Math.min(selectedIndex, Math.max(0, tracks.length - 1)));
+  const [localExpanded, setExpanded] = useState(!expandable);
+  const expanded = !expandable || (controlledExpanded ?? localExpanded);
+  const changeExpanded = (next: boolean) => {
+    setExpanded(next);
+    onExpandedChange?.(next);
+  };
+  const selectedIndex =
+    trackIndex !== undefined && Number.isFinite(trackIndex)
+      ? Math.trunc(trackIndex)
+      : index;
+  const activeIndex = Math.max(
+    0,
+    Math.min(selectedIndex, Math.max(0, tracks.length - 1)),
+  );
   const track = tracks[activeIndex];
   useEffect(() => {
     const element = audio.current;
@@ -89,7 +106,7 @@ export function GlassMusicPlayer({
   const toggle = async () => {
     const element = audio.current;
     if (!element || !track) return;
-    if(expandable && !expanded) changeExpanded(true);
+    if (expandable && !expanded) changeExpanded(true);
     if (element.paused) {
       try {
         await element.play();
@@ -119,18 +136,30 @@ export function GlassMusicPlayer({
       surface="clear"
       config={config}
       data-player-expanded={expanded}
-      className={cn("w-full max-w-[300px] p-5", expandable && !expanded && "p-3", className)}
+      className={cn(
+        "w-full max-w-[300px] p-5",
+        expandable && !expanded && "p-3",
+        className,
+      )}
       {...props}
     >
-      {!compact && <div className="mb-4 flex items-center justify-between text-xs font-medium text-foreground/65">
-        <span>Now playing</span>
-        <GlassIcon name="wave"
-          aria-hidden="true"
-          className={cn("size-4", playing && "text-foreground")}
-        />
-      </div>}
+      {!compact && (
+        <div className="mb-4 flex items-center justify-between text-xs font-medium text-foreground/65">
+          <span>Now playing</span>
+          <GlassIcon
+            name="wave"
+            aria-hidden="true"
+            className={cn("size-4", playing && "text-foreground")}
+          />
+        </div>
+      )}
       <div className="flex items-center gap-3">
-        <div className={cn("grid size-14 shrink-0 place-items-center overflow-hidden rounded-[12px] bg-foreground/8", compact && "size-11")}>
+        <div
+          className={cn(
+            "grid size-14 shrink-0 place-items-center overflow-hidden rounded-[12px] bg-foreground/8",
+            compact && "size-11",
+          )}
+        >
           {track?.artwork ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -145,86 +174,126 @@ export function GlassMusicPlayer({
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className={cn("truncate text-base font-semibold tracking-[-.025em]", compact && "text-sm")}>
+          <h3
+            className={cn(
+              "truncate text-base font-semibold tracking-[-.025em]",
+              compact && "text-sm",
+            )}
+          >
             {track?.title ?? "Nothing queued"}
           </h3>
-          <p className={cn("mt-1.5 text-xs text-foreground/70", compact && "mt-1 text-[11px]")}>
+          <p
+            className={cn(
+              "mt-1.5 text-xs text-foreground/70",
+              compact && "mt-1 text-[11px]",
+            )}
+          >
             {track?.artist ?? "Choose a track to begin"}
           </p>
         </div>
-        {expandable && <GlassButton variant="ghost" shape="circle" className="size-10 shrink-0 p-0" aria-label={expanded ? "Minimize music player" : "Play music and expand"} onClick={()=>expanded ? changeExpanded(false) : void toggle()}><GlassIcon name={expanded ? "down" : "play"}/></GlassButton>}
+        {expandable && (
+          <GlassButton
+            variant="ghost"
+            shape="circle"
+            className="size-10 shrink-0 p-0"
+            aria-label={
+              expanded ? "Minimize music player" : "Play music and expand"
+            }
+            onClick={() => (expanded ? changeExpanded(false) : void toggle())}
+          >
+            <GlassIcon name={expanded ? "down" : "play"} />
+          </GlassButton>
+        )}
       </div>
-      {expanded && <div className="glass-player-details">
-      <GlassSlider
-        aria-label="Playback position" tone="accent"
-        className="mt-3"
-        min={0}
-        max={duration || 1}
-        step={0.1}
-        value={[Math.min(position, duration || 1)]}
-        disabled={!duration}
-        onValueChange={([value]) => {
-          if (audio.current) audio.current.currentTime = value;
-          setPosition(value);
-        }}
-      />
-      <div className="flex justify-between text-[10px] text-foreground/65 tabular-nums">
-        <span>{stamp(position)}</span>
-        <span>{stamp(duration)}</span>
-      </div>
-      <div className="my-2 flex items-center justify-center gap-3">
-        <GlassButton
-          type="button"
-          variant="ghost"
-          disabled={!track}
-          aria-label="Previous track"
-          className="grid size-11 place-items-center rounded-full p-0 disabled:opacity-30"
-          onClick={() => skip(-1)}
-        >
-          <GlassIcon name="previous" className="size-5" />
-        </GlassButton>
-        <GlassButton
-          type="button"
-          variant="ghost"
-          disabled={!track}
-          aria-label={playing ? "Pause music" : "Play music"}
-          className="grid size-12 place-items-center rounded-full p-0 disabled:opacity-30"
-          onClick={event => {setAnimatePlayback(event.detail > 0);void toggle();}}
-        >
-          <GlassStateSwap active={playing} animate={animatePlayback} from={<GlassIcon name="play" className="size-7" />} to={<GlassIcon name="pause" className="size-7" />} />
-        </GlassButton>
-        <GlassButton
-          type="button"
-          variant="ghost"
-          disabled={!track}
-          aria-label="Next track"
-          className="grid size-11 place-items-center rounded-full p-0 disabled:opacity-30"
-          onClick={() => skip(1)}
-        >
-          <GlassIcon name="next" className="size-5" />
-        </GlassButton>
-      </div>
-      {!compact && <div className="flex items-center gap-3 pt-2">
-        <GlassIcon name="speaker"
-          aria-hidden="true"
-          className="size-3.5 shrink-0 text-foreground/70"
-        />
-        <GlassSlider
-          aria-label="Music volume" tone="accent"
-          min={0}
-          max={1}
-          step={0.01}
-          value={[volume]}
-          onValueChange={([value]) => {setVolume(value);onVolumeValueChange?.(value);}}
-        />
-      </div>}
-      {footer && <div className="mt-3">{footer}</div>}
-      {error && (
-        <p role="alert" className="mt-3 text-xs text-muted-foreground">
-          This track couldn’t be played.
-        </p>
+      {expanded && (
+        <div className="glass-player-details">
+          <GlassSlider
+            aria-label="Playback position"
+            tone="accent"
+            className="mt-3"
+            min={0}
+            max={duration || 1}
+            step={0.1}
+            value={[Math.min(position, duration || 1)]}
+            disabled={!duration}
+            onValueChange={([value]) => {
+              if (audio.current) audio.current.currentTime = value;
+              setPosition(value);
+            }}
+          />
+          <div className="flex justify-between text-[10px] text-foreground/65 tabular-nums">
+            <span>{stamp(position)}</span>
+            <span>{stamp(duration)}</span>
+          </div>
+          <div className="my-2 flex items-center justify-center gap-3">
+            <GlassButton
+              type="button"
+              variant="ghost"
+              disabled={!track}
+              aria-label="Previous track"
+              className="grid size-11 place-items-center rounded-full p-0 disabled:opacity-30"
+              onClick={() => skip(-1)}
+            >
+              <GlassIcon name="previous" className="size-5" />
+            </GlassButton>
+            <GlassButton
+              type="button"
+              variant="ghost"
+              disabled={!track}
+              aria-label={playing ? "Pause music" : "Play music"}
+              className="grid size-12 place-items-center rounded-full p-0 disabled:opacity-30"
+              onClick={(event) => {
+                setAnimatePlayback(event.detail > 0);
+                void toggle();
+              }}
+            >
+              <GlassStateSwap
+                active={playing}
+                animate={animatePlayback}
+                from={<GlassIcon name="play" className="size-7" />}
+                to={<GlassIcon name="pause" className="size-7" />}
+              />
+            </GlassButton>
+            <GlassButton
+              type="button"
+              variant="ghost"
+              disabled={!track}
+              aria-label="Next track"
+              className="grid size-11 place-items-center rounded-full p-0 disabled:opacity-30"
+              onClick={() => skip(1)}
+            >
+              <GlassIcon name="next" className="size-5" />
+            </GlassButton>
+          </div>
+          {!compact && (
+            <div className="flex items-center gap-3 pt-2">
+              <GlassIcon
+                name="speaker"
+                aria-hidden="true"
+                className="size-3.5 shrink-0 text-foreground/70"
+              />
+              <GlassSlider
+                aria-label="Music volume"
+                tone="accent"
+                min={0}
+                max={1}
+                step={0.01}
+                value={[volume]}
+                onValueChange={([value]) => {
+                  setVolume(value);
+                  onVolumeValueChange?.(value);
+                }}
+              />
+            </div>
+          )}
+          {footer && <div className="mt-3">{footer}</div>}
+          {error && (
+            <p role="alert" className="mt-3 text-xs text-muted-foreground">
+              This track couldn’t be played.
+            </p>
+          )}
+        </div>
       )}
-      </div>}
       <audio
         ref={audio}
         src={track?.src}

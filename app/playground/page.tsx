@@ -1,5 +1,5 @@
 import { PageHeader } from "@/components/site/page-header";
-import { EnginePlayground } from "@/components/engine-playground";
+import { PlaygroundWorkbench } from "@/components/playground-workbench";
 import { SiteHeader } from "@/components/landing/site-header";
 export const metadata = {
   title: "Playground — Liquid Glass",
@@ -10,14 +10,14 @@ export default function PlaygroundPage() {
   return (
     <main className="site-shell min-h-screen bg-background px-5 text-foreground sm:px-8">
       <SiteHeader active="playground" />
-      <section className="mx-auto w-full max-w-6xl pt-10 pb-10 sm:pt-12">
+      <section className="mx-auto w-full max-w-5xl pt-10 pb-10 sm:pt-12">
         <PageHeader
           title="Playground"
-          description="Move the lens, edit the scene, and adjust the optics."
+          description="Tune the control lens or work with a live scene."
           className="pt-0"
         />
         <div>
-          <EnginePlayground />
+          <PlaygroundWorkbench />
         </div>
       </section>
     </main>

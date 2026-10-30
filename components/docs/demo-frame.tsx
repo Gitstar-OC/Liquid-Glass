@@ -2,32 +2,39 @@
 
 import * as React from "react";
 import { GlassScene } from "@/components/glass-scene";
+import { useGlassTheme } from "@/components/glass/glass-theme-provider";
+import { SceneBackdrop } from "@/components/site/scene-backdrop";
 
 /**
- * The stage a component demo sits on: a lit backdrop with enough structure
- * that refraction is actually visible, and a quiet dotted plane so small
- * components still read.
+ * A bounded local photo or plain canvas, using the current appearance.
  */
 export function DemoFrame({
   label,
   children,
+  backdrop = "photos",
 }: {
   label?: string;
   children: React.ReactNode;
+  backdrop?: "photos" | "plain";
 }) {
+  const { resolvedMode } = useGlassTheme();
   return (
     <figure className="overflow-hidden rounded-[20px] border border-border bg-background">
       <GlassScene
-        appearance="light"
+        appearance={resolvedMode}
         className="min-h-[280px]"
         content={
-          <div className="absolute inset-0 bg-slate-100">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/stage-refraction.jpg"
-              alt=""
-              className="size-full object-cover opacity-65"
-            />
+          <div className="absolute inset-0 bg-muted/40">
+            {backdrop === "photos" && (
+              <>
+                <SceneBackdrop
+                  photo={resolvedMode === "dark" ? "ice" : "dunes"}
+                />
+                {resolvedMode === "dark" && (
+                  <div className="absolute inset-0 bg-black/25" />
+                )}
+              </>
+            )}
           </div>
         }
       >

@@ -2,7 +2,10 @@
 
 import * as React from "react";
 import { Pause, Play } from "lucide-react";
-import { AdaptiveText, useAdaptiveContrast } from "@/components/adaptive-contrast";
+import {
+  AdaptiveText,
+  useAdaptiveContrast,
+} from "@/components/adaptive-contrast";
 import { GlassButton } from "@/components/glass";
 import { CanvasField } from "@/components/landing/canvas-field";
 import { Reveal } from "@/components/landing/reveal";
@@ -14,7 +17,10 @@ const PALETTE = ["#ffb347", "#4ade80", "#60a5fa", "#f472b6", "#c084fc"];
 const NOTES = [
   ["Pixel-accurate", "Reads real canvas pixels and composited CSS paints."],
   ["Translucency aware", "Every translucent layer is alpha-composited first."],
-  ["Motion friendly", "Re-measures per frame, so drifting light never breaks it."],
+  [
+    "Motion friendly",
+    "Re-measures per frame, so drifting light never breaks it.",
+  ],
 ] as const;
 
 export function AdaptiveStage() {
@@ -26,7 +32,10 @@ export function AdaptiveStage() {
   const passes = sample.contrast >= 4.5;
 
   return (
-    <section id="adaptive" className="relative scroll-mt-24 px-6 py-24 sm:py-32">
+    <section
+      id="adaptive"
+      className="relative scroll-mt-24 px-6 py-24 sm:py-32"
+    >
       <div className="mx-auto w-full max-w-5xl">
         <SectionHeading
           eyebrow="Adaptive ink"
@@ -58,12 +67,7 @@ export function AdaptiveStage() {
             </div>
 
             <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 sm:inset-x-6 sm:bottom-6">
-              <LiquidGlass
-                preset="clear"
-                radius={999}
-                pad={48}
-                className="p-1"
-              >
+              <LiquidGlass preset="clear" radius={999} pad={48} className="p-1">
                 <GlassButton
                   variant="glass"
                   size="icon-sm"
@@ -89,7 +93,9 @@ export function AdaptiveStage() {
                   <span className="h-3 w-px bg-foreground/15" />
                   <span>{sample.tone === "light" ? "white" : "black"} ink</span>
                   <span className="h-3 w-px bg-foreground/15" />
-                  <span className={passes ? "text-emerald-400" : "text-amber-400"}>
+                  <span
+                    className={passes ? "text-emerald-400" : "text-amber-400"}
+                  >
                     {ratio}:1
                   </span>
                 </div>

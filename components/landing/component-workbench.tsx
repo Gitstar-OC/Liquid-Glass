@@ -2,7 +2,10 @@
 import { ButtonExamples } from "@/components/gallery/button-examples";
 import { PreviewToolbar } from "@/components/site/preview-toolbar";
 import { SceneBackdrop } from "@/components/site/scene-backdrop";
-import { GlassToggleGroup, GlassToggleGroupItem } from "@/components/glass/glass-toggle";
+import {
+  GlassToggleGroup,
+  GlassToggleGroupItem,
+} from "@/components/glass/glass-toggle";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -74,11 +77,7 @@ import { GLASS_DEFAULT_PARAMS } from "@/lib/glass";
 import { DEMO_PHOTOS } from "@/lib/demo-assets";
 
 export type ComponentCategory =
-  | "buttons"
-  | "forms"
-  | "navigation"
-  | "overlays"
-  | "feedback";
+  "buttons" | "forms" | "navigation" | "overlays" | "feedback";
 const CATEGORIES: {
   id: ComponentCategory;
   label: string;
@@ -173,9 +172,7 @@ export function ComponentExample({
   if (category === "forms")
     return (
       <GlassSurface kind="card" className="w-full max-w-xs p-6 text-foreground">
-        <h3 className="mb-5 text-base font-medium tracking-tight">
-          Profile
-        </h3>
+        <h3 className="mb-5 text-base font-medium tracking-tight">Profile</h3>
         <GlassForm
           onSubmit={(event) => {
             event.preventDefault();
@@ -511,9 +508,29 @@ export function ComponentWorkbench() {
       id="components"
       className="mx-auto mt-14 w-full max-w-5xl scroll-mt-8 sm:mt-16"
     >
-      <div className="mb-5 flex items-center justify-between gap-4"><h2 className="text-xl font-medium">Components</h2><Link href="/components" className="text-xs text-muted-foreground hover:text-foreground">View all</Link></div>
-      <GlassToggleGroup type="single" value={category} onValueChange={value => { if(value) setCategory(value as ComponentCategory); }} aria-label="Component categories" className="mb-4 flex flex-wrap justify-start gap-2">
-        {CATEGORIES.map(item => <GlassToggleGroupItem key={item.id} value={item.id}>{item.label}</GlassToggleGroupItem>)}
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <h2 className="text-xl font-medium">Components</h2>
+        <Link
+          href="/components"
+          className="text-xs text-muted-foreground hover:text-foreground"
+        >
+          View all
+        </Link>
+      </div>
+      <GlassToggleGroup
+        type="single"
+        value={category}
+        onValueChange={(value) => {
+          if (value) setCategory(value as ComponentCategory);
+        }}
+        aria-label="Component categories"
+        className="mb-4 flex flex-wrap justify-start gap-2"
+      >
+        {CATEGORIES.map((item) => (
+          <GlassToggleGroupItem key={item.id} value={item.id}>
+            {item.label}
+          </GlassToggleGroupItem>
+        ))}
       </GlassToggleGroup>
       <div>
         <ComponentPreview
@@ -523,7 +540,14 @@ export function ComponentWorkbench() {
           blur={blur}
         />
       </div>
-      <PreviewToolbar photo={backdrop} onPhotoChange={setBackdrop} blur={blur} onBlurChange={setBlur} label="Component" href={`/docs/${current.doc}`} />
+      <PreviewToolbar
+        photo={backdrop}
+        onPhotoChange={setBackdrop}
+        blur={blur}
+        onBlurChange={setBlur}
+        label="Component"
+        href={`/docs/${current.doc}`}
+      />
     </section>
   );
 }

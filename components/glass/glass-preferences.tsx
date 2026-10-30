@@ -16,7 +16,13 @@ import {
 } from "@/components/ui/card";
 import { GlassButton as Button } from "@/components/glass/glass-button";
 import { GlassInput as Input } from "@/components/glass/glass-input";
-import { Field, FieldGroup, FieldLabel as Label, FieldDescription, FieldContent } from "@/components/ui/field";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel as Label,
+  FieldDescription,
+  FieldContent,
+} from "@/components/ui/field";
 import { GlassSwitch as Switch } from "@/components/glass/glass-switch";
 import { cn } from "@/lib/utils";
 
@@ -74,47 +80,52 @@ export function GlassPreferences({
             }
           }}
         >
-          <CardContent className="pb-6"><FieldGroup>
-            <Field>
-              <Label htmlFor={`${id}-name`} className="text-[13px]">
-                Workspace name
-              </Label>
-              <Input
-                id={`${id}-name`}
-                name="workspace"
-                required
-                maxLength={48}
-                pattern={".*\\S.*"}
-                value={name}
-                disabled={status === "saving"}
-                className="w-full"
-                onChange={(event) => {
-                  setName(event.target.value);
-                  setStatus("idle");
-                }}
-              />
-            </Field>
-            <Field orientation="horizontal" className="items-center">
-              <FieldContent>
-                <Label htmlFor={`${id}-notifications`} className="text-[13px]">
-                  Notifications
+          <CardContent className="pb-6">
+            <FieldGroup>
+              <Field>
+                <Label htmlFor={`${id}-name`} className="text-[13px]">
+                  Workspace name
                 </Label>
-                <FieldDescription id={`${id}-hint`}>
-                  Updates and activity from your team.
-                </FieldDescription>
-              </FieldContent>
-              <Switch
-                id={`${id}-notifications`}
-                aria-describedby={`${id}-hint`}
-                checked={notifications}
-                disabled={status === "saving"}
-                onCheckedChange={(value) => {
-                  setNotifications(value);
-                  setStatus("idle");
-                }}
-              />
-            </Field>
-          </FieldGroup></CardContent>
+                <Input
+                  id={`${id}-name`}
+                  name="workspace"
+                  required
+                  maxLength={48}
+                  pattern={".*\\S.*"}
+                  value={name}
+                  disabled={status === "saving"}
+                  className="w-full"
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    setStatus("idle");
+                  }}
+                />
+              </Field>
+              <Field orientation="horizontal" className="items-center">
+                <FieldContent>
+                  <Label
+                    htmlFor={`${id}-notifications`}
+                    className="text-[13px]"
+                  >
+                    Notifications
+                  </Label>
+                  <FieldDescription id={`${id}-hint`}>
+                    Updates and activity from your team.
+                  </FieldDescription>
+                </FieldContent>
+                <Switch
+                  id={`${id}-notifications`}
+                  aria-describedby={`${id}-hint`}
+                  checked={notifications}
+                  disabled={status === "saving"}
+                  onCheckedChange={(value) => {
+                    setNotifications(value);
+                    setStatus("idle");
+                  }}
+                />
+              </Field>
+            </FieldGroup>
+          </CardContent>
           <CardFooter className="flex-wrap justify-between gap-3 bg-transparent py-4">
             <p
               role="status"

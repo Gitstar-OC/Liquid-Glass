@@ -36,7 +36,10 @@ export function GlassCommandInput({
         data-slot="input-group"
         className="flex h-12 items-center gap-3 px-5"
       >
-        <SearchIcon aria-hidden="true" className="size-[18px] shrink-0 opacity-55" />
+        <SearchIcon
+          aria-hidden="true"
+          className="size-[18px] shrink-0 opacity-55"
+        />
         <CommandPrimitive.Input
           data-slot="command-input"
           // cmdk renders a bare <input>; without a name the control is
@@ -71,7 +74,9 @@ export function GlassCommandDialog({
   surface?: import("@/lib/glass-theme").GlassSurface;
   config?: Partial<import("@/lib/glass").LensParams>;
   container?: HTMLElement | null;
-  onCloseAutoFocus?: React.ComponentProps<typeof DialogPrimitive.Content>["onCloseAutoFocus"];
+  onCloseAutoFocus?: React.ComponentProps<
+    typeof DialogPrimitive.Content
+  >["onCloseAutoFocus"];
 }) {
   const { resolvedMode } = useGlassTheme();
   return (
@@ -98,7 +103,12 @@ export function GlassCommandDialog({
             kind="command"
             radius={24}
             surface={surface}
-            config={{ blur: 24, tint: resolvedMode === "dark" ? .62 : .5, tintColor: resolvedMode === "dark" ? "#2a2b2e" : "#ffffff", ...config }}
+            config={{
+              blur: 24,
+              tint: resolvedMode === "dark" ? 0.62 : 0.5,
+              tintColor: resolvedMode === "dark" ? "#2a2b2e" : "#ffffff",
+              ...config,
+            }}
             tintBlendMode="normal"
             className={cn("overflow-hidden", className)}
           >
@@ -112,17 +122,46 @@ export function GlassCommandDialog({
 
 /** Shared footer keeps command palettes aligned across docs and examples. */
 export function GlassCommandFooter() {
-  return <>
-    <Separator className="bg-foreground/10" />
-    <div className="flex h-11 shrink-0 items-center justify-between gap-3 px-4 text-[11px] text-foreground/55">
-      <span className="flex items-center gap-1"><ArrowUp aria-hidden="true" className="size-3"/><ArrowDown aria-hidden="true" className="size-3"/><span className="ml-1">Navigate</span></span>
-      <span className="flex items-center gap-3"><span className="flex items-center gap-1.5"><CornerDownLeft aria-hidden="true" className="size-3"/>Open</span><span className="hidden items-center gap-1.5 sm:flex"><kbd className="font-sans text-[10px]">esc</kbd>Close</span></span>
-    </div>
-  </>;
+  return (
+    <>
+      <Separator className="bg-foreground/10" />
+      <div className="flex h-11 shrink-0 items-center justify-between gap-3 px-4 text-[11px] text-foreground/55">
+        <span className="flex items-center gap-1">
+          <ArrowUp aria-hidden="true" className="size-3" />
+          <ArrowDown aria-hidden="true" className="size-3" />
+          <span className="ml-1">Navigate</span>
+        </span>
+        <span className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5">
+            <CornerDownLeft aria-hidden="true" className="size-3" />
+            Open
+          </span>
+          <span className="hidden items-center gap-1.5 sm:flex">
+            <kbd className="font-sans text-[10px]">esc</kbd>Close
+          </span>
+        </span>
+      </div>
+    </>
+  );
 }
 
-export function GlassCommandItem({className, children, ...props}: React.ComponentProps<typeof CommandPrimitive.Item>) {
-  return <CommandPrimitive.Item {...props} data-slot="command-item" className={cn("relative flex min-h-11 cursor-default items-center gap-3 rounded-xl px-3 py-2 text-[13px] outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 data-selected:bg-foreground/8 [&_svg]:shrink-0",className)}>{children}</CommandPrimitive.Item>;
+export function GlassCommandItem({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.Item>) {
+  return (
+    <CommandPrimitive.Item
+      {...props}
+      data-slot="command-item"
+      className={cn(
+        "relative flex min-h-11 cursor-default items-center gap-3 rounded-xl px-3 py-2 text-[13px] outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 data-selected:bg-foreground/8 [&_svg]:shrink-0",
+        className,
+      )}
+    >
+      {children}
+    </CommandPrimitive.Item>
+  );
 }
 
 export {

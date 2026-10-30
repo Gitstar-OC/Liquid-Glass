@@ -38,8 +38,7 @@ export function SiteHeader({
             aria-current={active === item.id ? "page" : undefined}
             className={cn(
               "relative flex h-16 items-center text-muted-foreground transition-colors hover:text-foreground",
-              active === item.id &&
-              "text-foreground",
+              active === item.id && "text-foreground",
             )}
           >
             <span>{item.label}</span>

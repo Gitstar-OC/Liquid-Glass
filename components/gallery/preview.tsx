@@ -31,9 +31,7 @@ export function GalleryPreview({
         frameRate={30}
         appearance={photo === "dunes" ? "light" : "dark"}
         className="size-full"
-        content={
-          <SceneBackdrop photo={photo} />
-        }
+        content={<SceneBackdrop photo={photo} />}
       >
         <div className="absolute inset-0 flex items-center justify-center p-5 sm:p-8">
           <GalleryExample key={name} name={name} container={container} />

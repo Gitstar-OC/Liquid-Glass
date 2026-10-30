@@ -34,7 +34,7 @@ export function SectionHeading({
       className={cn(
         "flex flex-col items-stretch gap-8",
         centered ? "text-center" : "text-start",
-        className
+        className,
       )}
     >
       <div className={cn("w-full max-w-2xl", centered && "mx-auto")}>

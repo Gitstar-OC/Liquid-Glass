@@ -48,7 +48,9 @@ export function DocsNavigation() {
       </div>
       {COMPONENT_GROUPS.filter((group) => group !== "All").map((group) => (
         <div key={group}>
-          <p className="mb-2 px-2 text-xs font-medium text-foreground">{group}</p>
+          <p className="mb-2 px-2 text-xs font-medium text-foreground">
+            {group}
+          </p>
           {COMPONENT_CATALOGUE.filter((item) => item.group === group).map(
             (item) => link(`/docs/${item.id}`, item.title),
           )}

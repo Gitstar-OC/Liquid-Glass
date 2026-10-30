@@ -67,7 +67,13 @@ export function glassToast(message: string, options: GlassToastOptions = {}) {
         onDismiss={() => toast.dismiss(id)}
       />
     ),
-    { id: options.id, duration: options.duration ?? 5000, toasterId: options.toasterId, unstyled:true, className:"glass-toast-host" },
+    {
+      id: options.id,
+      duration: options.duration ?? 5000,
+      toasterId: options.toasterId,
+      unstyled: true,
+      className: "glass-toast-host",
+    },
   );
 }
 
@@ -91,8 +97,16 @@ export function GlassToast({
     >
       {image ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={image.src} alt={image.alt} width={44} height={44} className="size-11 shrink-0 rounded-xl object-cover" />
-      ) : <InfoIcon className="size-5 shrink-0 opacity-70" />}
+        <img
+          src={image.src}
+          alt={image.alt}
+          width={44}
+          height={44}
+          className="size-11 shrink-0 rounded-xl object-cover"
+        />
+      ) : (
+        <InfoIcon className="size-5 shrink-0 opacity-70" />
+      )}
       <div className="min-w-0 flex-1">
         <p className="text-[13px] font-semibold">{message}</p>
         {description && (

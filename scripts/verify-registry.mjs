@@ -24,7 +24,8 @@ const INTERNAL_DEP = /^https?:\/\/[^/]+\/r\/([a-z0-9-]+)\.json$/;
  * `@/lib/glass` is imported, `@lib/glass.ts` is installed — compare both
  * extensionless.
  */
-const toTarget = (spec) => spec.replace(/^@\//, "@").replace(/\.(tsx?|jsx?)$/, "");
+const toTarget = (spec) =>
+  spec.replace(/^@\//, "@").replace(/\.(tsx?|jsx?)$/, "");
 
 const load = (name) =>
   JSON.parse(readFileSync(join(OUT, `${name}.json`), "utf8"));
@@ -52,7 +53,7 @@ function closure(name, seen = new Set()) {
 }
 
 const catalog = JSON.parse(
-  readFileSync(join(process.cwd(), "registry.json"), "utf8")
+  readFileSync(join(process.cwd(), "registry.json"), "utf8"),
 );
 const failures = [];
 let installs = 0;
@@ -78,15 +79,15 @@ for (const { name } of catalog.items) {
         const ui = spec.replace("@/components/ui/", "");
         if (upstream.has(ui)) continue;
         failures.push(
-          `${name}: ${f.path} imports ${spec} but nothing declares the "${ui}" shadcn dependency`
+          `${name}: ${f.path} imports ${spec} but nothing declares the "${ui}" shadcn dependency`,
         );
         continue;
       }
 
       failures.push(
         `${name}: ${f.path} imports ${spec} → ${toTarget(
-          spec
-        )}, which the item does not install`
+          spec,
+        )}, which the item does not install`,
       );
     }
   }
@@ -96,7 +97,9 @@ for (const { name } of catalog.items) {
 const built = new Set(readdirSync(OUT).filter((f) => f.endsWith(".json")));
 for (const { name } of catalog.items) {
   if (!built.has(`${name}.json`)) {
-    failures.push(`missing build output public/r/${name}.json — run npm run registry:build`);
+    failures.push(
+      `missing build output public/r/${name}.json — run npm run registry:build`,
+    );
   }
 }
 
@@ -107,5 +110,5 @@ if (failures.length) {
 }
 
 console.log(
-  `✔ ${catalog.items.length} items verified — ${installs} file installs, no dangling imports`
+  `✔ ${catalog.items.length} items verified — ${installs} file installs, no dangling imports`,
 );

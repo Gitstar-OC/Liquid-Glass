@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
 
-const manrope = localFont({ src: "./fonts/Manrope-Variable.ttf", variable: "--font-manrope", weight: "200 800", display: "swap" });
+const manrope = localFont({
+  src: "./fonts/Manrope-Variable.ttf",
+  variable: "--font-manrope",
+  weight: "200 800",
+  display: "swap",
+});
 import { GlassThemeProvider } from "@/components/glass/glass-theme-provider";
 import { GlassSettingsProvider } from "@/components/glass-scene";
 import { GlassToaster } from "@/components/glass/glass-toaster";
@@ -18,13 +23,19 @@ const themeInitScript = `(function(){try{var m=localStorage.getItem("liquid-glas
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${manrope.variable} h-full font-sans antialiased`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${manrope.variable} h-full font-sans antialiased`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="min-h-full flex flex-col">
         <GlassThemeProvider>
-          <GlassSettingsProvider performance={{ maxActiveSurfaces: 5, frameRate: 30 }}>
+          <GlassSettingsProvider
+            performance={{ maxActiveSurfaces: 5, frameRate: 30 }}
+          >
             {children}
             <GlassToaster position="bottom-right" />
           </GlassSettingsProvider>

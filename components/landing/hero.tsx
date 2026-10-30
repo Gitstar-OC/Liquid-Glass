@@ -16,8 +16,8 @@ export function Hero() {
       <div className="mx-auto flex w-full max-w-5xl flex-col items-center text-center">
         <Reveal>
           <GlassBadge className="inline-flex h-7 items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.035] px-3 text-[11px] font-medium tracking-[0.015em] text-foreground/75">
-            <Sparkles className="size-3 text-sky-300" strokeWidth={1.8} />
-            A more tactile layer for shadcn/ui
+            <Sparkles className="size-3 text-sky-300" strokeWidth={1.8} />A more
+            tactile layer for shadcn/ui
           </GlassBadge>
         </Reveal>
 
@@ -38,13 +38,22 @@ export function Hero() {
 
         <Reveal delay={150}>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg" className="h-11 rounded-full px-5 text-[13px] active:scale-[0.98]">
+            <Button
+              asChild
+              size="lg"
+              className="h-11 rounded-full px-5 text-[13px] active:scale-[0.98]"
+            >
               <a href="#components">
                 Explore the components
                 <ArrowRight className="size-4" />
               </a>
             </Button>
-            <GlassButton asChild variant="ghost" size="lg" className="h-11 rounded-full px-5 text-[13px] active:scale-[0.98]">
+            <GlassButton
+              asChild
+              variant="ghost"
+              size="lg"
+              className="h-11 rounded-full px-5 text-[13px] active:scale-[0.98]"
+            >
               <a href="#playground">Tune the lens</a>
             </GlassButton>
           </div>
@@ -59,8 +68,12 @@ export function Hero() {
             <div aria-hidden className="hero-stage-light" />
             <div className="relative flex items-center justify-between text-left">
               <div>
-                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/45">Material study · 01</p>
-                <p className="mt-1.5 text-[13px] font-medium tracking-[-0.01em] text-white/85">Light, held in place</p>
+                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/45">
+                  Material study · 01
+                </p>
+                <p className="mt-1.5 text-[13px] font-medium tracking-[-0.01em] text-white/85">
+                  Light, held in place
+                </p>
               </div>
               <span className="hidden items-center gap-2 font-mono text-[10px] text-white/40 sm:flex">
                 <span className="size-1.5 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,.8)]" />
@@ -78,9 +91,16 @@ export function Hero() {
               >
                 <div className="flex items-start justify-between gap-5 p-5 text-left sm:p-6">
                   <div>
-                    <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/50">Optical system</p>
-                    <p className="mt-2 text-xl font-medium tracking-[-0.045em] text-white sm:text-2xl">Quietly dimensional.</p>
-                    <p className="mt-2 max-w-[17rem] text-[12px] leading-5 text-white/65">A soft edge, a little color, and enough clarity to let the interface breathe.</p>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/50">
+                      Optical system
+                    </p>
+                    <p className="mt-2 text-xl font-medium tracking-[-0.045em] text-white sm:text-2xl">
+                      Quietly dimensional.
+                    </p>
+                    <p className="mt-2 max-w-[17rem] text-[12px] leading-5 text-white/65">
+                      A soft edge, a little color, and enough clarity to let the
+                      interface breathe.
+                    </p>
                   </div>
                   <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.08] text-white/85">
                     <ArrowDown className="size-4" strokeWidth={1.7} />

@@ -9,7 +9,7 @@
   "files": [
     {
       "path": "components/glass/glass-state-swap.tsx",
-      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n/** An interruptible visual state change. Give the parent button its accessible name. */\nexport function GlassStateSwap({ active, from, to, animate = true, className }: {\n  active: boolean;\n  from: ReactNode;\n  to: ReactNode;\n  /** Keyboard actions should pass false so their feedback is immediate. */\n  animate?: boolean;\n  className?: string;\n}) {\n  return <span aria-hidden=\"true\" data-active={active} data-animate={animate} className={cn(\"glass-state-swap\", className)}>\n    <span data-swap-layer=\"from\">{from}</span>\n    <span data-swap-layer=\"to\">{to}</span>\n  </span>;\n}\n",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n/** An interruptible visual state change. Give the parent button its accessible name. */\nexport function GlassStateSwap({\n  active,\n  from,\n  to,\n  animate = true,\n  className,\n}: {\n  active: boolean;\n  from: ReactNode;\n  to: ReactNode;\n  /** Keyboard actions should pass false so their feedback is immediate. */\n  animate?: boolean;\n  className?: string;\n}) {\n  return (\n    <span\n      aria-hidden=\"true\"\n      data-active={active}\n      data-animate={animate}\n      className={cn(\"glass-state-swap\", className)}\n    >\n      <span data-swap-layer=\"from\">{from}</span>\n      <span data-swap-layer=\"to\">{to}</span>\n    </span>\n  );\n}\n",
       "type": "registry:ui",
       "target": "@components/glass/glass-state-swap.tsx"
     }

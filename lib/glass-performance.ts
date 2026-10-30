@@ -19,7 +19,10 @@ const deviceLimit = () =>
 const boundedLimit = (limit?: number) =>
   Math.max(
     1,
-    Math.min(deviceLimit(), Number.isFinite(limit) ? Math.floor(limit!) : deviceLimit()),
+    Math.min(
+      deviceLimit(),
+      Number.isFinite(limit) ? Math.floor(limit!) : deviceLimit(),
+    ),
   );
 
 function reconcile() {
@@ -52,8 +55,12 @@ export function registerGlassLens(
     // Publish even an initial false state when a component re-registers.
     active: null,
     visible:
-      rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.right > 0 &&
-      rect.top < innerHeight && rect.left < innerWidth,
+      rect.width > 0 &&
+      rect.height > 0 &&
+      rect.bottom > 0 &&
+      rect.right > 0 &&
+      rect.top < innerHeight &&
+      rect.left < innerWidth,
   };
   entries.add(entry);
   if (!listening) {

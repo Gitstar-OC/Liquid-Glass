@@ -134,16 +134,82 @@ export default async function RegistryItemPage({ params }: ItemPageProps) {
         </section>
       )}
 
-      {["glass-surface", "glass-button", "glass-slider", "glass-music-player"].includes(item.name) && <section className="mt-12 flex flex-col gap-4 text-sm leading-6">
-        <h2 className="text-lg font-medium">One optical layer per group</h2>
-        <p className="text-muted-foreground">A player, form, or menu usually needs one glass surface. Buttons and slider thumbs inside it share that surface: their local translucent finish gives feedback without copying and refracting the same scene again. Playback icons can use variant=&quot;ghost&quot; to remain bare.</p>
-        <p className="text-muted-foreground">Place a control outside the panel when it needs its own silhouette and independent refraction. Deeply nested lenses distort text repeatedly, compete for contrast, and increase capture cost. This is a composition and performance choice in this library, not a claim that native Apple interfaces never layer glass.</p>
-        <p className="text-muted-foreground">Independent controls still respect the document limit: five active lenses on fine pointers, three on coarse pointers. Additional controls retain their glass finish. The hold example temporarily prioritizes its lens; it does not increase that limit.</p>
-      </section>}
-      {item.name === "glass-button" && <section className="mt-10 flex flex-col gap-4 text-sm leading-6"><h2 className="text-lg font-medium">Action hierarchy</h2><CodeBlock title="components/actions.tsx" code={`<GlassButton variant="core">Continue</GlassButton>
+      {[
+        "glass-surface",
+        "glass-button",
+        "glass-slider",
+        "glass-music-player",
+      ].includes(item.name) && (
+        <section className="mt-12 flex flex-col gap-4 text-sm leading-6">
+          <h2 className="text-lg font-medium">One optical layer per group</h2>
+          <p className="text-muted-foreground">
+            A player, form, or menu usually needs one glass surface. Nested
+            buttons share it. Slider and switch thumbs use a tiny, temporary
+            lens over an explicit track copy during pointer input, without
+            capturing the panel again. Playback icons can use
+            variant=&quot;ghost&quot; to remain bare.
+          </p>
+          <p className="text-muted-foreground">
+            Place a control outside the panel when it needs its own silhouette
+            and independent refraction. Deeply nested lenses distort text
+            repeatedly, compete for contrast, and increase capture cost. This is
+            a composition and performance choice in this library, not a claim
+            that native Apple interfaces never layer glass.
+          </p>
+          <p className="text-muted-foreground">
+            Independent controls still respect the document limit: five active
+            lenses on fine pointers, three on coarse pointers. Additional
+            controls retain their glass finish. The hold example temporarily
+            prioritizes its lens; it does not increase that limit.
+          </p>
+        </section>
+      )}
+      {item.name === "glass-target-lens" && (
+        <section className="mt-10 flex flex-col gap-4 text-sm leading-6">
+          <h2 className="text-lg font-medium">Bend the original DOM</h2>
+          <CodeBlock
+            title="components/track.tsx"
+            code={`<GlassLens
+  lens={{ lensW: 90, lensH: 60, borderRadius: 30 }}
+  x={handlePosition}
+  className="h-24 w-full"
+>
+  <SliderTrack />
+</GlassLens>`}
+          />
+          <p className="text-muted-foreground">
+            Position ranges from 0 to 1. The filter bends the original children;
+            links, text selection and controls retain their normal behavior. The
+            small map moves over a neutral field, and blur is limited to the
+            lens. Keep this source bounded to 1.5 million CSS pixels.
+          </p>
+          <p className="text-muted-foreground">
+            For a compact track, optionally pass refractionTarget. This uses a
+            small inert visual copy and a lens-sized filter. Both paths cache
+            their map during motion. Setting active to false releases the filter
+            and budget slot. Use Original DOM or Target lens in the performance
+            lab.
+          </p>
+        </section>
+      )}
+      {item.name === "glass-button" && (
+        <section className="mt-10 flex flex-col gap-4 text-sm leading-6">
+          <h2 className="text-lg font-medium">Action hierarchy</h2>
+          <CodeBlock
+            title="components/actions.tsx"
+            code={`<GlassButton variant="core">Continue</GlassButton>
 <GlassButton variant="primary">Save changes</GlassButton>
 <GlassButton variant="secondary">Cancel</GlassButton>
-<GlassButton liquidOnHold>Hold for glass</GlassButton>`}/><p className="text-muted-foreground">Use blue for the main confirmation, neutral for an alternative, and core for a clear glass action. Keep the hold effect on an exploratory control with an explicit label; ordinary actions activate on click.</p></section>}
+<GlassButton liquidOnHold>Hold for glass</GlassButton>`}
+          />
+          <p className="text-muted-foreground">
+            Use blue for the main confirmation, neutral for an alternative, and
+            core for a clear glass action. Keep the hold effect on an
+            exploratory control with an explicit label; ordinary actions
+            activate on click.
+          </p>
+        </section>
+      )}
       <ComponentApi name={item.name} />
 
       {item.dependencies?.length ? (

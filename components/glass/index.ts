@@ -23,7 +23,10 @@ export {
   GlobalSurfacePicker,
 } from "@/components/glass/glass-controls";
 
-export { GlassButton, type GlassButtonProps } from "@/components/glass/glass-button";
+export {
+  GlassButton,
+  type GlassButtonProps,
+} from "@/components/glass/glass-button";
 export { GlassBadge } from "@/components/glass/glass-badge";
 export {
   GlassCard,
@@ -41,7 +44,11 @@ export {
 } from "@/components/glass/glass-input";
 export { GlassSwitch } from "@/components/glass/glass-switch";
 export { GlassProgress } from "@/components/glass/glass-progress";
-export { GlassSlider } from "@/components/glass/glass-slider";
+export { GlassSlider, GlassSliderSource } from "@/components/glass/glass-slider";
+export {
+  GlassLens,
+  type GlassLensProps,
+} from "@/components/glass/glass-target-lens";
 export {
   GlassCheckbox,
   GlassRadioGroup,
@@ -51,6 +58,7 @@ export {
   GlassToggle,
   GlassToggleGroup,
   GlassToggleGroupItem,
+  type GlassToggleOption,
 } from "@/components/glass/glass-toggle";
 export {
   GlassTabs,
@@ -248,7 +256,13 @@ export {
   GlassSidebar,
   GlassSidebarItem,
 } from "@/components/glass/glass-sidebar";
-export { GlassScene, GlassSettingsProvider, useGlassSettings, type GlassSettings, type GlassThemeBehavior } from "@/components/glass-scene";
+export {
+  GlassScene,
+  GlassSettingsProvider,
+  useGlassSettings,
+  type GlassSettings,
+  type GlassThemeBehavior,
+} from "@/components/glass-scene";
 export {
   GlassAccordion,
   GlassAccordionItem,
@@ -287,12 +301,25 @@ export {
   type GlassPreferencesValue,
 } from "@/components/glass/glass-preferences";
 
-export { GlassSound, type GlassSoundProps } from "@/components/glass/glass-sound";
-export { GlassConnectivity, type GlassConnectivityProps } from "@/components/glass/glass-connectivity";
-export { GlassRangeControl, type GlassRangeControlProps } from "@/components/glass/glass-range-control";
+export {
+  GlassSound,
+  type GlassSoundProps,
+} from "@/components/glass/glass-sound";
+export {
+  GlassConnectivity,
+  type GlassConnectivityProps,
+} from "@/components/glass/glass-connectivity";
+export {
+  GlassRangeControl,
+  type GlassRangeControlProps,
+} from "@/components/glass/glass-range-control";
 
 export { GlassStateSwap } from "@/components/glass/glass-state-swap";
-export { GlassSaveButton, GlassLikeButton, GlassAddButton } from "@/components/glass/glass-state-button";
+export {
+  GlassSaveButton,
+  GlassLikeButton,
+  GlassAddButton,
+} from "@/components/glass/glass-state-button";
 
 export { GlassIcon, type GlassIconName } from "@/components/glass/glass-icons";
 
@@ -300,4 +327,8 @@ export { GlassDock, GlassDockItem } from "@/components/glass/glass-dock";
 
 export { GlassAtlas } from "@/components/glass-atlas";
 export { GlassElasticButton } from "@/components/glass/glass-elastic-button";
+export {
+  GlassVideoPlayer,
+  type GlassVideoPlayerProps,
+} from "@/components/glass/glass-video-player";
 export type { GlassShape } from "@/lib/glass";

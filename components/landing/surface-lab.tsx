@@ -23,7 +23,10 @@ export function SurfaceLab() {
   const [selected, setSelected] = React.useState<GlassSurfaceKind>("regular");
 
   return (
-    <section id="surfaces" className="relative scroll-mt-24 px-6 py-24 sm:py-32">
+    <section
+      id="surfaces"
+      className="relative scroll-mt-24 px-6 py-24 sm:py-32"
+    >
       <div className="mx-auto w-full max-w-6xl">
         <SectionHeading
           eyebrow="Materials"
@@ -44,14 +47,24 @@ export function SurfaceLab() {
               >
                 <div className="p-6 text-left sm:p-7">
                   <div className="flex items-center justify-between gap-4">
-                    <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">Material preview</p>
-                    <span className="font-mono text-[10px] text-white/40">0{GLASS_SURFACES.indexOf(selected) + 1} / 05</span>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">
+                      Material preview
+                    </p>
+                    <span className="font-mono text-[10px] text-white/40">
+                      0{GLASS_SURFACES.indexOf(selected) + 1} / 05
+                    </span>
                   </div>
-                  <h3 className="mt-5 text-[22px] font-medium tracking-[-0.045em] text-white sm:text-[26px]">{SURFACE_LABELS[selected]}</h3>
-                  <p className="mt-2 max-w-[19rem] text-[13px] leading-6 text-white/70">{SURFACE_COPY[selected]}</p>
+                  <h3 className="mt-5 text-[22px] font-medium tracking-[-0.045em] text-white sm:text-[26px]">
+                    {SURFACE_LABELS[selected]}
+                  </h3>
+                  <p className="mt-2 max-w-[19rem] text-[13px] leading-6 text-white/70">
+                    {SURFACE_COPY[selected]}
+                  </p>
                   <div className="mt-7 flex items-center gap-2.5 border-t border-white/15 pt-4">
                     <span className="size-2 rounded-full bg-sky-200/90 shadow-[0_0_14px_rgba(186,230,253,.8)]" />
-                    <span className="text-[11px] text-white/60">Light bends at the rim</span>
+                    <span className="text-[11px] text-white/60">
+                      Light bends at the rim
+                    </span>
                   </div>
                 </div>
               </LiquidGlass>
@@ -68,12 +81,23 @@ export function SurfaceLab() {
                     aria-pressed={active}
                     className={cn(
                       "relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:min-h-14 sm:px-2",
-                      active ? "bg-white/[0.11] text-white" : "text-white/50 hover:bg-white/[0.05] hover:text-white/80"
+                      active
+                        ? "bg-white/[0.11] text-white"
+                        : "text-white/50 hover:bg-white/[0.05] hover:text-white/80",
                     )}
                   >
-                    <span className="font-mono text-[9px] text-current/45">0{index + 1}</span>
-                    <span className="text-[10px] font-medium leading-tight sm:text-[11px]">{SURFACE_LABELS[surface]}</span>
-                    {active ? <span aria-hidden="true" className="absolute inset-x-3 bottom-1 h-px bg-white/70" /> : null}
+                    <span className="font-mono text-[9px] text-current/45">
+                      0{index + 1}
+                    </span>
+                    <span className="text-[10px] font-medium leading-tight sm:text-[11px]">
+                      {SURFACE_LABELS[surface]}
+                    </span>
+                    {active ? (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-x-3 bottom-1 h-px bg-white/70"
+                      />
+                    ) : null}
                   </button>
                 );
               })}

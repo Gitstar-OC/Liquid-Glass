@@ -1,8 +1,6 @@
 "use client";
 
-import { GlassToggleGroup, GlassToggleGroupItem } from "@/components/glass/glass-toggle";
 import { useId, useState } from "react";
-import { Check, ChevronDown } from "lucide-react";
 import { GlassSlider as Slider } from "@/components/glass/glass-slider";
 import { GlassInput as Input } from "@/components/glass/glass-input";
 import {
@@ -11,14 +9,9 @@ import {
   GlassSelectContent as SelectContent,
   SelectItem,
   SelectGroup,
+  SelectLabel,
   SelectValue,
 } from "@/components/glass/glass-select";
-import {
-  Popover,
-  PopoverTrigger,
-  GlassPopoverContent as PopoverContent,
-} from "@/components/glass/glass-popover";
-import { GlassButton as Button } from "@/components/glass/glass-button";
 import { CURATED_BACKDROPS, DEMO_PHOTOS } from "@/lib/demo-assets";
 import { cn } from "@/lib/utils";
 
@@ -112,17 +105,19 @@ export function OptionSelect({
       <SelectContent
         position="popper"
         align="start"
-        className="site-shell max-h-80 p-1"
+        className="site-shell max-h-80"
       >
-        <SelectGroup>{options.map((option) => (
-          <SelectItem
-            key={option.value}
-            value={option.value}
-            className="py-2 text-xs"
-          >
-            {option.label}
-          </SelectItem>
-        ))}</SelectGroup>
+        <SelectGroup>
+          {options.map((option) => (
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="py-2 text-xs"
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   );
@@ -139,38 +134,47 @@ export function BackdropPicker({
   label?: string;
   className?: string;
 }) {
-  const [open, setOpen] = useState(false);
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          aria-label={label}
-          className={cn("gap-2 font-normal",className)}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={DEMO_PHOTOS[value].src}
-            alt=""
-            className="size-4 rounded-sm object-cover"
-          />
+    <Select
+      value={value}
+      onValueChange={(next) => onValueChange(next as keyof typeof DEMO_PHOTOS)}
+    >
+      <SelectTrigger
+        aria-label={label}
+        className={cn("h-10 gap-2 font-normal", className)}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={DEMO_PHOTOS[value].src}
+          alt=""
+          className="size-4 rounded-sm object-cover"
+        />
+        <SelectValue>
           <span className="capitalize">{value}</span>
-          <ChevronDown className="size-3 text-muted-foreground/80" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="site-shell w-60 rounded-xl p-2">
-        <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-          Choose a backdrop
-        </p>
-        <GlassToggleGroup type="single" value={value} aria-label={label} onValueChange={next => { if(next) {onValueChange(next as keyof typeof DEMO_PHOTOS); setOpen(false);} }} className="flex flex-col gap-2">
-          {CURATED_BACKDROPS.map(key => <GlassToggleGroupItem key={key} value={key} className="flex h-14 w-full items-center justify-start gap-3 px-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`/images/${key}-640.webp`} alt="" width={64} height={40} className="h-10 w-16 rounded-lg object-cover" />
-            <span className="flex-1 text-left capitalize">{key}</span>{key === value && <Check />}
-          </GlassToggleGroupItem>)}
-        </GlassToggleGroup>
-      </PopoverContent>
-    </Popover>
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent
+        position="popper"
+        align="start"
+        className="site-shell w-60"
+      >
+        <SelectGroup>
+          <SelectLabel>Choose a backdrop</SelectLabel>
+          {CURATED_BACKDROPS.map((key) => (
+            <SelectItem key={key} value={key} textValue={key}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/images/${key}-640.webp`}
+                alt=""
+                width={64}
+                height={40}
+                className="h-10 w-16 rounded-lg object-cover"
+              />
+              <span className="capitalize">{key}</span>
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }

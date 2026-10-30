@@ -14,11 +14,7 @@ export interface LensParams {
 }
 
 export type GlassPreset =
-  | "transparent"
-  | "clear"
-  | "regular"
-  | "frosted"
-  | "thick";
+  "transparent" | "clear" | "regular" | "frosted" | "thick";
 
 /** Shared starting point for the playground and every glass component. */
 export const GLASS_DEFAULT_PARAMS: Readonly<LensParams> = Object.freeze({
@@ -140,66 +136,155 @@ export interface LensGeometry {
   /** Pointer pull in pixels; a bounded, soft deformation of the clear center. */
   deformation?: { x: number; y: number };
   shape?: GlassShape;
+  /** Full contour coverage for compositing a lens over original DOM pixels. */
+  coverage?: boolean;
 }
 export type GlassShape = "round" | "squircle";
 
 /** Default content policy; an explicit manual mode preserves every supplied value. */
-export function resolveBackdropTreatment(kind: "plain" | "image" | "content" | null, params: Pick<LensParams,"blur"|"depth">, adaptive: boolean, preserveBlur = false) {
-  if (!adaptive || !kind) return {blur:params.blur,depth:params.depth};
-  if (kind==="content") return {blur:preserveBlur?params.blur:Math.max(8,params.blur),depth:0};
-  return {blur:!preserveBlur&&kind==="plain"?0:params.blur,depth:params.depth};
+export function resolveBackdropTreatment(
+  kind: "plain" | "image" | "content" | null,
+  params: Pick<LensParams, "blur" | "depth">,
+  adaptive: boolean,
+  preserveBlur = false,
+) {
+  if (!adaptive || !kind) return { blur: params.blur, depth: params.depth };
+  if (kind === "content")
+    return {
+      blur: preserveBlur ? params.blur : Math.max(8, params.blur),
+      depth: 0,
+    };
+  return {
+    blur: !preserveBlur && kind === "plain" ? 0 : params.blur,
+    depth: params.depth,
+  };
 }
 
 /** Shared contour for optical normals, antialiased masks, and DOM clipping. */
-export function lensSurface(x: number, y: number, hw: number, hh: number, r: number, shape: GlassShape = "round") {
-  if (shape === "round") return roundedLensSurface(x,y,hw,hh,r);
-  const qx=Math.abs(x)-(hw-r), qy=Math.abs(y)-(hh-r), ox=Math.max(qx,0), oy=Math.max(qy,0);
-  const norm=Math.pow(ox**4+oy**4,.25);
-  if (!norm) return qx>qy ? {distance:qx-r,nx:Math.sign(x),ny:0} : {distance:qy-r,nx:0,ny:Math.sign(y)};
-  const gx=(ox/norm)**3, gy=(oy/norm)**3, length=Math.hypot(gx,gy);
-  return {distance:(norm+Math.min(Math.max(qx,qy),0)-r)/length,nx:Math.sign(x)*gx/length,ny:Math.sign(y)*gy/length};
+export function lensSurface(
+  x: number,
+  y: number,
+  hw: number,
+  hh: number,
+  r: number,
+  shape: GlassShape = "round",
+) {
+  if (shape === "round") return roundedLensSurface(x, y, hw, hh, r);
+  const qx = Math.abs(x) - (hw - r),
+    qy = Math.abs(y) - (hh - r),
+    ox = Math.max(qx, 0),
+    oy = Math.max(qy, 0);
+  const norm = Math.pow(ox ** 4 + oy ** 4, 0.25);
+  if (!norm)
+    return qx > qy
+      ? { distance: qx - r, nx: Math.sign(x), ny: 0 }
+      : { distance: qy - r, nx: 0, ny: Math.sign(y) };
+  const gx = (ox / norm) ** 3,
+    gy = (oy / norm) ** 3,
+    length = Math.hypot(gx, gy);
+  return {
+    distance: (norm + Math.min(Math.max(qx, qy), 0) - r) / length,
+    nx: (Math.sign(x) * gx) / length,
+    ny: (Math.sign(y) * gy) / length,
+  };
 }
-export function lensContourPoints(width: number, height: number, radius: number, shape: GlassShape = "round") {
-  const r=Math.max(0,Math.min(radius,width/2,height/2));
-  const points:{x:number;y:number}[]=[];
-  [[width-r,r,-Math.PI/2],[width-r,height-r,0],[r,height-r,Math.PI/2],[r,r,Math.PI]].forEach(([cx,cy,start])=>{
-    for(let i=0;i<=24;i++){const a=start+i*Math.PI/48;const sx=Math.cos(a),sy=Math.sin(a);const power=shape==="squircle"?.5:1;points.push({x:cx+r*Math.sign(sx)*Math.abs(sx)**power,y:cy+r*Math.sign(sy)*Math.abs(sy)**power});}
+export function lensContourPoints(
+  width: number,
+  height: number,
+  radius: number,
+  shape: GlassShape = "round",
+) {
+  const r = Math.max(0, Math.min(radius, width / 2, height / 2));
+  const points: { x: number; y: number }[] = [];
+  [
+    [width - r, r, -Math.PI / 2],
+    [width - r, height - r, 0],
+    [r, height - r, Math.PI / 2],
+    [r, r, Math.PI],
+  ].forEach(([cx, cy, start]) => {
+    for (let i = 0; i <= 24; i++) {
+      const a = start + (i * Math.PI) / 48;
+      const sx = Math.cos(a),
+        sy = Math.sin(a);
+      const power = shape === "squircle" ? 0.5 : 1;
+      points.push({
+        x: cx + r * Math.sign(sx) * Math.abs(sx) ** power,
+        y: cy + r * Math.sign(sy) * Math.abs(sy) ** power,
+      });
+    }
   });
   return points;
 }
-export function lensOutlinePath(width: number, height: number, radius: number, shape: GlassShape = "round") {
-  return lensContourPoints(width,height,radius,shape).map((p,i)=>`${i?"L":"M"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ")+" Z";
+export function lensOutlinePath(
+  width: number,
+  height: number,
+  radius: number,
+  shape: GlassShape = "round",
+) {
+  return (
+    lensContourPoints(width, height, radius, shape)
+      .map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(2)},${p.y.toFixed(2)}`)
+      .join(" ") + " Z"
+  );
 }
-export function lensClipPath(width: number, height: number, radius: number, shape: GlassShape = "round") {
-  const r=Math.max(0,Math.min(radius,width/2,height/2));
+export function lensClipPath(
+  width: number,
+  height: number,
+  radius: number,
+  shape: GlassShape = "round",
+) {
+  const r = Math.max(0, Math.min(radius, width / 2, height / 2));
   if (shape === "round" || !width || !height) return `inset(0 round ${r}px)`;
-  return `polygon(${lensContourPoints(width,height,r,shape).map(p=>`${p.x.toFixed(2)}px ${p.y.toFixed(2)}px`).join(",")})`;
+  return `polygon(${lensContourPoints(width, height, r, shape)
+    .map((p) => `${p.x.toFixed(2)}px ${p.y.toFixed(2)}px`)
+    .join(",")})`;
 }
 
-export function elasticLensOffset(x: number, y: number, hw: number, hh: number, pull?: {x: number; y: number}) {
-  if (!pull || hw <= 0 || hh <= 0) return {x: 0, y: 0};
-  const u = x / hw, v = y / hh;
+export function elasticLensOffset(
+  x: number,
+  y: number,
+  hw: number,
+  hh: number,
+  pull?: { x: number; y: number },
+) {
+  if (!pull || hw <= 0 || hh <= 0) return { x: 0, y: 0 };
+  const u = x / hw,
+    v = y / hh;
   const envelope = Math.max(0, 1 - u * u) * Math.max(0, 1 - v * v);
   const fold = envelope * Math.exp(-(u * u + v * v) * 1.4);
-  return {x: finite(pull.x, 0, -48, 48) / 64 * fold, y: finite(pull.y, 0, -48, 48) / 64 * fold};
+  return {
+    x: (finite(pull.x, 0, -48, 48) / 64) * fold,
+    y: (finite(pull.y, 0, -48, 48) / 64) * fold,
+  };
 }
 
 /** A shallow continuous bowl, independent of the high-curvature edge bevel.
  * The envelope vanishes at the boundary, so it cannot separate the shared rim.
  */
-export function interiorLensOffset(x: number, y: number, hw: number, hh: number, strength: number, edgeDistance = Infinity, bevel = 1) {
-  if (hw <= 0 || hh <= 0 || strength <= 0) return {x: 0, y: 0};
-  const u = x / hw, v = y / hh;
+export function interiorLensOffset(
+  x: number,
+  y: number,
+  hw: number,
+  hh: number,
+  strength: number,
+  edgeDistance = Infinity,
+  bevel = 1,
+) {
+  if (hw <= 0 || hh <= 0 || strength <= 0) return { x: 0, y: 0 };
+  const u = x / hw,
+    v = y / hh;
   const envelope = Math.max(0, 1 - u * u) * Math.max(0, 1 - v * v);
-  const edge = Math.max(0,Math.min(1,edgeDistance/Math.max(1,bevel)));
-  const amount = Math.min(1, strength) * .75 * envelope * edge * edge * (3-2*edge);
-  return {x: -u * amount, y: -v * amount};
+  const edge = Math.max(0, Math.min(1, edgeDistance / Math.max(1, bevel)));
+  const amount =
+    Math.min(1, strength) * 0.75 * envelope * edge * edge * (3 - 2 * edge);
+  return { x: -u * amount, y: -v * amount };
 }
 
 export interface LensTextures {
   displacement: string;
   reflection: string;
   shade: string;
+  coverage?: string;
   /** Ambient color coverage, independent of the directional white reflection. */
   rim?: string;
   /** Height of the local vertical column encoded in the rim's green channel. */
@@ -207,9 +292,19 @@ export interface LensTextures {
 }
 
 /** A thin, soft optical rim. Vertical source columns favor the top/bottom arcs. */
-export function ambientRimStrength(inside: number, normalY: number, refractiveIndex: number) {
+export function ambientRimStrength(
+  inside: number,
+  normalY: number,
+  refractiveIndex: number,
+) {
   if (inside < 0 || refractiveIndex === 1) return 0;
-  return .95 * Math.exp(-inside / 1.05) * (.6 + .4 * Math.abs(normalY));
+  return 0.95 * Math.exp(-inside / 1.05) * (0.6 + 0.4 * Math.abs(normalY));
+}
+
+/** Grazing reflection needs a neutral dark component to read on white sources.
+ * This follows the bevel normal/Fresnel term, never a separately drawn outline. */
+export function lensEdgeShade(facing: number, rim: number, fresnel: number) {
+  return Math.min(0.28, fresnel * 0.12 + Math.max(0, -facing) * rim * 0.32);
 }
 
 const MAP_CACHE_MAX = 24;
@@ -329,11 +424,11 @@ export function buildLensMap(w: number, h: number, opts: LensGeometry): string {
   return buildLensTextures(w, h, opts).displacement;
 }
 
-const decodedTextures = new Map<string, Promise<void>>();
+const decodedTextures = new WeakMap<LensTextures, Promise<void>>();
 /** Decode before swapping an SVG feImage source. Retain promises, not image
  * elements; the browser can release decoded pixels under memory pressure. */
 export function decodeLensTextures(textures: LensTextures): Promise<void> {
-  const cached = decodedTextures.get(textures.displacement);
+  const cached = decodedTextures.get(textures);
   if (cached) return cached;
   const ready = Promise.all(
     Object.values(textures)
@@ -345,9 +440,9 @@ export function decodeLensTextures(textures: LensTextures): Promise<void> {
           await image.decode().catch(() => {});
       }),
   ).then(() => {});
-  if (decodedTextures.size >= 24)
-    decodedTextures.delete(decodedTextures.keys().next().value!);
-  decodedTextures.set(textures.displacement, ready);
+  // The same displacement can have different light/rim textures. Key the
+  // complete cached bundle so a new finish cannot reveal undecoded images.
+  decodedTextures.set(textures, ready);
   return ready;
 }
 
@@ -362,15 +457,21 @@ export function buildLensTextures(
   const optics = resolveOptics(opts.optics);
   const geometry = {
     shape: opts.shape ?? "round",
+    coverage: opts.coverage ?? false,
     radius: finite(opts.radius, 24, 0, Math.min(width, height) / 2),
     splay: finite(opts.splay, 12, 0, 80),
     feather: finite(opts.feather, 18, 0, 80),
     curve: finite(opts.curve, 2.3, 0.3, 4),
     pad: finite(opts.pad, 32, 0, Math.min(width, height) / 2),
-    deformation: opts.deformation ? {x: finite(opts.deformation.x, 0, -48, 48), y: finite(opts.deformation.y, 0, -48, 48)} : undefined,
+    deformation: opts.deformation
+      ? {
+          x: finite(opts.deformation.x, 0, -48, 48),
+          y: finite(opts.deformation.y, 0, -48, 48),
+        }
+      : undefined,
   };
   // Color bleed is a source-paint operation, never displacement geometry.
-  const mapOptics = {...optics, colorBleed: 0};
+  const mapOptics = { ...optics, colorBleed: 0 };
   const key = JSON.stringify([width, height, geometry, mapOptics]);
   const cached = mapCache.get(key);
   if (cached) {
@@ -390,6 +491,7 @@ export function buildLensTextures(
   const reflection = ctx.createImageData(tw, th);
   const shade = ctx.createImageData(tw, th);
   const ambientRim = ctx.createImageData(tw, th);
+  const coverage = geometry.coverage ? ctx.createImageData(tw, th) : null;
   const hw = Math.max(0, width / 2 - geometry.pad);
   const hh = Math.max(0, height / 2 - geometry.pad);
   const radius = Math.min(geometry.radius, hw, hh);
@@ -425,18 +527,51 @@ export function buildLensTextures(
         const nx = surface.nx * (flipX ? -1 : 1);
         const ny = surface.ny * (flipY ? -1 : 1);
         const i = (my * tw + mx) * 4;
-        const elastic = elasticLensOffset(px * (flipX ? -1 : 1), py * (flipY ? -1 : 1), hw, hh, geometry.deformation);
-        const interior = inside >= 0 ? interiorLensOffset(px * (flipX ? -1 : 1), py * (flipY ? -1 : 1), hw, hh, optics.interior, inside, bevel) : {x:0,y:0};
-        displacement.data[i] = encode(-nx * strength + (optics.refractiveIndex === 1 ? 0 : elastic.x + interior.x));
-        displacement.data[i + 1] = encode(-ny * strength + (optics.refractiveIndex === 1 ? 0 : elastic.y + interior.y));
+        const elastic = elasticLensOffset(
+          px * (flipX ? -1 : 1),
+          py * (flipY ? -1 : 1),
+          hw,
+          hh,
+          geometry.deformation,
+        );
+        const interior =
+          inside >= 0
+            ? interiorLensOffset(
+                px * (flipX ? -1 : 1),
+                py * (flipY ? -1 : 1),
+                hw,
+                hh,
+                optics.interior,
+                inside,
+                bevel,
+              )
+            : { x: 0, y: 0 };
+        displacement.data[i] = encode(
+          -nx * strength +
+            (optics.refractiveIndex === 1 ? 0 : elastic.x + interior.x),
+        );
+        displacement.data[i + 1] = encode(
+          -ny * strength +
+            (optics.refractiveIndex === 1 ? 0 : elastic.y + interior.y),
+        );
         displacement.data[i + 2] = 128;
         displacement.data[i + 3] = 255;
+        if (coverage) {
+          coverage.data[i] = coverage.data[i + 1] = coverage.data[i + 2] = 255;
+          coverage.data[i + 3] = Math.round(
+            Math.max(0, Math.min(1, inside * scale + 0.5)) * 255,
+          );
+        }
         if (inside < 0 || inside >= bevel || bevel <= 0) continue;
         // RGB projects this pixel to its own lens's central source column;
         // alpha remains the exact contour's thin ambient-light coverage.
         ambientRim.data[i] = ambientRim.data[i + 2] = 128;
-        ambientRim.data[i + 1] = encode(-py * (flipY ? -1 : 1) / Math.max(1, hh));
-        ambientRim.data[i + 3] = Math.round(ambientRimStrength(inside, ny, optics.refractiveIndex) * 255);
+        ambientRim.data[i + 1] = encode(
+          (-py * (flipY ? -1 : 1)) / Math.max(1, hh),
+        );
+        ambientRim.data[i + 3] = Math.round(
+          ambientRimStrength(inside, ny, optics.refractiveIndex) * 255,
+        );
         const normalX = nx * ray.normalXY;
         const normalY = ny * ray.normalXY;
         const specular = Math.pow(
@@ -459,7 +594,7 @@ export function buildLensTextures(
             255;
         reflection.data[i + 3] = Math.round(Math.min(0.85, edgeLight) * 255);
         shade.data[i + 3] = Math.round(
-          Math.min(0.18, Math.max(0, -facing) * rim * 0.2) * 255,
+          lensEdgeShade(facing, rim, ray.fresnel) * 255,
         );
       }
     }
@@ -477,6 +612,7 @@ export function buildLensTextures(
     shade: shadeUrl,
     rim: rimUrl,
     rimScale: hh * 2,
+    ...(coverage ? { coverage: encodeTexture(coverage) } : {}),
   };
   if (mapCache.size >= MAP_CACHE_MAX)
     mapCache.delete(mapCache.keys().next().value!);

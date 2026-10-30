@@ -5,18 +5,10 @@ import { SceneBackdrop } from "@/components/site/scene-backdrop";
 import { GlassButton } from "@/components/glass/glass-button";
 import { useState } from "react";
 import { Tabs } from "radix-ui";
-import {
-  FileText,
-  Folder,
-  SlidersHorizontal,
-  Sparkles,
-} from "lucide-react";
+import { FileText, Folder, SlidersHorizontal, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { GlassScene, useGlassSettings } from "@/components/glass-scene";
-import {
-  GlassMusicPlayer,
-  type GlassTrack,
-} from "@/components/glass/glass-music-player";
+import { GlassMusicPlayer } from "@/components/glass/glass-music-player";
 import { GlassControlCenter } from "@/components/glass/glass-control-center";
 import {
   GlassSpotlightPanel,
@@ -28,26 +20,8 @@ import { GLASS_DEFAULT_PARAMS } from "@/lib/glass";
 import { DEMO_PHOTOS } from "@/lib/demo-assets";
 import { cn } from "@/lib/utils";
 
-export const TRACKS: GlassTrack[] = [
-  {
-    title: "Morning light",
-    artist: "An ambient study",
-    src: "/audio/morning-light.wav",
-    artwork: DEMO_PHOTOS.dunes.src,
-  },
-  {
-    title: "Slow tide",
-    artist: "An ambient study",
-    src: "/audio/slow-tide.wav",
-    artwork: DEMO_PHOTOS.dunes.src,
-  },
-  {
-    title: "Soft focus",
-    artist: "An ambient study",
-    src: "/audio/soft-focus.wav",
-    artwork: DEMO_PHOTOS.lake.src,
-  },
-];
+import { TRACKS } from "@/lib/demo-tracks";
+export { TRACKS } from "@/lib/demo-tracks";
 export const SPOTLIGHT_COMMANDS: GlassSpotlightCommand[] = [
   {
     id: "new",
@@ -76,11 +50,7 @@ export const SPOTLIGHT_COMMANDS: GlassSpotlightCommand[] = [
 ];
 
 type FeaturedKind =
-  | "preferences"
-  | "music"
-  | "controls"
-  | "spotlight"
-  | "power";
+  "preferences" | "music" | "controls" | "spotlight" | "power";
 const ITEMS: {
   id: FeaturedKind;
   title: string;
@@ -230,13 +200,45 @@ export function FeaturedComponents() {
   const current = ITEMS.find((item) => item.id === active)!;
   return (
     <section aria-label="Live glass components">
-      <Tabs.Root value={active} onValueChange={value => setActive(value as FeaturedKind)}>
-        <Tabs.List aria-label="Featured components" className="mb-4 flex flex-wrap gap-2">
-          {ITEMS.map(item => <Tabs.Trigger key={item.id} value={item.id} asChild><GlassButton className="data-[state=active]:bg-foreground/12">{item.title}</GlassButton></Tabs.Trigger>)}
+      <Tabs.Root
+        value={active}
+        onValueChange={(value) => setActive(value as FeaturedKind)}
+      >
+        <Tabs.List
+          aria-label="Featured components"
+          className="mb-4 flex flex-wrap gap-2"
+        >
+          {ITEMS.map((item) => (
+            <Tabs.Trigger key={item.id} value={item.id} asChild>
+              <GlassButton className="data-[state=active]:bg-foreground/12">
+                {item.title}
+              </GlassButton>
+            </Tabs.Trigger>
+          ))}
         </Tabs.List>
-        {ITEMS.map(item => <Tabs.Content key={item.id} value={item.id} className="outline-none focus-visible:ring-2 focus-visible:ring-ring"><FeaturedComponentPreview kind={item.id} backdrop={backdrop} blur={blur} className="h-[560px] sm:h-[480px] rounded-[20px]" /></Tabs.Content>)}
+        {ITEMS.map((item) => (
+          <Tabs.Content
+            key={item.id}
+            value={item.id}
+            className="outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <FeaturedComponentPreview
+              kind={item.id}
+              backdrop={backdrop}
+              blur={blur}
+              className="h-[560px] sm:h-[480px] rounded-[20px]"
+            />
+          </Tabs.Content>
+        ))}
       </Tabs.Root>
-      <PreviewToolbar photo={backdrop} onPhotoChange={setBackdrop} blur={blur} onBlurChange={setBlur} label="Showcase" href={`/docs/${current.doc}`} />
+      <PreviewToolbar
+        photo={backdrop}
+        onPhotoChange={setBackdrop}
+        blur={blur}
+        onBlurChange={setBlur}
+        label="Showcase"
+        href={`/docs/${current.doc}`}
+      />
     </section>
   );
 }

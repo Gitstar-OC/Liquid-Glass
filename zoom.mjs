@@ -1,12 +1,27 @@
-import { chromium } from '@playwright/test';
+import { chromium } from "@playwright/test";
 const b = await chromium.launch();
-const p = await b.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 3 });
-await p.goto('http://localhost:3000', { waitUntil: 'networkidle' });
+const p = await b.newPage({
+  viewport: { width: 1440, height: 900 },
+  deviceScaleFactor: 3,
+});
+await p.goto("http://localhost:3000", { waitUntil: "networkidle" });
 await p.waitForTimeout(3000);
-const y = await p.evaluate(() => document.querySelector('#surfaces').getBoundingClientRect().top + window.scrollY);
-await p.evaluate(v => window.scrollTo(0, v), y);
+const y = await p.evaluate(
+  () =>
+    document.querySelector("#surfaces").getBoundingClientRect().top +
+    window.scrollY,
+);
+await p.evaluate((v) => window.scrollTo(0, v), y);
 await p.waitForTimeout(1600);
-const t = p.locator('text=TRANSPARENT').first();
+const t = p.locator("text=TRANSPARENT").first();
 const bb = await t.boundingBox();
-await p.screenshot({ path: '/tmp/z-grid.png', clip: { x: bb.x - 78, y: bb.y - 62, width: bb.width + 150, height: bb.height + 150 } });
+await p.screenshot({
+  path: "/tmp/z-grid.png",
+  clip: {
+    x: bb.x - 78,
+    y: bb.y - 62,
+    width: bb.width + 150,
+    height: bb.height + 150,
+  },
+});
 await b.close();

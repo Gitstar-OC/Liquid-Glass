@@ -104,7 +104,10 @@ export function OverlaysShowcase() {
         description="Search, groups, separators and shortcuts in one frosted plane. Press ⌘K in a real app; here it just sits there, open."
         components="Command · Input · Item · Shortcut"
       >
-        <GlassSurface kind="command" className="w-full max-w-sm overflow-hidden">
+        <GlassSurface
+          kind="command"
+          className="w-full max-w-sm overflow-hidden"
+        >
           <GlassCommand>
             <GlassCommandInput placeholder="Type a command or search…" />
             <GlassCommandList>
@@ -335,7 +338,9 @@ export function OverlaysShowcase() {
                   />
                   <GlassDialogFooter>
                     <GlassButton variant="glass">Copy link</GlassButton>
-                    <GlassButton variant="glass-strong">Send invite</GlassButton>
+                    <GlassButton variant="glass-strong">
+                      Send invite
+                    </GlassButton>
                   </GlassDialogFooter>
                 </GlassDialogContent>
               </GlassDialog>

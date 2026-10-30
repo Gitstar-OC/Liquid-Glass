@@ -3,11 +3,5 @@
  * fold, plus a whisper of grain. Fixed, behind everything, never interactive.
  */
 export function Ambient() {
-  return (
-    <div
-      aria-hidden="true"
-      data-adaptive-skip
-      className="page-ambient"
-    />
-  );
+  return <div aria-hidden="true" data-adaptive-skip className="page-ambient" />;
 }

@@ -118,12 +118,22 @@ export function useAdaptiveContrast(
       clearTimeout(timer);
       tick();
     };
-    const onLoad=(event:Event)=>{
-      if(event.target instanceof Element && event.target.closest("[data-glass-mirror-host],[data-glass-mirror]"))return;
+    const onLoad = (event: Event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest("[data-glass-mirror-host],[data-glass-mirror]")
+      )
+        return;
       queue();
     };
-    const position=typeof MutationObserver!=="undefined" ? new MutationObserver(queue) : null;
-    position?.observe(el,{attributes:true,attributeFilter:["style","class"]});
+    const position =
+      typeof MutationObserver !== "undefined"
+        ? new MutationObserver(queue)
+        : null;
+    position?.observe(el, {
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
     const mutations =
       typeof MutationObserver !== "undefined"
         ? new MutationObserver((records) => {

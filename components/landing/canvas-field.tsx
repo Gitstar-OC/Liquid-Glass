@@ -173,7 +173,11 @@ export function CanvasField({
   }, [palette, base, speed, blobCount]);
 
   return (
-    <div ref={hostRef} className={cn("absolute inset-0 overflow-hidden", className)} {...rest}>
+    <div
+      ref={hostRef}
+      className={cn("absolute inset-0 overflow-hidden", className)}
+      {...rest}
+    >
       <canvas ref={canvasRef} aria-hidden="true" className="h-full w-full" />
     </div>
   );

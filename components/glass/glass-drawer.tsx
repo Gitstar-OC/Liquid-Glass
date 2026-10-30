@@ -23,7 +23,7 @@ export function GlassDrawerContent({
       <DrawerPrimitive.Overlay
         data-slot="drawer-overlay"
         className={cn(
-          "fixed inset-0 z-50 bg-black/20",
+          "fixed inset-0 z-50 bg-black/20 backdrop-blur-[6px]",
           container && "absolute rounded-[20px]",
         )}
       />

@@ -42,6 +42,8 @@ const INTERNAL = {
   "@/lib/glass-scene": "glass-lens",
   "@/lib/glass-performance": "glass-lens",
   "@/lib/glass-filter": "glass-lens",
+  "@/lib/glass-lens-optics": "glass-lens",
+  "@/lib/glass-video": "glass-lens",
   "@/components/glass-scene": "glass-lens",
   "@/components/glass-backdrop": "glass-lens",
   "@/components/liquid-glass": "glass-lens",
@@ -100,7 +102,11 @@ function depsOf(path) {
   }
 
   // CSS-level materials: every glass control is poured into one of these.
-  if (/glass-(chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host)/.test(src))
+  if (
+    /glass-(chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
+      src,
+    )
+  )
     internal.add(url("glass-utilities"));
 
   return { internal, shadcn, npm };
@@ -135,6 +141,7 @@ const TITLES = {
   "glass-range-control": "Glass Range Control",
   "glass-preferences": "Glass Preferences",
   "glass-music-player": "Glass Music Player",
+  "glass-video-player": "Glass Video Player",
   "glass-control-center": "Glass Control Center",
   "glass-spotlight": "Glass Spotlight",
   "glass-power": "Glass Power Controls",
@@ -176,10 +183,14 @@ const TITLES = {
 };
 
 const DESCRIPTIONS = {
+  "glass-target-lens":
+    "A cached moving SVG lens over original interactive DOM, with an optional explicit visual target for small controls. Position changes reuse the map; dormant lenses release their filter and budget slot.",
   "glass-preferences":
     "An editable preferences form composed from standard shadcn controls, with adaptive ink and an async save callback.",
   "glass-music-player":
     "An independent audio player with track navigation, seeking, and volume control.",
+  "glass-video-player":
+    "A native video player with shared WebGL glass controls, seeking, playback and skip actions.",
   "glass-control-center":
     "Connection toggles, brightness, sound, and focus in a controlled or uncontrolled panel.",
   "glass-spotlight":
@@ -204,14 +215,17 @@ const DESCRIPTIONS = {
     "Card, header, title, action and footer sub-components on the shared clear lens.",
   "glass-input":
     "Input, textarea, and label with shared form semantics and focus states.",
-  "glass-switch": "A switch whose track is a tinted glass channel.",
+  "glass-switch":
+    "A native switch with a solid resting thumb and a transient, source-colored glass cap.",
   "glass-progress": "A determinate progress meter with an inset glass track.",
   "glass-slider": "Range input with a glass thumb and rail.",
   "glass-checkbox": "Checkbox and radio group rendered as glass chips.",
   "glass-toggle": "Toggle and toggle group with pressed-state glass.",
   "glass-tabs": "Tabs, tab list, trigger and content.",
-  "glass-dock": "A glass dock with labelled controls, native links, and keyboard-accessible tooltips.",
-  "glass-icons": "Original control glyphs on a consistent 24px grid. Label the parent button for accessibility.",
+  "glass-dock":
+    "A glass dock with labelled controls, native links, and keyboard-accessible tooltips.",
+  "glass-icons":
+    "Original control glyphs on a consistent 24px grid. Label the parent button for accessibility.",
   "glass-alert": "Alert with a glass title and description.",
   "glass-avatar":
     "Avatar with a ringed glass portrait and a graceful fallback.",
@@ -241,343 +255,437 @@ const UTILITIES_CSS = {
     "--glass-action": "#006de5",
     "--ease-out": "cubic-bezier(0.23, 1, 0.32, 1)",
     "--ease-in-out": "cubic-bezier(0.77, 0, 0.175, 1)",
-    "--ease-drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
+    "--ease-drawer": "cubic-bezier(0.32, 0.72, 0, 1)",
   },
   "@layer components": {
+    ".glass-video-player": {
+      position: "relative",
+      isolation: "isolate",
+      width: "100%",
+      "aspect-ratio": "16 / 9",
+      overflow: "hidden",
+      "border-radius": "20px",
+      background: "#171a12",
+      color: "#fff",
+    },
+    ".glass-video-player > video, .glass-video-player > canvas": {
+      position: "absolute",
+      inset: "0",
+      width: "100%",
+      height: "100%",
+      "object-fit": "cover",
+    },
+    ".glass-video-player > canvas": { "pointer-events": "none", opacity: "0" },
+    '.glass-video-player[data-optical="true"] > canvas': { opacity: "1" },
+    ".glass-video-controls": {
+      position: "absolute",
+      inset: "0",
+      display: "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      gap: "20px",
+      "pointer-events": "none",
+    },
+    ".glass-video-player .glass-video-button": {
+      width: "46px",
+      height: "46px",
+      "min-width": "46px",
+      padding: "0",
+      border: "0",
+      "border-radius": "999px",
+      color: "#fff !important",
+      background: "rgb(0 0 0 / .2)",
+      "box-shadow": "none",
+      "pointer-events": "auto",
+    },
+    ".glass-video-player .glass-video-play": { width: "76px", height: "76px" },
+    ".glass-video-player .glass-video-button:hover": {
+      background: "rgb(255 255 255 / .06)",
+    },
+    ".glass-video-player .glass-video-button:focus-visible, .glass-video-seek:has(input:focus-visible)":
+      { outline: "2px solid white", "outline-offset": "4px" },
+    ".glass-video-player .glass-video-button svg": {
+      width: "26px",
+      height: "26px",
+    },
+    ".glass-video-player .glass-video-play svg": {
+      width: "32px",
+      height: "32px",
+    },
+    ".glass-video-seek": {
+      position: "absolute",
+      left: "18px",
+      right: "18px",
+      bottom: "18px",
+      display: "flex",
+      "align-items": "center",
+      height: "26px",
+      "padding-inline": "12px",
+      "border-radius": "999px",
+      background: "rgb(0 0 0 / .2)",
+    },
+    '.glass-video-player[data-optical="true"] :is(.glass-video-button,.glass-video-seek)':
+      { background: "transparent !important" },
+    ".glass-video-track": {
+      width: "100%",
+      height: "4px",
+      overflow: "hidden",
+      "border-radius": "999px",
+      background: "rgb(255 255 255 / .35)",
+    },
+    ".glass-video-track > span": {
+      display: "block",
+      height: "100%",
+      "border-radius": "inherit",
+      background: "white",
+    },
+    ".glass-video-seek > input": {
+      position: "absolute",
+      "inset-inline": "0",
+      top: "-9px",
+      width: "100%",
+      height: "44px",
+      margin: "0",
+      opacity: "0",
+      cursor: "pointer",
+    },
+    ".glass-video-error": {
+      position: "absolute",
+      top: "12px",
+      left: "12px",
+      padding: "6px 10px",
+      "border-radius": "8px",
+      background: "rgb(0 0 0 / .6)",
+      "font-size": "12px",
+    },
     ".glass-chip": {
-      "border": "0",
-      "background": "color-mix(in oklab, var(--foreground) 5%, transparent)",
+      border: "0",
+      background: "color-mix(in oklab, var(--foreground) 5%, transparent)",
       "box-shadow": "none",
       "backdrop-filter": "blur(0.75px) saturate(1)",
-      "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+      "-webkit-backdrop-filter": "blur(0.75px) saturate(1)",
     },
     ".glass-state-swap": {
-      "display": "inline-grid",
-      "vertical-align": "middle"
+      display: "inline-grid",
+      "vertical-align": "middle",
     },
     ".glass-state-swap > [data-swap-layer]": {
       "grid-area": "1 / 1",
-      "display": "inline-flex",
+      display: "inline-flex",
       "align-items": "center",
       "justify-content": "center",
-      "gap": "0.5rem",
-      "transition": "opacity 180ms var(--ease-out), transform 180ms var(--ease-out), filter 180ms var(--ease-out)"
+      gap: "0.5rem",
+      transition:
+        "opacity 180ms var(--ease-out), transform 180ms var(--ease-out), filter 180ms var(--ease-out)",
     },
-    ".glass-state-swap > [data-swap-layer=\"to\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"from\"]": {
-      "opacity": "0",
-      "filter": "blur(2px)",
-      "transform": "translateY(8%) scale(.96)"
-    },
-    ".glass-state-swap > [data-swap-layer=\"from\"], .glass-state-swap[data-active=\"true\"] > [data-swap-layer=\"to\"]": {
-      "opacity": "1",
-      "filter": "blur(0)",
-      "transform": "translateY(0) scale(1)"
-    },
-    ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
-      "transition": "none"
+    '.glass-state-swap > [data-swap-layer="to"], .glass-state-swap[data-active="true"] > [data-swap-layer="from"]':
+      {
+        opacity: "0",
+        filter: "blur(2px)",
+        transform: "translateY(8%) scale(.96)",
+      },
+    '.glass-state-swap > [data-swap-layer="from"], .glass-state-swap[data-active="true"] > [data-swap-layer="to"]':
+      {
+        opacity: "1",
+        filter: "blur(0)",
+        transform: "translateY(0) scale(1)",
+      },
+    '.glass-state-swap[data-animate="false"] > [data-swap-layer]': {
+      transition: "none",
     },
     ".glass-control-icon": {
-      "display": "grid",
+      display: "grid",
       "place-items": "center",
       "flex-shrink": "0",
       "border-radius": "999px",
-      "background": "color-mix(in oklab, var(--foreground) 10%, transparent)"
+      background: "color-mix(in oklab, var(--foreground) 10%, transparent)",
     },
     ".glass-accent": {
-      "color": "white",
-      "background": "var(--glass-action)",
-      "border-color": "#ffffff24"
+      color: "white",
+      background: "var(--glass-action)",
+      "border-color": "#ffffff24",
     },
     ".glass-accent:hover": {
-      "background": "color-mix(in oklab, var(--glass-action) 88%, white)"
+      background: "color-mix(in oklab, var(--glass-action) 88%, white)",
     },
     ".glass-accent:active": {
-      "background": "color-mix(in oklab, var(--glass-action) 90%, black)"
+      background: "color-mix(in oklab, var(--glass-action) 90%, black)",
     },
     ".glass-emphasis": {
-      "background": "color-mix(in oklab, var(--foreground) 13%, transparent)",
-      "font-weight": "500"
+      background: "color-mix(in oklab, var(--foreground) 13%, transparent)",
+      "font-weight": "500",
     },
     ".glass-plain-action": {
-      "border": "0",
-      "background": "color-mix(in oklab,var(--foreground) 8%,transparent)",
+      border: "0",
+      background: "color-mix(in oklab,var(--foreground) 8%,transparent)",
       "background-image": "none",
       "box-shadow": "none",
       "backdrop-filter": "none",
-      "-webkit-backdrop-filter": "none"
+      "-webkit-backdrop-filter": "none",
     },
     ".glass-field": {
-      "border": "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
-      "background": "color-mix(in oklab, var(--foreground) 3%, transparent)",
+      border:
+        "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+      background: "color-mix(in oklab, var(--foreground) 3%, transparent)",
       "box-shadow": "none",
       "backdrop-filter": "blur(0.75px) saturate(1)",
-      "-webkit-backdrop-filter": "blur(0.75px) saturate(1)"
+      "-webkit-backdrop-filter": "blur(0.75px) saturate(1)",
     },
     ".glass-field::placeholder": {
-      "opacity": "0.62"
+      opacity: "0.62",
     },
     ".glass-inline-action": {
-      "border": "0",
-      "background": "color-mix(in oklab,var(--foreground) 9%,transparent)",
+      border: "0",
+      background: "color-mix(in oklab,var(--foreground) 9%,transparent)",
       "backdrop-filter": "none",
-      "-webkit-backdrop-filter": "none"
+      "-webkit-backdrop-filter": "none",
     },
     ".glass-inset": {
-      "background": "color-mix(in oklab, var(--foreground) 8%, transparent)"
+      background: "color-mix(in oklab, var(--foreground) 8%, transparent)",
     },
   },
-  "[data-glass-button][data-input-modality=\"keyboard\"], .glass-hold-button[data-input-modality=\"keyboard\"]::before": {
-    "transition": "none"
-  },
-  "[data-glass-button][data-glass-compositor=\"atlas\"]": {
-    "transform": "none !important",
-    "scale": "1 !important",
-    "background-color": "transparent !important"
+  '[data-glass-button][data-input-modality="keyboard"], .glass-hold-button[data-input-modality="keyboard"]::before':
+    {
+      transition: "none",
+    },
+  '[data-glass-button][data-glass-compositor="atlas"]': {
+    transform: "none !important",
+    scale: "1 !important",
+    "background-color": "transparent !important",
   },
   ".glass-hold-button::before": {
-    "content": "\"\"",
-    "position": "absolute",
-    "inset": "0",
+    content: '""',
+    position: "absolute",
+    inset: "0",
     "border-radius": "inherit",
-    "background": "color-mix(in oklab,var(--foreground) 12%,transparent)",
-    "opacity": "1",
-    "transition": "opacity 180ms var(--ease-out)",
+    background: "color-mix(in oklab,var(--foreground) 12%,transparent)",
+    opacity: "1",
+    transition: "opacity 180ms var(--ease-out)",
     "pointer-events": "none",
-    "z-index": "-1"
+    "z-index": "-1",
   },
-  ".glass-hold-button[data-liquid-held=\"true\"]::before": {
-    "opacity": "0"
+  '.glass-hold-button[data-liquid-held="true"]::before': {
+    opacity: "0",
   },
-  ".glass-hold-button[data-liquid-held=\"true\"]": {
-    "transform": "scale(1.045)"
+  '.glass-hold-button[data-liquid-held="true"]': {
+    transform: "scale(1.045)",
   },
   ".glass-slider-thumb": {
-    "background": "linear-gradient(145deg,#ffffff90,#ffffff05 45%,#ffffff40)"
+    background: "var(--slider-thumb-fill,var(--foreground))",
   },
-  ".glass-slider-thumb::before": {
-    "content": "\"\"",
-    "position": "absolute",
-    "inset": "0",
-    "border-radius": "inherit",
-    "background": "var(--slider-thumb-fill,var(--foreground))",
-    "opacity": "1",
-    "transition": "opacity 220ms var(--ease-out)"
+  '[data-appearance="lens"] .glass-slider-thumb': {
+    "box-shadow": "0 2px 8px rgb(24 20 48 / .12)",
   },
-  "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
-    "transform": "scale(1.14,1.14)",
-    "backdrop-filter": "blur(.75px)",
-    "-webkit-backdrop-filter": "blur(.75px)",
-    "opacity": "1",
-    "transition-duration": "260ms",
-    "transition-delay": "60ms"
+  '[data-slot="slider"]:has([data-lens-visible="true"]) .glass-slider-thumb[data-lens-thumb="true"]':
+    { opacity: "0" },
+  '[data-slot="slider"][data-input-modality="keyboard"] .glass-slider-thumb:focus-visible': {
+    outline: "2px solid var(--glass-action)", "outline-offset": "3px",
   },
-  "[data-liquid-pressed=\"true\"] .glass-slider-thumb::before": {
-    "opacity": "0",
-    "transition-delay": "60ms"
+  '[data-slot="slider"][data-input-modality="keyboard"]:has([data-lens-visible="true"]) > span:has(> [data-slot="slider-thumb"]:focus-visible)': {
+    "z-index": "3", "border-radius": "999px",
+    outline: "2px solid var(--glass-action)", "outline-offset": "3px",
   },
-  "[data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb, [data-slot=\"slider\"][data-input-modality=\"keyboard\"] .glass-slider-thumb::before": {
-    "transition": "none"
+  ".glass-switch-thumb": { background: "#fff", scale: "1" },
+  '.glass-switch[data-input-modality="keyboard"]:focus-visible': {
+    outline: "2px solid var(--glass-action,var(--ring))",
+    "outline-offset": "4px",
   },
-  ".glass-switch-thumb": {
-    "background": "#ffffff1a",
-    "scale": "1"
+  '.glass-menu-panel :is([role^="menuitem"],[role="option"])': {
+    "min-height": "36px",
+    padding: "8px 28px 8px 10px",
+    "border-radius": "10px",
+    "font-size": "13px",
+    "line-height": "20px",
   },
-  ".glass-switch-thumb::before": {
-    "content": "\"\"",
-    "position": "absolute",
-    "inset": "0",
-    "border-radius": "inherit",
-    "background": "#fff",
-    "transition": "opacity 160ms var(--ease-out)"
+  '.glass-menu-panel :is([role^="menuitem"],[role="option"])[data-highlighted]':
+    {
+      background: "color-mix(in oklab,var(--foreground) 7%,transparent)",
+      color: "var(--foreground)",
+    },
+  '.glass-menu-panel [data-slot="dropdown-menu-label"]': {
+    padding: "5px 10px 6px",
+    "font-size": "11px",
   },
-  "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
-    "scale": "1.3"
+  ".glass-selection-source > [data-glass-target-root] > [data-lens-original]": {
+    display: "flex",
+    "align-items": "center",
+    gap: "inherit",
+    "flex-direction": "inherit",
   },
-  "[data-liquid-pressed=\"true\"] .glass-switch-thumb::before": {
-    "opacity": ".12"
+  ".glass-selection-source": { gap: "inherit", "flex-direction": "inherit" },
+  ".glass-options-source": {
+    position: "absolute", inset: "0", isolation: "isolate", display: "flex",
+    "align-items": "center", gap: "calc(var(--gap,2) * .25rem)",
   },
-  ".glass-switch-thumb::after": {
-    "content": "\"\"", "position": "absolute", "inset": "0", "border-radius": "inherit",
-    "background-image": "var(--switch-light,none),var(--switch-shade,none)", "background-size": "100% 100%", "opacity": ".5", "transition": "opacity 160ms var(--ease-out)"
+  '.glass-options-source[data-orientation="vertical"]': {
+    "flex-direction": "column", "align-items": "stretch",
   },
-  "[data-liquid-pressed=\"true\"] .glass-switch-thumb::after": { "opacity": "1" },
-  ".glass-command-dialog, .glass-command-overlay": { "pointer-events": "auto", "animation": "glass-command-enter 160ms var(--ease-out) both" },
-  "@keyframes glass-command-enter": { "from": {"opacity":"0"}, "to": {"opacity":"1"} },
-  "[data-slot=\"switch\"][data-input-modality=\"keyboard\"] .glass-switch-thumb::before": {
-    "transition": "none"
+  ".glass-options-source::before": {
+    content: '""', position: "absolute", inset: "-128px", "z-index": "-2",
+    background: "var(--glass-lens-plane,var(--background))",
   },
-  ".glass-selection-indicator": {
-    "pointer-events": "none",
-    "position": "absolute",
-    "left": "0",
-    "top": "0",
-    "width": "var(--selection-w,0px)",
-    "height": "var(--selection-h,0px)",
-    "opacity": "var(--selection-opacity,0)",
-    "border-radius": "var(--selection-radius,999px)",
-    "transform": "translate(var(--selection-x,0px),var(--selection-y,0px))",
-    "background": "color-mix(in oklab,var(--foreground) 6%,transparent)",
-    "transition": "transform 300ms var(--ease-out), width 300ms var(--ease-out), height 300ms var(--ease-out), background-color 200ms var(--ease-out)"
+  ".glass-options-source::after": {
+    content: '""', position: "absolute", inset: "0", "z-index": "-1",
+    "border-radius": "999px",
+    background: "var(--glass-selection-track,var(--muted))",
   },
-  "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
-    "background": "transparent"
+  ".glass-options-source .glass-options-source-item": { color: "var(--glass-action)" },
+  ".glass-options-source .glass-options-source-item svg": { color: "inherit", opacity: "1" },
+  ".glass-options-source-item[data-disabled]": { opacity: ".4" },
+  ".glass-selection-source > [data-glass-target-root]": {
+    display: "flex",
+    "align-items": "center",
+    "min-width": "0",
+    gap: "inherit",
+    "flex-direction": "inherit",
   },
-  "[data-liquid-selection] > [data-state]": {
-    "border": "0",
-    "background": "transparent !important",
-    "box-shadow": "none"
+  '.glass-selection-source:has([data-lens-visible="true"]) > [data-selection-fallback]':
+    { opacity: "0 !important" },
+  "[data-liquid-selection] [data-state]": {
+    border: "0",
+    background: "transparent !important",
+    "box-shadow": "none",
   },
-  "[data-liquid-selection] > [data-state]:hover": {
-    "background": "transparent !important"
+  "[data-liquid-selection] [data-state]:hover": {
+    background:
+      "color-mix(in oklab,var(--foreground) 4%,transparent) !important",
   },
-  "[data-liquid-selection][data-input-modality=\"keyboard\"] > .glass-selection-indicator": {
-    "transition": "none"
-  },
-  ".glass-elastic-button": {
-    "transition": "transform 320ms var(--ease-out), background-color 150ms var(--ease-out)"
-  },
-  ".glass-elastic-button[data-elastic-held=\"true\"]": {
-    "transition-duration": "80ms"
-  },
-  ".glass-elastic-button:hover": {
-    "background-color": "color-mix(in oklab,var(--foreground) 4%,transparent)"
-  },
-  "[data-glass-await-optics=\"true\"]": {
-    "transition": "opacity 120ms var(--ease-out)"
-  },
-  "[data-glass-await-optics=\"true\"][data-refraction=\"css\"][data-glass-rendering=\"active\"]": {
-    "opacity": "0"
-  },
-  "[data-glass-await-optics=\"true\"][data-glass-admission=\"pending\"]": {
-    "opacity": "0"
-  },
-  ".glass-atlas-finish": {
-    "transition": "filter 240ms var(--ease-out)"
+  '.glass-switch:has([data-lens-visible="true"]) .glass-switch-thumb': {
+    opacity: "0",
   },
   ".glass-tooltip-motion": {
     "--tooltip-x": "0px",
-    "--tooltip-y": "3px"
+    "--tooltip-y": "3px",
   },
-  ".glass-tooltip-motion[data-side=\"bottom\"]": {
-    "--tooltip-y": "-3px"
+  '.glass-tooltip-motion[data-side="bottom"]': {
+    "--tooltip-y": "-3px",
   },
-  ".glass-tooltip-motion[data-side=\"left\"]": {
+  '.glass-tooltip-motion[data-side="left"]': {
     "--tooltip-x": "3px",
-    "--tooltip-y": "0px"
+    "--tooltip-y": "0px",
   },
-  ".glass-tooltip-motion[data-side=\"right\"]": {
+  '.glass-tooltip-motion[data-side="right"]': {
     "--tooltip-x": "-3px",
-    "--tooltip-y": "0px"
+    "--tooltip-y": "0px",
   },
-  ".glass-tooltip-motion[data-state=\"delayed-open\"], .glass-tooltip-motion[data-state=\"instant-open\"]": {
-    "animation": "glass-tooltip-in 220ms var(--ease-out) both"
-  },
-  ".glass-tooltip-motion[data-state=\"closed\"]": {
-    "animation": "glass-tooltip-out 140ms ease-out both"
+  '.glass-tooltip-motion[data-state="delayed-open"], .glass-tooltip-motion[data-state="instant-open"]':
+    {
+      animation: "glass-tooltip-in 220ms var(--ease-out) both",
+    },
+  '.glass-tooltip-motion[data-state="closed"]': {
+    animation: "glass-tooltip-out 140ms ease-out both",
   },
   "@keyframes glass-tooltip-in": {
-    "from": {
-      "opacity": "0",
-      "transform": "translate(var(--tooltip-x),var(--tooltip-y)) scale(.98)"
+    from: {
+      opacity: "0",
+      transform: "translate(var(--tooltip-x),var(--tooltip-y)) scale(.98)",
     },
-    "to": {
-      "opacity": "1",
-      "transform": "translate(0,0) scale(1)"
-    }
+    to: {
+      opacity: "1",
+      transform: "translate(0,0) scale(1)",
+    },
   },
   "@keyframes glass-tooltip-out": {
-    "from": {
-      "opacity": "1"
+    from: {
+      opacity: "1",
     },
-    "to": {
-      "opacity": "0",
-      "transform": "translate(calc(var(--tooltip-x) / 2),calc(var(--tooltip-y) / 2)) scale(.99)"
-    }
+    to: {
+      opacity: "0",
+      transform:
+        "translate(calc(var(--tooltip-x) / 2),calc(var(--tooltip-y) / 2)) scale(.99)",
+    },
   },
   ".glass-player-details": {
-    "animation": "glass-player-reveal 180ms var(--ease-out) both"
+    animation: "glass-player-reveal 180ms var(--ease-out) both",
   },
   "@keyframes glass-player-reveal": {
-    "from": {
-      "opacity": "0",
-      "transform": "translateY(3px)"
+    from: {
+      opacity: "0",
+      transform: "translateY(3px)",
     },
-    "to": {
-      "opacity": "1",
-      "transform": "translateY(0)"
-    }
+    to: {
+      opacity: "1",
+      transform: "translateY(0)",
+    },
   },
   ".glass-toast-host": {
-    "background": "transparent !important",
-    "border": "0 !important",
-    "padding": "0 !important",
+    background: "transparent !important",
+    border: "0 !important",
+    padding: "0 !important",
     "backdrop-filter": "none !important",
     "-webkit-backdrop-filter": "none !important",
-    "box-shadow": "none !important"
+    "box-shadow": "none !important",
   },
   "@media (prefers-reduced-motion: reduce)": {
     ".glass-slider-thumb::before": {
-      "transition": "none"
+      transition: "none",
     },
-    ".glass-hold-button[data-liquid-held=\"true\"], [data-liquid-pressed=\"true\"] .glass-slider-thumb": {
-      "transform": "none"
-    },
+    '.glass-hold-button[data-liquid-held="true"], [data-liquid-pressed="true"] .glass-slider-thumb':
+      {
+        transform: "none",
+      },
     ".glass-state-swap > [data-swap-layer]": {
-      "transform": "none !important",
-      "filter": "none !important",
-      "transition": "opacity 100ms ease",
-      "transition-duration": "100ms !important"
+      transform: "none !important",
+      filter: "none !important",
+      transition: "opacity 100ms ease",
+      "transition-duration": "100ms !important",
     },
-    ".glass-state-swap[data-animate=\"false\"] > [data-swap-layer]": {
-      "transition": "none",
-      "transition-duration": "0s !important"
+    '.glass-state-swap[data-animate="false"] > [data-swap-layer]': {
+      transition: "none",
+      "transition-duration": "0s !important",
     },
-    ".glass-switch-thumb::before, .glass-switch-thumb::after, .glass-selection-indicator, .glass-atlas-finish": {
-      "transition": "none"
-    },
+    ".glass-switch-thumb::before, .glass-switch-thumb::after, .glass-atlas-finish":
+      {
+        transition: "none",
+      },
     ".glass-elastic-button": {
-      "transform": "none !important",
-      "transition": "none"
+      transform: "none !important",
+      transition: "none",
     },
     ".glass-switch-thumb": {
-      "scale": "1 !important"
+      scale: "1 !important",
     },
     ".glass-tooltip-motion": {
       "--tooltip-x": "0px !important",
       "--tooltip-y": "0px !important",
       "animation-duration": "80ms !important",
-      "transform": "none !important"
+      transform: "none !important",
     },
     ".glass-player-details": {
-      "animation": "none"
-    }
+      animation: "none",
+    },
+  },
+  "@media (max-width: 479px)": {
+    ".glass-video-player": { "aspect-ratio": "4 / 3" },
+    ".glass-video-controls": { gap: "16px" },
   },
   "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
-    "[data-liquid-pressed=\"true\"] .glass-slider-thumb": {
-      "background": "var(--foreground)",
+    '[data-liquid-pressed="true"] .glass-slider-thumb': {
+      background: "var(--foreground)",
       "backdrop-filter": "none",
-      "-webkit-backdrop-filter": "none"
+      "-webkit-backdrop-filter": "none",
     },
-    "[data-liquid-pressed=\"true\"] .glass-switch-thumb": {
-      "background": "white",
+    '[data-liquid-pressed="true"] .glass-switch-thumb': {
+      background: "white",
       "backdrop-filter": "none",
-      "-webkit-backdrop-filter": "none"
+      "-webkit-backdrop-filter": "none",
     },
     ".glass-chip, .glass-field": {
       "backdrop-filter": "none",
       "-webkit-backdrop-filter": "none",
-      "background": "var(--background)",
-      "border-color": "var(--foreground)"
+      background: "var(--background)",
+      "border-color": "var(--foreground)",
     },
     ".glass-switch-thumb::before": {
-      "opacity": "1 !important"
+      opacity: "1 !important",
     },
-    "[data-liquid-selection][data-liquid-moving=\"true\"] > .glass-selection-indicator": {
-      "background": "color-mix(in oklab,var(--foreground) 15%,var(--background))",
+    ".glass-selection-source > [data-selection-fallback]": {
+      background:
+        "color-mix(in oklab,var(--foreground) 15%,var(--background)) !important",
       "backdrop-filter": "none",
-      "-webkit-backdrop-filter": "none"
-    }
-  }
+      "-webkit-backdrop-filter": "none",
+    },
+  },
 };
 
 /* --------------------------------------------------------------------- build */
@@ -594,6 +702,8 @@ const LENS = [
   file("lib/glass-scene.ts", "registry:lib"),
   file("lib/glass-performance.ts", "registry:lib"),
   file("lib/glass-filter.ts", "registry:lib"),
+  file("lib/glass-lens-optics.ts", "registry:lib"),
+  file("lib/glass-video.ts", "registry:lib"),
   file("components/glass-scene.tsx", "registry:ui"),
   file("components/glass-backdrop.ts", "registry:ui"),
 ];
@@ -633,7 +743,9 @@ items.push({
 function makeItem({ name, type, title, description, files, extraDeps = [] }) {
   const roll = rollUp(files.map((f) => f.path));
   const needsUtilities = files.some((f) =>
-    /glass-(chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host)/.test(read(f.path)),
+    /glass-(chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
+      read(f.path),
+    ),
   );
   const internal = SELF_CONTAINED.has(name) ? [] : roll.registryDependencies;
 

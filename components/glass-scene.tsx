@@ -48,10 +48,15 @@ export function GlassSettingsProvider({
   showOutlines,
 }: GlassSettings & { children: ReactNode }) {
   const parent = useGlassSettings();
-  const [initialInk] = useState<"light" | "dark">(ink === "light" ? "light" : "dark");
+  const [initialInk] = useState<"light" | "dark">(
+    ink === "light" ? "light" : "dark",
+  );
   const behavior = themeBehavior ?? parent.themeBehavior ?? "unitheme";
   const selectedInk = ink ?? parent.ink;
-  const resolvedInk = behavior === "duotheme" && (!selectedInk || selectedInk === "auto") ? initialInk : selectedInk;
+  const resolvedInk =
+    behavior === "duotheme" && (!selectedInk || selectedInk === "auto")
+      ? initialInk
+      : selectedInk;
   const value = useMemo(
     () => ({
       surface: surface ?? parent.surface,
@@ -65,7 +70,19 @@ export function GlassSettingsProvider({
       refraction: refraction ?? parent.refraction ?? true,
       showOutlines: showOutlines ?? parent.showOutlines ?? false,
     }),
-    [parent, surface, config, optics, radius, resolvedInk, behavior, contrastProtection, performance, refraction, showOutlines],
+    [
+      parent,
+      surface,
+      config,
+      optics,
+      radius,
+      resolvedInk,
+      behavior,
+      contrastProtection,
+      performance,
+      refraction,
+      showOutlines,
+    ],
   );
   return (
     <GlassSettingsContext.Provider value={value}>
@@ -86,8 +103,10 @@ export function useGlassScene() {
   return useContext(GlassSceneContext);
 }
 
-export interface GlassSceneProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "content"> {
+export interface GlassSceneProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "content"
+> {
   /** The complete, interactive DOM backdrop. Lenses go in children. */
   content: ReactNode;
   sourceClassName?: string;

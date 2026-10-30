@@ -8,7 +8,7 @@ import {
   TabsContent,
   TabsTrigger as BaseTabsTrigger,
 } from "@/components/ui/tabs";
-import { GlassSelectionIndicator, useGlassSelection } from "@/components/glass/glass-selection";
+import { GlassSelection } from "@/components/glass/glass-selection";
 
 export function GlassTabs({
   className,
@@ -20,22 +20,25 @@ export function GlassTabs({
 export function GlassTabsList({
   className,
   children,
+  refractionTarget,
   ...props
-}: React.ComponentProps<"div">) {
-  const ref = useGlassSelection();
+}: React.ComponentProps<"div"> & { refractionTarget?: React.ReactNode }) {
   return (
     <TabsPrimitive.List asChild>
       <div
         data-slot="tabs-list"
         data-variant="default"
         {...props}
-        ref={ref}
         data-liquid-selection="true"
         className={cn(
           "group/tabs-list glass-chip relative isolate inline-flex h-10 w-fit items-center justify-center rounded-[12px] p-1 text-muted-foreground",
           className,
         )}
-      ><GlassSelectionIndicator/>{children}</div>
+      >
+        <GlassSelection refractionTarget={refractionTarget}>
+          {children}
+        </GlassSelection>
+      </div>
     </TabsPrimitive.List>
   );
 }

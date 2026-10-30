@@ -169,9 +169,9 @@ function readStyles(source: Element, copy: Element) {
 }
 function copyMedia(source: Element, copy: Element) {
   if (!(copy instanceof HTMLCanvasElement)) return;
-  if (
-    !(source instanceof HTMLCanvasElement || source instanceof HTMLVideoElement)
-  )
+  if (!(
+    source instanceof HTMLCanvasElement || source instanceof HTMLVideoElement
+  ))
     return;
   if (source instanceof HTMLVideoElement && source.readyState < 2) return;
   const width =
@@ -230,20 +230,36 @@ function paintedBefore(a: HTMLElement, b: HTMLElement) {
 
 function lowerGlassLayers(root: HTMLElement, surface: HTMLElement) {
   const scene = root.closest("[data-glass-scene]");
+  const area = surface.getBoundingClientRect();
+  const coversSurface = (node: HTMLElement) => {
+    if (!intersects(node.getBoundingClientRect(), area, 0)) return false;
+    if (!node.hasAttribute("data-glass-atlas")) return true;
+    // The atlas rectangle includes transparent gaps. Only its actual member
+    // silhouettes can be lower glass; capturing an empty gap copies every
+    // filter/mirror in the atlas into an otherwise unrelated small button.
+    const owner = node.closest("[data-glass-atlas-root]");
+    return [
+      ...(owner?.querySelectorAll<HTMLElement>(
+        '[data-glass-compositor="atlas"]',
+      ) ?? []),
+    ].some(
+      (member) =>
+        member.closest("[data-glass-atlas-root]") === owner &&
+        !member.closest("[data-glass-mirror]") &&
+        intersects(member.getBoundingClientRect(), area, 0),
+    );
+  };
   const layers = [
     ...(scene?.querySelectorAll<HTMLElement>("[data-liquid-glass]") ?? []),
   ].filter(
     (node) =>
       !node.closest("[data-glass-mirror]") &&
+      node.closest("[data-glass-scene]") === scene &&
       node !== surface &&
       !node.contains(surface) &&
       !surface.contains(node) &&
       !node.parentElement?.closest("[data-liquid-glass]") &&
-      intersects(
-        node.getBoundingClientRect(),
-        surface.getBoundingClientRect(),
-        0,
-      ) &&
+      coversSurface(node) &&
       paintedBefore(node, surface),
   );
   layers.sort((a, b) => (paintedBefore(a, b) ? -1 : 1));
@@ -251,22 +267,53 @@ function lowerGlassLayers(root: HTMLElement, surface: HTMLElement) {
 }
 
 /** Bounded DOM classification, performed on source paints rather than an idle timer. */
-export function classifyGlassBackdrop(root: HTMLElement, surface: HTMLElement): "plain" | "image" | "content" {
-  const area=surface.getBoundingClientRect();
-  if(lowerGlassLayers(root,surface).some(node=>!node.hasAttribute("data-glass-atlas"))) return "content";
-  const visible=(node:Element)=>{
-    if(!intersects(node.getBoundingClientRect(),area,0))return false;
-    for(let current:Element|null=node;current&&root.contains(current);current=current.parentElement){const style=getComputedStyle(current);if(style.display==="none"||style.visibility==="hidden"||style.opacity==="0")return false;}
+export function classifyGlassBackdrop(
+  root: HTMLElement,
+  surface: HTMLElement,
+): "plain" | "image" | "content" {
+  const area = surface.getBoundingClientRect();
+  if (
+    lowerGlassLayers(root, surface).some(
+      (node) => !node.hasAttribute("data-glass-atlas"),
+    )
+  )
+    return "content";
+  const visible = (node: Element) => {
+    if (!intersects(node.getBoundingClientRect(), area, 0)) return false;
+    for (
+      let current: Element | null = node;
+      current && root.contains(current);
+      current = current.parentElement
+    ) {
+      const style = getComputedStyle(current);
+      if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        style.opacity === "0"
+      )
+        return false;
+    }
     return true;
   };
-  if([...root.querySelectorAll("input,textarea,select,button")].some(visible))return "content";
-  const text=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let visited=0;
-  while(text.nextNode()){
-    if(++visited>256)return "content";
-    const parent=text.currentNode.parentElement;
-    if(text.currentNode.textContent?.trim() && parent && !parent.closest("script,style,svg,[data-liquid-glass],[data-glass-ignore]") && visible(parent))return "content";
+  if ([...root.querySelectorAll("input,textarea,select,button")].some(visible))
+    return "content";
+  const text = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let visited = 0;
+  while (text.nextNode()) {
+    if (++visited > 256) return "content";
+    const parent = text.currentNode.parentElement;
+    if (
+      text.currentNode.textContent?.trim() &&
+      parent &&
+      !parent.closest(
+        "script,style,svg,[data-liquid-glass],[data-glass-ignore]",
+      ) &&
+      visible(parent)
+    )
+      return "content";
   }
-  if([...root.querySelectorAll("img,video,canvas")].some(visible))return "image";
+  if ([...root.querySelectorAll("img,video,canvas")].some(visible))
+    return "image";
   return "plain";
 }
 
@@ -308,12 +355,9 @@ function buildSnapshot(root: HTMLElement, surface?: HTMLElement): Snapshot {
     const children = assigned.length
       ? assigned
       : (source.shadowRoot?.childNodes ?? source.childNodes);
-    if (
-      !(
-        source instanceof HTMLVideoElement ||
-        source instanceof HTMLCanvasElement
-      )
-    ) {
+    if (!(
+      source instanceof HTMLVideoElement || source instanceof HTMLCanvasElement
+    )) {
       for (const child of [...children]) {
         const cloned = clone(child, composed);
         if (cloned) copy.appendChild(cloned);
@@ -478,9 +522,18 @@ class SceneRecord {
     this.layers = new MutationObserver((mutations) => {
       const meaningful = mutations.some(({ target }) => {
         const node = target instanceof Element ? target : target.parentElement;
-        return node && !root.contains(node) &&
+        return (
+          node &&
+          !root.contains(node) &&
           !node.closest("[data-glass-mirror-host],[data-glass-clip],svg") &&
-          [...this.sinks].some(sink => sink.visible && sink.layered && !sink.surface.contains(node) && !node.contains(sink.surface));
+          [...this.sinks].some(
+            (sink) =>
+              sink.visible &&
+              sink.layered &&
+              !sink.surface.contains(node) &&
+              !node.contains(sink.surface),
+          )
+        );
       });
       if (!meaningful) return;
       this.rebuild = true;
@@ -553,7 +606,11 @@ class SceneRecord {
       node.closest("[data-glass-mirror-host]")
     )
       return;
-    if ([...this.sinks].some(sink => sink.visible && sink.layered && !sink.surface.contains(node))) {
+    if (
+      [...this.sinks].some(
+        (sink) => sink.visible && sink.layered && !sink.surface.contains(node),
+      )
+    ) {
       this.rebuild = true;
       this.schedule();
     }
@@ -695,7 +752,18 @@ class SceneRecord {
   geometryKey(sink: Sink) {
     const source = this.root.getBoundingClientRect();
     const lens = sink.surface.getBoundingClientRect();
-    return [source.left,source.top,source.width,source.height,lens.left,lens.top,lens.width,lens.height,sink.surface.clientLeft,sink.surface.clientTop].join(":");
+    return [
+      source.left,
+      source.top,
+      source.width,
+      source.height,
+      lens.left,
+      lens.top,
+      lens.width,
+      lens.height,
+      sink.surface.clientLeft,
+      sink.surface.clientTop,
+    ].join(":");
   }
   align(sink: Sink) {
     const scene = this.root.getBoundingClientRect();

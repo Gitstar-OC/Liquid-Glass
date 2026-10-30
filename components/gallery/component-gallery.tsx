@@ -1,6 +1,9 @@
 "use client";
 
-import { GlassToggleGroup, GlassToggleGroupItem } from "@/components/glass/glass-toggle";
+import {
+  GlassToggleGroup,
+  GlassToggleGroupItem,
+} from "@/components/glass/glass-toggle";
 import { GlassSwitch as Switch } from "@/components/glass/glass-switch";
 import { GlassButton } from "@/components/glass/glass-button";
 import { PreviewToolbar } from "@/components/site/preview-toolbar";
@@ -256,8 +259,19 @@ export function ComponentGallery() {
           >
             <GalleryPreview name={selected} photo={photo} />
           </GlassSettingsProvider>
-          <h2 id="preview-title" className="sr-only">{current.title}</h2>
-          <PreviewToolbar label="Gallery" photo={photo} onPhotoChange={setPhoto} blur={params.blur} onBlurChange={blur=>setParams(previous=>({...previous,blur}))} href={`/docs/${current.id}`} />
+          <h2 id="preview-title" className="sr-only">
+            {current.title}
+          </h2>
+          <PreviewToolbar
+            label="Gallery"
+            photo={photo}
+            onPhotoChange={setPhoto}
+            blur={params.blur}
+            onBlurChange={(blur) =>
+              setParams((previous) => ({ ...previous, blur }))
+            }
+            href={`/docs/${current.id}`}
+          />
         </section>
         <aside
           aria-label="Glass inspector"
@@ -435,8 +449,20 @@ export function ComponentGallery() {
             />
           </label>
         </div>
-        <GlassToggleGroup type="single" aria-label="Filter components" value={group} onValueChange={value=>{if(value)setGroup(value as ComponentGroup);}} className="mt-6 flex flex-wrap gap-2">
-          {COMPONENT_GROUPS.map(item=><GlassToggleGroupItem key={item} value={item}>{item}</GlassToggleGroupItem>)}
+        <GlassToggleGroup
+          type="single"
+          aria-label="Filter components"
+          value={group}
+          onValueChange={(value) => {
+            if (value) setGroup(value as ComponentGroup);
+          }}
+          className="mt-6 flex flex-wrap gap-2"
+        >
+          {COMPONENT_GROUPS.map((item) => (
+            <GlassToggleGroupItem key={item} value={item}>
+              {item}
+            </GlassToggleGroupItem>
+          ))}
         </GlassToggleGroup>
         <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {matches.map((item) => (

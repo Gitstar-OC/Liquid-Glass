@@ -6,6 +6,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GlassSurface } from "@/components/glass/glass-surface";
 import type { GlassSurface as GlassSurfaceKind } from "@/lib/glass-theme";
+import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 
 export function GlassSelectTrigger({
   className,
@@ -72,38 +73,59 @@ function GlassSelectScrollDownButton({
 export function GlassSelectContent({
   className,
   children,
-  position = "item-aligned",
-  align = "center",
+  position = "popper",
+  align = "start",
+  sideOffset = 8,
+  collisionPadding = 16,
   surface,
+  config,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content> & {
   surface?: GlassSurfaceKind;
+  config?: Partial<import("@/lib/glass").LensParams>;
 }) {
+  const { resolvedMode } = useGlassTheme();
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         data-slot="select-content"
         data-align-trigger={position === "item-aligned"}
         className={cn(
-          "relative z-50 max-h-(--radix-select-content-available-height) min-w-40 origin-(--radix-select-content-transform-origin) duration-100 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "relative z-50 overflow-clip max-h-(--radix-select-content-available-height) min-w-40 origin-(--radix-select-content-transform-origin) duration-100 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className,
         )}
         position={position}
         align={align}
+        sideOffset={sideOffset}
+        collisionPadding={collisionPadding}
         {...props}
       >
-        <GlassSurface kind="select" surface={surface} className="w-full">
+        <GlassSurface
+          kind="select"
+          radius={18}
+          surface={surface}
+          tintBlendMode="normal"
+          config={{
+            blur: 16,
+            glint: 20,
+            depth: 0,
+            tint: resolvedMode === "dark" ? 0.72 : 0.82,
+            tintColor: resolvedMode === "dark" ? "#202126" : "#f0f0f3",
+            ...config,
+          }}
+          className="glass-menu-panel w-full"
+        >
           {/*
             The glass root is `overflow-hidden isolate`, so the panel cannot
             scroll on its own — the list has to scroll inside it, and the
             scroll affordances have to carry their own opaque backdrop or they
             read as icons floating over the glass.
           */}
-          <div className="max-h-(--radix-select-content-available-height) overflow-x-hidden overflow-y-auto overscroll-contain p-1">
+          <div className="overflow-hidden p-1">
             <GlassSelectScrollUpButton />
             <SelectPrimitive.Viewport
               data-position={position}
-              className="data-[position=popper]:h-(--radix-select-trigger-height) data-[position=popper]:w-full data-[position=popper]:min-w-(--radix-select-trigger-width)"
+              className="max-h-[min(320px,calc(var(--radix-select-content-available-height)-3rem))] min-w-(--radix-select-trigger-width) overscroll-contain data-[position=popper]:w-full"
             >
               {children}
             </SelectPrimitive.Viewport>

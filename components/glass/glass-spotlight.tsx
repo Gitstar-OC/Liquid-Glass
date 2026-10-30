@@ -53,42 +53,56 @@ function SpotlightCommands({
       />
       <GlassCommandList className="max-h-[min(380px,50dvh)] scroll-py-2 p-2">
         <GlassCommandEmpty>No results found.</GlassCommandEmpty>
-        {groups.map((group,index) => (
+        {groups.map((group, index) => (
           <Fragment key={group}>
-            {index > 0 && <GlassCommandSeparator className="mx-1 my-2 bg-foreground/8"/>}
-          <GlassCommandGroup heading={group} className="p-0 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-2.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:text-foreground/50">
-            {commands
-              .filter((command) => (command.group ?? "Suggestions") === group)
-              .map((command) => (
-                <GlassCommandItem
-                  key={command.id}
-                  value={command.label}
-                  keywords={command.keywords}
-                  disabled={command.disabled}
-                  onSelect={() => {
-                    onCommandSelect?.();
-                    command.onSelect();
-                  }}
-                >
-                  {command.icon && (
-                    <span aria-hidden="true" className="grid size-5 shrink-0 place-items-center text-foreground/60 [&_svg]:size-4">
-                      {command.icon}
+            {index > 0 && (
+              <GlassCommandSeparator className="mx-1 my-2 bg-foreground/8" />
+            )}
+            <GlassCommandGroup
+              heading={group}
+              className="p-0 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-2.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:text-foreground/50"
+            >
+              {commands
+                .filter((command) => (command.group ?? "Suggestions") === group)
+                .map((command) => (
+                  <GlassCommandItem
+                    key={command.id}
+                    value={command.label}
+                    keywords={command.keywords}
+                    disabled={command.disabled}
+                    onSelect={() => {
+                      onCommandSelect?.();
+                      command.onSelect();
+                    }}
+                  >
+                    {command.icon && (
+                      <span
+                        aria-hidden="true"
+                        className="grid size-5 shrink-0 place-items-center text-foreground/60 [&_svg]:size-4"
+                      >
+                        {command.icon}
+                      </span>
+                    )}
+                    <span className="min-w-0 flex-1 truncate font-medium">
+                      {command.label}
                     </span>
-                  )}
-                  <span className="min-w-0 flex-1 truncate font-medium">{command.label}</span>
-                  {command.description && <span className="ml-auto hidden text-xs text-foreground/45 sm:block">{command.description}</span>}
-                  {command.shortcut && (
-                    <GlassCommandShortcut>
-                      {command.shortcut}
-                    </GlassCommandShortcut>
-                  )}
-                </GlassCommandItem>
-              ))}
-          </GlassCommandGroup>
+                    {command.description && (
+                      <span className="ml-auto hidden text-xs text-foreground/45 sm:block">
+                        {command.description}
+                      </span>
+                    )}
+                    {command.shortcut && (
+                      <GlassCommandShortcut>
+                        {command.shortcut}
+                      </GlassCommandShortcut>
+                    )}
+                  </GlassCommandItem>
+                ))}
+            </GlassCommandGroup>
           </Fragment>
         ))}
       </GlassCommandList>
-      <GlassCommandFooter/>
+      <GlassCommandFooter />
     </GlassCommand>
   );
 }
@@ -177,7 +191,10 @@ export function GlassSpotlight({
         onOpenChange={change}
         container={container}
         config={config}
-        onCloseAutoFocus={event => { event.preventDefault(); triggerRef.current?.focus(); }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          triggerRef.current?.focus();
+        }}
       >
         <SpotlightCommands
           {...props}

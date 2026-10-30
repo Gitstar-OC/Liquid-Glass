@@ -14,11 +14,38 @@ export const COMPONENT_CATALOGUE: {
   group: ComponentGroup;
   description: string;
 }[] = [
-  { id: "glass-dock", title: "Dock", group: "Navigation", description: "A single glass surface with app controls and accessible tooltips." },
-  { id: "glass-state-button", title: "Button states", group: "Controls", description: "Save, Like, and Add with interruptible blur transitions and instant keyboard feedback." },
-  { id: "glass-sound", title: "Sound", group: "Widgets", description: "A compact volume slider and audio output picker." },
-  { id: "glass-connectivity", title: "Sharing", group: "Widgets", description: "A connectivity switch with selectable visibility." },
-  { id: "glass-range-control", title: "Range control", group: "Controls", description: "A compact rounded rectangle with a fine slider track." },
+  {
+    id: "glass-dock",
+    title: "Dock",
+    group: "Navigation",
+    description:
+      "A single glass surface with app controls and accessible tooltips.",
+  },
+  {
+    id: "glass-state-button",
+    title: "Button states",
+    group: "Controls",
+    description:
+      "Save, Like, and Add with interruptible blur transitions and instant keyboard feedback.",
+  },
+  {
+    id: "glass-sound",
+    title: "Sound",
+    group: "Widgets",
+    description: "A compact volume slider and audio output picker.",
+  },
+  {
+    id: "glass-connectivity",
+    title: "Sharing",
+    group: "Widgets",
+    description: "A connectivity switch with selectable visibility.",
+  },
+  {
+    id: "glass-range-control",
+    title: "Range control",
+    group: "Controls",
+    description: "A compact rounded rectangle with a fine slider track.",
+  },
   {
     id: "glass-button",
     title: "Button",

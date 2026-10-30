@@ -52,10 +52,47 @@ export function GalleryExample({
   };
 
   switch (name) {
-    case "glass-dock": return <G.GlassDock aria-label="Example dock">{(["components", "sliders", "book"] as const).map(icon => <G.GlassDockItem key={icon} label={icon === "sliders" ? "Playground" : icon === "book" ? "Documentation" : "Components"} asChild><a href={icon === "sliders" ? "/playground" : icon === "book" ? "/docs" : "/components"}><G.GlassIcon name={icon} className="size-6"/></a></G.GlassDockItem>)}</G.GlassDock>;
-    case "glass-sound": return <G.GlassSound />;
-    case "glass-connectivity": return <G.GlassConnectivity />;
-    case "glass-range-control": return <G.GlassRangeControl label="Studio speakers" className="max-w-[304px]" />;
+    case "glass-dock":
+      return (
+        <G.GlassDock aria-label="Example dock">
+          {(["components", "sliders", "book"] as const).map((icon) => (
+            <G.GlassDockItem
+              key={icon}
+              label={
+                icon === "sliders"
+                  ? "Playground"
+                  : icon === "book"
+                    ? "Documentation"
+                    : "Components"
+              }
+              asChild
+            >
+              <a
+                href={
+                  icon === "sliders"
+                    ? "/playground"
+                    : icon === "book"
+                      ? "/docs"
+                      : "/components"
+                }
+              >
+                <G.GlassIcon name={icon} className="size-6" />
+              </a>
+            </G.GlassDockItem>
+          ))}
+        </G.GlassDock>
+      );
+    case "glass-sound":
+      return <G.GlassSound />;
+    case "glass-connectivity":
+      return <G.GlassConnectivity />;
+    case "glass-range-control":
+      return (
+        <G.GlassRangeControl
+          label="Studio speakers"
+          className="max-w-[304px]"
+        />
+      );
     case "glass-state-button":
     case "glass-button":
       return <ButtonExamples />;
@@ -104,7 +141,13 @@ export function GalleryExample({
           </div>
         </Panel>
       );
-    case "glass-slider": return <div className="flex w-full max-w-[304px] flex-col gap-5"><G.GlassSound /><G.GlassRangeControl label="Display" kindOfControl="brightness" /></div>;
+    case "glass-slider":
+      return (
+        <div className="flex w-full max-w-[304px] flex-col gap-5">
+          <G.GlassSound />
+          <G.GlassRangeControl label="Display" kindOfControl="brightness" />
+        </div>
+      );
     case "glass-progress":
       return (
         <Panel title="Find your balance.">
@@ -583,14 +626,70 @@ export function GalleryExample({
           onAction={(action) => notify(`${action} preview requested`)}
         />
       );
-    case "glass-navbar": return <NavigationExample container={container} />;
+    case "glass-navbar":
+      return <NavigationExample container={container} />;
     case "glass-sidebar":
       return <ComponentExample category="navigation" container={container} />;
-    case "glass-drawer": return <NavigationExample container={container} />;
+    case "glass-drawer":
+      return <NavigationExample container={container} />;
     case "glass-dialog":
       return <ComponentExample category="overlays" container={container} />;
     case "glass-button-group":
-      return <div className="flex w-full max-w-sm flex-col items-center gap-5"><G.GlassButtonGroup aria-label="Formatting actions"><G.GlassToggle aria-label="Bold" pressed={liked} onPressedChange={setLiked}><Bold/></G.GlassToggle><G.GlassToggle aria-label="Italic" pressed={notifications} onPressedChange={setNotifications}><Italic/></G.GlassToggle><G.GlassButton variant="ghost" aria-label="Reset formatting" onClick={()=>{setLiked(false);setNotifications(false);}}><G.GlassIcon name="undo"/></G.GlassButton></G.GlassButtonGroup><p className="text-center text-lg" style={{fontWeight:liked?650:400,fontStyle:notifications?"italic":"normal"}}>Make yourself at home.</p><G.GlassButtonGroup aria-label="Document actions"><G.GlassButton variant="ghost" onClick={()=>notify("Draft saved")}><Check data-icon="inline-start"/>Save draft</G.GlassButton><G.GlassButton variant="ghost" onClick={()=>notify("Link ready to share")}><G.GlassIcon name="diagonal" data-icon="inline-start"/>Share</G.GlassButton></G.GlassButtonGroup></div>;
+      return (
+        <div className="flex w-full max-w-sm flex-col items-center gap-5">
+          <G.GlassButtonGroup aria-label="Formatting actions">
+            <G.GlassToggle
+              aria-label="Bold"
+              pressed={liked}
+              onPressedChange={setLiked}
+            >
+              <Bold />
+            </G.GlassToggle>
+            <G.GlassToggle
+              aria-label="Italic"
+              pressed={notifications}
+              onPressedChange={setNotifications}
+            >
+              <Italic />
+            </G.GlassToggle>
+            <G.GlassButton
+              variant="ghost"
+              aria-label="Reset formatting"
+              onClick={() => {
+                setLiked(false);
+                setNotifications(false);
+              }}
+            >
+              <G.GlassIcon name="undo" />
+            </G.GlassButton>
+          </G.GlassButtonGroup>
+          <p
+            className="text-center text-lg"
+            style={{
+              fontWeight: liked ? 650 : 400,
+              fontStyle: notifications ? "italic" : "normal",
+            }}
+          >
+            Make yourself at home.
+          </p>
+          <G.GlassButtonGroup aria-label="Document actions">
+            <G.GlassButton
+              variant="ghost"
+              onClick={() => notify("Draft saved")}
+            >
+              <Check data-icon="inline-start" />
+              Save draft
+            </G.GlassButton>
+            <G.GlassButton
+              variant="ghost"
+              onClick={() => notify("Link ready to share")}
+            >
+              <G.GlassIcon name="diagonal" data-icon="inline-start" />
+              Share
+            </G.GlassButton>
+          </G.GlassButtonGroup>
+        </div>
+      );
     case "glass-form":
     case "glass-combobox":
       return <ComponentExample category="forms" container={container} />;

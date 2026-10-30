@@ -14,8 +14,15 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   finish. Never describe this fallback as independent DOM refraction.
 - No drop shadows, floating-card shadows, text shadows, glow, or stacked rings.
   Optical reflection and shade produced by the lens belong to its material.
+  The solid resting slider thumb has one restrained 2px/8px lift shadow so it
+  remains visible on a white control plane; the active lens has no CSS shadow.
 - Use the lens’s directional reflection for its edge. Do not add a drawn border,
   masked perimeter outline, or stacked ring around refracting glass. Keep focus rings.
+  Compact DOM glass has restrained neutral-gray glints on the upper-left and
+  lower-right shoulders, from its cached contour. Keep source-colored rim light
+  separate from these neutral highlights. The video finish remains unchanged.
+  Use a faint neutral surface reflection for presence on dark planes; do not
+  fill the glass body with the accent color. Avoid duplicate CSS clip masks.
 - Keep foreground text and controls sharp. Blur belongs to the background layer.
 - Use a plain tint and the renderer's optical glint. Do not add decorative CSS
   gradients to the glass skin, secondary actions, links, or dock icons. Primary
@@ -31,14 +38,19 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 ## Backdrops
 
-- The homepage is a full-screen split composition with a dock. The optical ring,
-  heading and two glass links sit near the left gutter on pure white or black.
-  A fully opaque source mask covers that copy before fading into the right-hand
-  examples. Below desktop width, the copy sits above the examples with a vertical mask. Appearance
-  is changed through a labelled theme control. Light mode starts on Dunes; dark
-  mode starts on Ice with a dark source wash. Scrolling reveals Ocean and the
-  alternate scene behind stationary desktop controls. Do not use tilted photo cards.
-  Optical settings belong in the playground, not below the homepage.
+- The homepage is a single-screen split composition with a dock. Its mark,
+  heading and two glass links sit on pure white or black. The right side shows
+  one focused reference: Slider, Switch, Navigation, Video or Popover. Mount only that
+  example. Use a plain control plate on the quiet lavender/dark grid; the Video
+  example owns its flower footage. No autoplay, optical settings or hidden live
+  catalogue. Keep removed examples in
+  the component gallery; do not bring the old menu catalogue back to the hero.
+  The profile popover is one small bounded scene, with a local image, native
+  menu actions and an edit dialog; it loads only when selected. Its menu uses
+  the compact lens on original DOM, with sharp foreground action labels.
+  A small active-state inspector pins the expanded material for comparison.
+  Slider/switch thumbs start solid; navigation keeps its selected glass pill.
+  Phones stack identity above the preview in flow.
 - Dunes remains the playground/gallery default. The curated photos use local responsive WebP assets.
 - Use `SceneBackdrop`; do not add a new remote photo for each example.
 - Preserve image credits. Keep the 640px and 1280px variants.
@@ -49,30 +61,29 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 ## Layout and dimensions
 
-| Item | Rule |
-| --- | --- |
-| Page width | Content `max-w-5xl` (1024px), centered; homepage spans the viewport with a 40–96px left gutter and 32px right inset |
-| Page gutters | 20px phone, 32px larger screens |
-| Section gap | 48px, up to 64px between independent sections |
-| Single preview stage | 480px high; 560px on phones; center the example |
-| Homepage canvas | Full viewport on desktop; component field at the right edge, heading anchored at the left gutter, dock below |
-| Homepage controls | No optical settings, standard navbar, or footer strip; dock links and theme controls only. No page has a site footer |
-| Responsive composition | Two columns on tablets; one readable column on phones; preserve control sizes |
-| Preview radius | 20px single previews; no enclosing frame around the homepage |
-| Panel radius/padding | 26px panels, 28px dialogs/drawers; 20px compact Sound/AirDrop widgets, 24px forms |
-| Standard control | 40px high; capsule by default; 12px radius for explicit rectangular variants |
-| Circular control | 40px minimum; circle radius; 44px target where practical |
-| Control groups | 12px between controls; 24px between groups |
-| Form fields | Full available width; 8px label gap; 20px field gap |
-| Type | Locally hosted variable Manrope; 14px actions; 12–13px compact controls; 13px compact headings, 18–20px form headings |
+| Item                   | Rule                                                                                                                  |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Page width             | Content `max-w-5xl` (1024px), centered; homepage uses a spacious split layout with a 48–112px gutter                  |
+| Page gutters           | 20px phone, 32px larger screens                                                                                       |
+| Section gap            | 48px, up to 64px between independent sections                                                                         |
+| Single preview stage   | 480px high; 560px on phones; center the example                                                                       |
+| Homepage canvas        | Full viewport on desktop; one bounded example at right, heading at left, dock below                                   |
+| Homepage controls      | No optical settings, standard navbar, or footer strip; dock links and theme controls only. No page has a site footer  |
+| Responsive composition | Two columns on tablets; one readable column on phones; preserve control sizes                                         |
+| Preview radius         | 20px single previews; no enclosing frame around the homepage                                                          |
+| Panel radius/padding   | 26px panels, 28px dialogs/drawers; 20px compact Sound/AirDrop widgets, 24px forms                                     |
+| Standard control       | 40px high; capsule by default; 12px radius for explicit rectangular variants                                          |
+| Circular control       | 40px minimum; circle radius; 44px target where practical                                                              |
+| Control groups         | 12px between controls; 24px between groups                                                                            |
+| Form fields            | Full available width; 8px label gap; 20px field gap                                                                   |
+| Type                   | Locally hosted variable Manrope; 14px actions; 12–13px compact controls; 13px compact headings, 18–20px form headings |
 
 - Use flex/grid and `gap`. Use `FieldGroup` + `Field` for forms, `TabsList` +
   `TabsTrigger` for tabbed examples, `ToggleGroup` for option sets, and the
   appropriate Group inside Select/Command/menu primitives.
 - A preview has exactly one stage and one detached toolbar (`PreviewToolbar`).
   Controls above and below it stay separate from the photo. No attached browser
-  chrome on one example and a separate footer on another. The homepage has no preview toolbar. Its curated examples remain visible
-  together as individual silhouettes, without a common glass wrapper.
+  chrome on one example and a separate footer on another. The homepage uses a compact example selector and refraction comparison below its single stage; optical tuning remains in the playground.
 - Every control uses the same family styling in all contexts. Core actions use clear glass, primary actions use blue, and secondary actions
   use a subdued neutral finish. Bare transport icons use the ghost variant.
 - On phones, wrap toolbars and controls; preserve the example's usable size.
@@ -106,30 +117,43 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - Use `core` for clear glass actions, `primary` blue for the main confirmation,
   and `secondary` for an alternative. Preserve the legacy aliases.
 - Fine sliders use a 4px track, a small rounded thumb, and a generous pointer target.
-  Keep the speaker thumb visible at rest. A deliberate hold expands it only 14%,
-  with a 60ms intent delay and a 260ms transition, without a border.
+  Keep the speaker thumb visible at rest. A pointer hold reveals an explicit track lens with a compact curved cap, without a drawn border. The dedicated lens appearance
+  uses a 64 × 34px solid resting thumb, a 96 × 52px active cap and an 8px track.
+  Its explicit optical fill is 3.2× taller/wider across the track's short axis;
+  preserve the progress position and rounded endpoint. The visible rail and its
+  optical copy both span the native thumb's center-to-center travel; never crop
+  only one of them. Do not zoom the
+  visible rail or the switch. `lensParameters.magnification` tunes this fill zoom.
 - Group a sound menu into its title, slider, and output radio choices. Group sharing
   into its switch and visibility radio choices. Disabled sharing preserves the choice.
 - Connectivity capsules stack icon and label in narrow containers; do not shrink
   labels or allow them to overflow. Use container queries so installed components adapt.
 - Dialogs use left-aligned titles, a clear cancel action, and a blue confirmation.
   Drawers are floating sheets with a consistent inset. Preserve focus return.
-- Homepage glass uses the playground’s rounded SDF and Snell refraction model.
-  Both start from `GLASS_DEFAULT_PARAMS`: depth 28, splay 10, feather 20, curve 2.2,
-  blur 4px, glint 55. A shallow interior bowl (0.18) avoids a perfectly flat center;
-  source color bleed (0.75) contributes to the same optical rim. A scene atlas batches
-  the separate, non-overlapping silhouettes into one optical pass. All members
-  keep real, sharp, selectable DOM in front.
+- Homepage control thumbs use the shared compact `GlassLens` curved-cap model,
+  with original DOM or a small explicit source target. `GlassSurface` panels and
+  scene-glass playground examples retain the bounded scene/atlas renderer and
+  `GLASS_DEFAULT_PARAMS`. These are distinct source paths; do not claim the
+  panel classifier or surface bevel parameters tune the compact control lens.
 - Independent surfaces classify their bounded backdrop on paint: plain uses 0px
   blur, photos use the configured blur (4px by default), and text/controls or lower glass use at least 8px
   with zero displacement, so background letters soften without splitting.
-  Explicit local blur overrides and playground controls take precedence. The
-  homepage's Plain backdrop also sets its shared atlas blur to zero.
+  Explicit local blur overrides and playground controls take precedence.
 - Carry nearby source colors into the glint through the existing bounded mirror.
   Resolve a narrow vertical source column, then project each lens's central
   column color to both arcs with coordinates packed in its cached rim texture.
   Keep neighboring columns separate. Blur transmitted content before the
   colored rim is composed so its light stays crisp on white and black backgrounds.
+  Source-bearing columns occupy a band bounded to 1.1 CSS pixels; the neutral plane keeps
+  a separate 0.65px profile, including the off switch. Very small lenses cap
+  these widths further to preserve their interior. Keep a short antialiased
+  taper, without a dark inset falloff. Do not implement this by increasing opacity uniformly.
+  Compact explicit tracks weight source contrast against their actual flat
+  plane, rather than saturation alone. Gray/off tracks contribute alongside
+  accent colors; the resolved mixture retains the source RGB without darkening.
+  Slider completion projects one bounded area mixture around the full rim in
+  both axes. Latch the pointer position at first reaching max; only a further
+  14px of pointer travel returns to local columns (8px return hysteresis).
   Do not use a fixed colored perimeter, a second source capture, or continuous
   CPU pixel sampling. Keep the small white optical reflection for neutral light.
   Stronger refraction remains available as a deliberate playground adjustment.
@@ -143,16 +167,11 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   tooltips 4px. Local blur overrides remain available. Higher layers soften the
   lower content they capture. Reveal overlays after admission/texture readiness
   to avoid a bright CSS fallback flashing before the actual glass.
-- The homepage uses one atlas (including the intro links), three small independent
-  lenses for Continue, Save and Search, and one deliberately elastic lens.
-  These three buttons scale as complete surfaces. Tint-only overrides remain
-  atlas-compatible; `composite={false}` opts a transforming surface out.
-  Batched controls use tonal feedback without scaling text over a static lens.
-  The ring mark is vector artwork
-  and allocates no renderer. These count
-  against the unchanged five-renderer ceiling (three on coarse pointers).
-  Explicit per-surface optics and overlapping overlays stay independent.
-  Never raise the budget to render a large catalogue.
+- The homepage has one tiny intro-link atlas and one dock lens at rest. A pressed
+  control adds one compact target lens, for three typical active lenses. The
+  inspector keeps that slot while pinned. Navigation's selected glass pill
+  retains one slot at rest and releases optical work when hidden or unmounted.
+  Sources stay separately bounded; the same five/fine, three/coarse cap applies.
 
 ## State changes and scroll
 
@@ -165,15 +184,10 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   queue timers or remount icons to restart a keyframe. Keyboard activation is instant.
 - Reduced motion removes the transform and blur, retaining a 100ms opacity fade.
   Hover movement is allowed only for a fine pointer with hover capability.
-- At widths of at least 1024px and heights of at least 640px the composition
-  stays fixed through the final scroll position while full-bleed backgrounds change.
-  Between 640px and 719px tall, tighten gaps and confirmation padding while
-  preserving text sizes and touch targets.
-  The expanded player is a separate higher optical layer in a reserved mini-player
-  slot, so it cannot push siblings or the dock. Shorter viewports use ordinary
-  scrolling so every control stays reachable.
-  Reduced motion uses a still backdrop. Only scroll/resize events schedule work;
-  there is no permanent animation loop and controls never drift with the background.
+- The homepage has no artificial scroll runway or pinned scene. Clip optical
+  sampling margins at the page boundary so the dock cannot create a phantom
+  final scroll step. Keep a stable stage height while changing examples.
+  No source animation or permanent frame loop runs on the homepage.
 
 ## Native-style details
 
@@ -189,23 +203,72 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - `liquidOnHold` reveals a standalone lens after 180ms of pointer intent. Release,
   cancellation, lost pointer capture, blur, and disabling restore the idle state.
   Keyboard feedback is immediate; reduced motion removes the scale.
-- Switch tracks are full capsules. The thumb is an elongated capsule (34 × 22px
-  in a 58 × 28px track; small: 26 × 18px in 46 × 22px), not a circle or square. It grows about 1px beyond the
-  track while liquid and moving. The thumb
-  becomes translucent through its 300ms travel, then settles to white. Single
-  selection groups/tabs use one moving glass highlight. Keyboard changes are
-  instant; cancellation and reduced motion remove the travel. These local finishes
-  share their panel’s optical layer; they do not each allocate a lens or local backdrop blur.
-- The homepage player starts mini and expands on Play without remounting audio.
+- Switches rest as solid, elongated capsules: 42 × 22px in a 72 × 28px track
+  (small: 32 × 18px in 56 × 22px). The active cap expands to 68 × 36px (small:
+  50 × 28px), projects past the track, and moves on a bounded spring. It remains
+  liquid through travel, then contracts and returns to solid. All appearances
+  of the slider also rest solid. Active screenshots must not become idle styling.
+  Holding allows direct horizontal dragging; release commits the side beyond
+  halfway once. Cancellation restores the checked state. Account for rendered
+  presentation scale when converting pointer distance to travel.
+- Shared `GlassLens engaged` uses the same 220ms scale/material transition in
+  both directions. Keep the cap visible until contraction completes, then hand
+  back to the native thumb without another fade. Readiness gates the reveal.
+  Cancellation, disabling and unmount clear work.
+  Keyboard changes are instant; reduced motion removes travel and expansion.
+- Single-selection tabs/groups keep one persistent glass selection indicator.
+  Move it on an interruptible 500ms spring, preserving momentum when retargeted.
+  Explicit targets reserve 8px width and 16px height for travel. The pill grows
+  while moving and returns to the selected item's normal dimensions, staying
+  glass. Counter-scale its source so the highlighted labels retain their size.
+  Use the existing travel frame, not another timer or map per animation frame.
+  `GlassToggleGroup options` builds the native items and inert highlighted source
+  from one list. Keep overflow headroom around the track.
+  Native Radix controls remain mounted and retain focus and input state.
+- Control targets paint their complete flat source plane, including the space
+  around the track. `--glass-lens-plane` must match it. Transparent target gaps
+  expose the unbent original and produce a false double track. An explicit
+  target never captures arbitrary scene pixels underneath the control.
+- Switch caps refract a centered source fill at full track width and 75% track
+  height. Keep the map center neutral and use a low-slope inward shoulder.
+  Bound the amplitude so a sharp purple/gray boundary stays one contour rather
+  than folding back across itself. Keep this field with the source edge (`rim=column`);
+  never replace the body with a colored perimeter estimate. Directional
+  transmission in the video backend uses the map's blue channel. Compact DOM
+  lenses omit that attenuation; it made gray source colors appear black.
+  Switches, sliders and navigation retain separate source columns.
+  Explicit source pixels distinct from the actual plane have more weight than
+  surrounding space. Their original colors still mix. Never paint a black shade
+  layer over that resolved hue. This is not an
+  exact dominant-color histogram.
+  The thin optical rim is composited after transmitted blur, without a CSS border.
+  White caps must be displaced/magnified source pixels. Never paint broad white
+  highlight bands or a gray body over the control. `rimStrength` adjusts source
+  energy only; the legacy glow name does not create an emissive overlay.
+  Native focus outlines remain for keyboard input; pointer input must not add
+  a second outline around the solid thumb or the track inside the active cap.
+  Photo popovers can select the video's media field with explicit source zoom,
+  while sharp controls use the bounded DOM field. Native menu labels stay sharp.
+- Slider dragging follows the native value directly, with no positional easing
+  while held. Only elastic endpoint release eases back over 180ms. Keep the
+  translated frame separate from its scaling cap: scale must never multiply
+  the thumb's travel offset. Optical roots ignore pointer events and sit above
+  the track within the control's own stacking context.
+- The gallery player starts mini and expands on Play without remounting audio.
   Component search opens component documentation. Bell notifications, image
   messages, and leave-site actions must perform their named interaction.
-- Keep the shutdown preview and the leave-site example as separate surfaces.
+- Video controls share one WebGL canvas and video texture, including playback,
+  two skip controls and the seek bar. Reuse the compact displacement maps; keep
+  native HTML controls above the refracted pixels. Pause updates when playback
+  stops and pause the media when hidden. No extra DOM captures per video control.
+- In the gallery, keep the shutdown preview and the leave-site example as separate surfaces.
   Focus/refraction controls live with the right-hand examples. Maintain at least
   16px between sibling panels and preserve the dock's separate bottom space.
 - During switch travel, retain a subtle translucent specular finish beneath the
   fading white rest layer so the elongated thumb remains visible. This small
-  control finish uses cached SDF reflection/shade textures, matching the panel's
-  optics. It adds no border, blur or independent scene capture.
+  control finish uses a cached SDF map to refract the real track fill and a matching
+  optical reflection. It adds no drawn border or independent scene capture; local transmitted blur
+  belongs inside the filter. Broad white caps and gray body fills are prohibited.
   Moving tab highlights and tab hover have no added gradient,
   sheen, or fill. Keep selected labels and keyboard focus distinguishable.
 - Browser bookmarks require browser UI or an extension. Show the native shortcut
@@ -244,3 +307,20 @@ example, connected to the notification preview.
   leading edge; popovers use a 16px collision inset and remain inside the viewport.
 - Install optical filters in a layout effect before revealing mirrored content.
   Focus enters the input, arrow keys select, Enter opens, and Escape restores focus.
+
+## Original DOM and explicit target controls
+
+Use `GlassLens` to bend original, bounded DOM children with a small moving map.
+The source remains selectable and interactive. Outside the contour, pixels stay
+unchanged; local blur is confined by the cached coverage mask. Its `lens` and
+`x`/`y` props describe shape and position. For small controls, optionally supply
+`refractionTarget`; keep normal DOM controls outside this inert visual copy. A moving lens reuses its map; only
+geometry changes regenerate textures. An active target counts against the same
+five/three budget. Dormant controls keep their ordinary thumb and no SVG filter.
+No gradient or CSS blur stands in for the track's refraction. See
+[the target lens guide](docs/target-lens.md) for API and performance boundaries.
+
+Overlay portals outside a bounded source use real CSS backdrop blur and release
+their scene mirror. Do not stretch a tiny dock source across a page or describe
+this fallback as DOM refraction. Keep menu rows and their scrolling viewport
+separate from the optical layer.

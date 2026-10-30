@@ -20,7 +20,7 @@ export function LiquidMark({
       className={cn(
         variant === "landing" && "showcase-mark",
         variant === "header" && "size-6 shrink-0",
-        className
+        className,
       )}
       {...props}
     >
