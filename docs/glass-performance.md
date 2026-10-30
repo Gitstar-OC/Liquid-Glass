@@ -58,8 +58,10 @@ or a claim about Apple's private renderer.
   not a reason to add more. Size and source complexity matter as much as count.
 - Transforming standalone controls can opt out of the atlas with
   `composite={false}` so their content, clipping and optics move together.
-  The homepage mounts one selected example below its identity header, two small
-  compact intro links and a fixed dock. A pressed or inspector-pinned control adds
+  The homepage mounts the current slide of a five-control carousel (with the
+  entering/leaving slide briefly overlapping during a swipe), two small
+  compact intro links and a fixed dock. Lower examples mount only when their
+  individual sections enter the viewport. A pressed or inspector-pinned control adds
   one compact lens; selected navigation keeps that one slot at rest. Scrolled-out
   intro links release admission. The device cap still wins.
   Sources stay separately bounded.
@@ -70,7 +72,8 @@ or a claim about Apple's private renderer.
   outside that source. Do not mirror an entire document by default.
 - Put text/images/forms in the explicit source. Put interactive glass in children.
 - Use a single parent panel for a form, toolbar, player, or settings group.
-- Mount only the active example on the homepage and in the gallery. Unmounting
+- Mount only visible carousel slides and viewport-visible lower examples on
+  the homepage; the gallery mounts only its active example. Unmounting
   releases the previous media, observers, gestures, portals and optical layers.
   Do not use CSS hiding to keep an entire catalogue alive. An atlas is useful
   for related, non-overlapping shapes, but its empty rectangle is not glass.
@@ -123,14 +126,23 @@ Measured results from this change are recorded in [performance-results.md](perfo
 
 ## Homepage source bounds
 
-The homepage has no full-viewport atlas or animated scroll source. Its active
-example sits below the identity header in a 420px stage (440px on phones),
-sharing the header's max width and gutters. Intro links use a tiny neutral source;
+The homepage has no full-viewport atlas or animated scroll source. Its five-slide
+controls carousel sits below the identity header in a 400px stage (360px on
+phones), sharing the header's 896px maximum width and gutters. Native scroll
+snapping handles swipes; one event-coalesced callback changes the current slide
+when the nearest snap point changes. It mounts an incoming slide after 10% enters
+and releases an outgoing slide below 10%, so one slide is live at rest and at
+most two are live during a swipe. The small next-card peek stays inactive.
+Lower examples use 400px bounded stages in
+separate, spaced sections and release their content when outside the viewport.
+Intro links use a tiny neutral source;
 the fixed dock reads the native backdrop on supported Chromium versions and
-falls back to local CSS blur elsewhere. Only the selected example mounts;
-changing it releases the previous lens before the new one is admitted. Dynamic
+falls back to local CSS blur elsewhere. Only visible carousel examples mount;
+the same global budget governs a brief transition overlap. Dynamic
 music and elastic components load on demand, and audio is removed on departure.
-The demo's refraction comparison changes displacement only. No idle RAF loop runs.
+The docs preview's refraction comparison changes displacement only. Landing
+illustrations expose native component interactions without editing controls.
+No idle RAF loop runs.
 Clip the page's sampling margins so the bottom lens cannot extend scroll height.
 
 ## Nested controls and deliberate presses

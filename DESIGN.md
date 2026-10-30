@@ -42,8 +42,13 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 - The homepage starts with its mark, heading and two glass links on pure white
   or black. Keep component examples below that header, sharing its max width and
-  gutters. One compact picker selects the single mounted example; start with
-  Slider. Do not bring the six-choice catalogue back into the hero. The dock is
+  gutters within `max-w-4xl` (896px including page padding). A swipeable,
+  scroll-snapping carousel presents five controls, starting with Slider, with
+  arrows and pagination instead of a dropdown. Only its current slide mounts
+  interactive content at rest; an entering/leaving slide may overlap during a
+  swipe, under the same optical budget. Below it, show one panel example per spacious section;
+  mount each as it enters the viewport. Keep editing controls in the docs and
+  playground. Do not bring a component catalogue into the hero. The dock is
   fixed above the viewport's bottom safe area and stays visible while scrolling.
   Use a plain control plate on the quiet lavender/dark grid; Video owns its flower
   footage. No autoplay or hidden live catalogue. Bubble, panel and menu examples
@@ -66,13 +71,13 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 | Item                   | Rule                                                                                                                  |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Page width             | Content `max-w-5xl` (1024px), centered; homepage header and preview share a 1120–1440px maximum and responsive gutters |
+| Page width             | Content `max-w-5xl` (1024px), centered; homepage header and examples share `max-w-4xl` (896px) with responsive gutters |
 | Page gutters           | 20px phone, 32px larger screens                                                                                       |
 | Section gap            | 48px, up to 64px between independent sections                                                                         |
-| Single preview stage   | Standard demos: 480px, 560px on phones; shared compact panel preview: 420px, 440px on phones; center the example        |
-| Homepage canvas        | Identity header, then one bounded example at the same max width and gutters; fixed floating dock                      |
+| Single preview stage   | Standard demos: 480px/560px phone; docs compact: 420px/440px; homepage carousel: 400px/360px; lower panels: 400px          |
+| Homepage canvas        | Identity header, five-slide controls carousel, then spaced individual examples; fixed floating dock                    |
 | Homepage controls      | No optical settings, standard navbar, or footer strip; dock links and theme controls only. No page has a site footer  |
-| Responsive composition | Identity above the single example; one readable column on phones; preserve control sizes                              |
+| Responsive composition | Lower examples pair a short label with a preview; stack them on phones and preserve control sizes                      |
 | Preview radius         | 20px single previews; no enclosing frame around the homepage                                                          |
 | Panel radius/padding   | 26px panels, 28px dialogs/drawers; 20px compact Sound/AirDrop widgets, 24px forms                                     |
 | Standard control       | 40px high; capsule by default; 12px radius for explicit rectangular variants                                          |
@@ -86,7 +91,10 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   appropriate Group inside Select/Command/menu primitives.
 - A preview has exactly one stage and one detached toolbar (`PreviewToolbar`).
   Controls above and below it stay separate from the photo. No attached browser
-  chrome on one example and a separate footer on another. The homepage uses a compact example selector and refraction comparison below its single stage; optical tuning remains in the playground.
+  chrome on one example and a separate footer on another. The homepage carousel
+  uses the shared detached caption/source toolbar. Lower illustrations have a
+  short adjacent label and component link, without an editing toolbar. Optical
+  tuning and refraction comparison remain in the docs and playground.
 - Every control uses the same family styling in all contexts. Core actions use clear glass, primary actions use blue, and secondary actions
   use a subdued neutral finish. Bare transport icons use the ghost variant.
 - On phones, wrap toolbars and controls; preserve the example's usable size.

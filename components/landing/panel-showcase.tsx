@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { Eye, FileImage, MoreHorizontal, Copy, FolderOpen, ArrowDownToLine, X, ChevronDown } from "lucide-react";
+import { Eye, FileImage, MoreHorizontal, Copy, FolderOpen, ArrowDownToLine, X } from "lucide-react";
 import { GlassScene, GlassSettingsProvider } from "@/components/glass-scene";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { GlassButton } from "@/components/glass/glass-button";
@@ -11,7 +11,7 @@ import { GlassCard, CardHeader, CardTitle, CardDescription, CardContent, CardFoo
 import { Tooltip, TooltipProvider, TooltipTrigger, GlassTooltipContent } from "@/components/glass/glass-tooltip";
 import { HoverCard, HoverCardTrigger, GlassHoverCardContent } from "@/components/glass/glass-hover-card";
 import { Popover, PopoverTrigger, PopoverHeader, PopoverTitle, PopoverDescription, GlassPopoverContent } from "@/components/glass/glass-popover";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, GlassDropdownMenuContent } from "@/components/glass/glass-dropdown";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuSeparator, GlassDropdownMenuContent } from "@/components/glass/glass-dropdown";
 import { Drawer, DrawerTrigger, DrawerClose, DrawerTitle, DrawerDescription, DrawerHeader, GlassDrawerContent } from "@/components/glass/glass-drawer";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -20,7 +20,7 @@ import type { GlassShape } from "@/lib/glass";
 import { HomeExample, type HomeExampleId } from "@/components/landing/home-examples";
 import { cn } from "@/lib/utils";
 
-const EXAMPLES = [
+export const SHOWCASE_EXAMPLES = [
   { id: "slider", name: "Slider", doc: "glass-slider" },
   { id: "switch", name: "Switch", doc: "glass-switch" },
   { id: "navigation", name: "Navigation", doc: "glass-toggle" },
@@ -34,7 +34,8 @@ const EXAMPLES = [
   { id: "card", name: "Card", doc: "glass-card" },
   { id: "profile", name: "Profile menu", doc: "glass-dropdown" },
 ] as const;
-type Example = typeof EXAMPLES[number]["id"];
+export type ShowcaseExample = typeof SHOWCASE_EXAMPLES[number]["id"];
+type Example = ShowcaseExample;
 type PreviewProps = {
   example: Example;
   container: HTMLDivElement;
@@ -152,34 +153,32 @@ function PanelExample({ example, container, radius, shape, beak, pinned, onUnpin
 }
 
 /** Plain stage, one mounted component and one bounded source at a time. */
-export function PanelShowcase({ initialExample = "slider", compact = false }: {
+export function PanelShowcase({ initialExample = "slider", compact = false, minimal = false, enabled = true }: {
   initialExample?: Example;
   compact?: boolean;
+  /** Landing illustrations keep tuning controls in the docs/playground. */
+  minimal?: boolean;
+  /** The carousel releases slides after they leave its visible transition. */
+  enabled?: boolean;
 }) {
   const { resolvedMode } = useGlassTheme();
-  const [example, setExample] = useState<Example>(initialExample);
-  const [radius, setRadius] = useState(initialExample === "tooltip" ? 13 : 20);
-  const [shape, setShape] = useState<GlassShape>("round");
-  const [beak, setBeak] = useState(true), [pinned, setPinned] = useState(initialExample === "tooltip" || initialExample === "hover-card");
+  const example = initialExample;
+  const [radius, setRadius] = useState(initialExample === "tooltip" ? 13 : initialExample === "drawer" ? 28 : 20);
+  const [shape, setShape] = useState<GlassShape>(initialExample === "tooltip" ? "round" : "squircle");
+  const [beak, setBeak] = useState(true), [pinned, setPinned] = useState(!minimal && (initialExample === "tooltip" || initialExample === "hover-card"));
   const [refraction, setRefraction] = useState(true);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
   const section = useRef<HTMLElement>(null);
   useEffect(() => {
-    if (compact) return;
-    const selectLinkedProfile = () => { if (location.hash === "#profile-preview") setExample("profile"); };
-    selectLinkedProfile();
-    window.addEventListener("hashchange", selectLinkedProfile);
-    return () => window.removeEventListener("hashchange", selectLinkedProfile);
-  }, [compact]);
-  useEffect(() => {
     const node = section.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { rootMargin: "80px" });
+    if (!node || !enabled) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { rootMargin: minimal ? "0px" : "80px" });
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
-  const selected = EXAMPLES.find(item => item.id === example)!;
+  }, [enabled, minimal]);
+  const mounted = visible && enabled;
+  const selected = SHOWCASE_EXAMPLES.find(item => item.id === example)!;
   const control = ["slider", "switch", "navigation", "buttons", "video", "profile"].includes(example);
   const thumb = example === "slider" || example === "switch";
   const hint = example === "slider" ? "Hold and drag to reveal glass." : example === "switch" ? "Press or drag left and right to switch."
@@ -187,29 +186,13 @@ export function PanelShowcase({ initialExample = "slider", compact = false }: {
     : example === "buttons" ? "Two actions over the same background." : example === "profile" ? "Open the profile actions."
     : example === "tooltip" ? "Hover or focus Preview." : example === "hover-card" ? "Hover or focus the filename."
     : example === "card" ? "Open the file to try the action." : "Click to open. Escape to close.";
-  const choose = (value: string) => {
-    if (!value) return;
-    setExample(value as Example); setRadius(value === "tooltip" ? 13 : value === "drawer" ? 28 : 20);
-    setPinned(value === "tooltip" || value === "hover-card");
-  };
   return (
-    <section ref={section} className={cn("panel-showcase", compact && "panel-showcase-compact", resolvedMode === "dark" ? "showcase-dark" : "showcase-light")} aria-label="Component examples">
-      {!compact && <div className="mb-4 flex items-center justify-between gap-4">
-        <h2 className="text-sm font-medium">Components</h2>
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild><GlassButton variant="ghost" aria-label="Choose component example">{selected.name}<ChevronDown data-icon="inline-end" /></GlassButton></DropdownMenuTrigger>
-          <GlassDropdownMenuContent className="showcase-component-menu w-60" align="end">
-            <DropdownMenuRadioGroup value={example} onValueChange={choose}>
-              {EXAMPLES.map(item => <DropdownMenuRadioItem key={item.id} value={item.id}>{item.name}</DropdownMenuRadioItem>)}
-            </DropdownMenuRadioGroup>
-          </GlassDropdownMenuContent>
-        </DropdownMenu>
-      </div>}
+    <section ref={section} className={cn("panel-showcase", compact && "panel-showcase-compact", minimal && "panel-showcase-minimal", resolvedMode === "dark" ? "showcase-dark" : "showcase-light")} aria-label={`${selected.name} example`}>
       <div ref={setContainer} className="panel-preview-stage" data-panel-example={example}>
         <GlassSettingsProvider refraction={refraction}>
           {control ? <div className="home-control-stage size-full" data-example={example === "profile" ? "popover" : example}>
-            {visible && <HomeExample key={example} id={(example === "profile" ? "popover" : example) as HomeExampleId} previewActive={pinned} />}
-          </div> : <GlassScene appearance={resolvedMode} className="size-full" content={
+            {mounted && <HomeExample key={example} id={(example === "profile" ? "popover" : example) as HomeExampleId} previewActive={pinned} />}
+          </div> : mounted ? <GlassScene appearance={resolvedMode} className="size-full" content={
             <div className="panel-source-plane"><div className="panel-preview-source">
               <div className="panel-source-title">Landscape studies</div>
               <div className="panel-source-row"><span className="panel-source-mark" /><span>Dunes.jpg</span><span>2.4 MB</span></div>
@@ -218,12 +201,12 @@ export function PanelShowcase({ initialExample = "slider", compact = false }: {
             </div></div>
           }>
             <div className="panel-preview-foreground">
-              {visible && container && <PanelExample key={example} example={example} container={container} radius={radius} shape={shape} beak={beak} pinned={pinned} onUnpin={() => setPinned(false)} />}
+              {container && <PanelExample key={example} example={example} container={container} radius={radius} shape={shape} beak={beak} pinned={pinned} onUnpin={() => setPinned(false)} />}
             </div>
-          </GlassScene>}
+          </GlassScene> : null}
         </GlassSettingsProvider>
       </div>
-      <PreviewToolbar label={selected.name} href={`/docs/${selected.doc}`} backgroundControls={control ? <span className="text-muted-foreground">{hint}</span> :
+      {!minimal && <><PreviewToolbar label={selected.name} href={`/docs/${selected.doc}`} backgroundControls={control ? <span className="text-muted-foreground">{hint}</span> :
         <div className="flex flex-wrap items-center gap-3">
           {(example === "tooltip" || example === "hover-card" || example === "popover") && <ToggleGroup type="single" value={beak ? "beak" : "plain"} onValueChange={value => value && setBeak(value === "beak")} spacing={0} aria-label="Bubble pointer">
             <ToggleGroupItem value="plain">No beak</ToggleGroupItem><ToggleGroupItem value="beak">Joined beak</ToggleGroupItem>
@@ -243,7 +226,7 @@ export function PanelShowcase({ initialExample = "slider", compact = false }: {
           {(thumb || example === "tooltip" || example === "hover-card") && <button type="button" aria-pressed={pinned} onClick={() => setPinned(value => !value)} className="min-h-10 hover:text-foreground">{thumb ? pinned ? "Return to resting" : "Inspect active state" : pinned ? "Unpin preview" : "Pin preview"}</button>}
           <button type="button" aria-pressed={refraction} onClick={() => setRefraction(value => !value)} className="min-h-10 hover:text-foreground">Refraction {refraction ? "on" : "off"}</button>
         </div>
-      </div>
+      </div></>}
     </section>
   );
 }

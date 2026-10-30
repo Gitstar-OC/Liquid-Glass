@@ -1221,3 +1221,25 @@ No tests, lint, typecheck, production build, registry verification or benchmark
 were run, as requested. Development-URL browser access remains blocked; visual
 parity, native-backdrop behavior and device frame timings are unverified. Registry
 packaging completed with 58 entries and 70 shared source files.
+
+## 2026-10-30 — narrower landing carousel and sequential examples
+
+- Replaced the landing dropdown with five native scroll-snap slides. The shared
+  header and examples use a 896px maximum including 32px gutters (20px on phones).
+- At rest, only the current control mounts. During a swipe, the incoming and
+  outgoing slides can coexist once at least 10% is visible. The next-card peek
+  does not mount an example. The document-wide five/fine, three/coarse lens cap
+  remains authoritative through transitions.
+- Scroll work is one event-coalesced callback over five slide bounds. React
+  updates only when the current index or mounted slide set changes. There is
+  no autoplay, scroll-linked source deformation, new renderer or idle loop.
+- Lower examples occupy separate, spaced 400px stages. Their scene, native
+  overlays and media mount when visible and unmount outside the viewport.
+  The fixed dock remains one stationary surface; its items do not lift.
+- Landing illustrations omit editing controls. Docs retain radius, shape,
+  beak, inspector and refraction controls through the same shared preview.
+- Evidence is a source review of mount conditions and event cleanup, not a
+  frame-rate measurement. No tests, lint, typecheck, production build or browser
+  benchmark were run. Local visual review remains unavailable under the browser
+  access restriction. No shared registry component or renderer was changed.
+

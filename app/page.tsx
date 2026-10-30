@@ -1,11 +1,11 @@
 import { GlassCollection } from "@/components/landing/glass-collection";
-import { PanelShowcase } from "@/components/landing/panel-showcase";
+import { LandingShowcase } from "@/components/landing/landing-showcase";
 
 export default function Home() {
   return (
     <main className="site-shell min-h-svh">
       <GlassCollection />
-      <PanelShowcase />
+      <LandingShowcase />
     </main>
   );
 }
