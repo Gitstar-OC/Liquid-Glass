@@ -6,12 +6,13 @@
   "registryDependencies": [
     "card",
     "http://localhost:3000/r/glass-materials.json",
+    "http://localhost:3000/r/glass-panel.json",
     "http://localhost:3000/r/glass-surface.json"
   ],
   "files": [
     {
       "path": "components/glass/glass-card.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Card } from \"@/components/ui/card\";\nimport {\n  GlassSurface,\n  type GlassSurfaceProps,\n} from \"@/components/glass/glass-surface\";\nimport type { GlassSurface as GlassSurfaceKind } from \"@/lib/glass-theme\";\n\nexport function GlassCard({\n  className,\n  surface,\n  radius,\n  ink,\n  contrastProtection,\n  config,\n  children,\n  ...props\n}: React.ComponentProps<typeof Card> & {\n  surface?: GlassSurfaceKind;\n  radius?: number;\n} & Pick<GlassSurfaceProps, \"ink\" | \"contrastProtection\" | \"config\">) {\n  return (\n    <GlassSurface\n      kind=\"card\"\n      surface={surface}\n      radius={radius}\n      ink={ink}\n      contrastProtection={contrastProtection}\n      config={config}\n      asChild\n    >\n      <Card {...props} className={className}>\n        {children}\n      </Card>\n    </GlassSurface>\n  );\n}\n\nexport {\n  CardHeader,\n  CardTitle,\n  CardDescription,\n  CardAction,\n  CardContent,\n  CardFooter,\n} from \"@/components/ui/card\";\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Card } from \"@/components/ui/card\";\nimport type { GlassSurfaceProps } from \"@/components/glass/glass-surface\";\nimport { GlassPanel, type GlassPanelProps } from \"@/components/glass/glass-panel\";\nimport type { GlassSurface as GlassSurfaceKind } from \"@/lib/glass-theme\";\nimport { cn } from \"@/lib/utils\";\n\nexport function GlassCard({\n  className,\n  surface,\n  radius,\n  ink,\n  contrastProtection,\n  config,\n  shape = \"squircle\",\n  lensParameters,\n  children,\n  ...props\n}: React.ComponentProps<typeof Card> & {\n  surface?: GlassSurfaceKind;\n  radius?: number;\n} & Pick<GlassSurfaceProps, \"ink\" | \"contrastProtection\" | \"config\"> &\n  Pick<GlassPanelProps, \"shape\" | \"lensParameters\">) {\n  return (\n    <GlassPanel\n      kind=\"card\"\n      radius={radius}\n      shape={shape}\n      ink={ink}\n      contrastProtection={contrastProtection}\n      lensParameters={{ ...(surface === \"frosted\" ? { blur: 8 } : {}), ...(config?.blur === undefined ? {} : { blur: config.blur }), ...lensParameters }}\n      asChild\n    >\n      <Card {...props} className={cn(\"overflow-visible bg-transparent ring-0\", className)}>\n        {children}\n      </Card>\n    </GlassPanel>\n  );\n}\n\nexport {\n  CardHeader,\n  CardTitle,\n  CardDescription,\n  CardAction,\n  CardContent,\n  CardFooter,\n} from \"@/components/ui/card\";\n",
       "type": "registry:ui",
       "target": "@components/glass/glass-card.tsx"
     }

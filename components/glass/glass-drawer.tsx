@@ -4,7 +4,7 @@ import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 import { cn } from "@/lib/utils";
 import { Drawer as BaseDrawer } from "@/components/ui/drawer";
-import { GlassSurface } from "@/components/glass/glass-surface";
+import { GlassPanel, type GlassPanelProps } from "@/components/glass/glass-panel";
 
 export function GlassDrawerContent({
   className,
@@ -12,18 +12,21 @@ export function GlassDrawerContent({
   surface,
   config,
   container,
+  radius = 28,
+  shape = "squircle",
+  lensParameters,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Content> & {
   container?: HTMLElement | null;
   surface?: import("@/lib/glass-theme").GlassSurface;
   config?: Partial<import("@/lib/glass").LensParams>;
-}) {
+} & Pick<GlassPanelProps, "radius" | "shape" | "lensParameters">) {
   return (
     <DrawerPrimitive.Portal container={container} data-slot="drawer-portal">
       <DrawerPrimitive.Overlay
         data-slot="drawer-overlay"
         className={cn(
-          "fixed inset-0 z-50 bg-black/20 backdrop-blur-[6px]",
+          "fixed inset-0 z-50 bg-black/15",
           container && "absolute rounded-[20px]",
         )}
       />
@@ -36,15 +39,15 @@ export function GlassDrawerContent({
         )}
         {...props}
       >
-        <GlassSurface
+        <GlassPanel
           kind="drawer"
-          surface={surface}
-          config={{ blur: 8, ...config }}
+          radius={radius} shape={shape}
+          lensParameters={{ ...(surface === "thick" ? { blur: 12 } : {}), ...(config?.blur === undefined ? {} : { blur: config.blur }), ...lensParameters }}
           className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-5 p-6"
         >
           <div className="mx-auto -mt-2 mb-1 hidden h-1 w-10 shrink-0 rounded-full bg-foreground/25 group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
           {children}
-        </GlassSurface>
+        </GlassPanel>
       </DrawerPrimitive.Content>
     </DrawerPrimitive.Portal>
   );

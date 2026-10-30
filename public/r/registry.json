@@ -128,6 +128,7 @@
       "registryDependencies": [
         "button",
         "http://localhost:3000/r/glass-lens.json",
+        "http://localhost:3000/r/glass-panel.json",
         "http://localhost:3000/r/glass-surface.json",
         "http://localhost:3000/r/glass-utilities.json"
       ],
@@ -170,6 +171,7 @@
       "registryDependencies": [
         "card",
         "http://localhost:3000/r/glass-materials.json",
+        "http://localhost:3000/r/glass-panel.json",
         "http://localhost:3000/r/glass-surface.json"
       ],
       "files": [
@@ -287,6 +289,7 @@
         "http://localhost:3000/r/glass-music-player.json",
         "http://localhost:3000/r/glass-navbar.json",
         "http://localhost:3000/r/glass-navigation-menu.json",
+        "http://localhost:3000/r/glass-panel.json",
         "http://localhost:3000/r/glass-popover.json",
         "http://localhost:3000/r/glass-power.json",
         "http://localhost:3000/r/glass-preferences.json",
@@ -419,6 +422,7 @@
       "registryDependencies": [
         "http://localhost:3000/r/glass-button.json",
         "http://localhost:3000/r/glass-lens.json",
+        "http://localhost:3000/r/glass-panel.json",
         "http://localhost:3000/r/glass-surface.json",
         "http://localhost:3000/r/glass-target-lens.json",
         "http://localhost:3000/r/glass-tooltip.json"
@@ -439,7 +443,7 @@
       "docs": "http://localhost:3000/docs/glass-drawer",
       "registryDependencies": [
         "drawer",
-        "http://localhost:3000/r/glass-surface.json"
+        "http://localhost:3000/r/glass-panel.json"
       ],
       "dependencies": [
         "vaul"
@@ -462,8 +466,8 @@
         "dropdown-menu",
         "http://localhost:3000/r/glass-lens.json",
         "http://localhost:3000/r/glass-materials.json",
-        "http://localhost:3000/r/glass-surface.json",
-        "http://localhost:3000/r/glass-theme-provider.json"
+        "http://localhost:3000/r/glass-panel.json",
+        "http://localhost:3000/r/glass-utilities.json"
       ],
       "dependencies": [
         "radix-ui"
@@ -521,7 +525,8 @@
       "docs": "http://localhost:3000/docs/glass-hover-card",
       "registryDependencies": [
         "hover-card",
-        "http://localhost:3000/r/glass-surface.json"
+        "http://localhost:3000/r/glass-panel.json",
+        "http://localhost:3000/r/glass-utilities.json"
       ],
       "dependencies": [
         "radix-ui"
@@ -639,6 +644,11 @@
           "path": "lib/glass-lens-optics.ts",
           "type": "registry:lib",
           "target": "@lib/glass-lens-optics.ts"
+        },
+        {
+          "path": "lib/glass-lens-shape.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-lens-shape.ts"
         },
         {
           "path": "lib/glass-video.ts",
@@ -782,6 +792,29 @@
       ]
     },
     {
+      "name": "glass-panel",
+      "type": "registry:ui",
+      "title": "Glass Panel",
+      "description": "A compact, source-refracting panel with a continuous optional beak and sharp foreground content.",
+      "docs": "http://localhost:3000/docs/glass-panel",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-lens.json",
+        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-theme-provider.json",
+        "http://localhost:3000/r/glass-utilities.json"
+      ],
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-panel.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-panel.tsx"
+        }
+      ]
+    },
+    {
       "name": "glass-popover",
       "type": "registry:ui",
       "title": "Glass Popover",
@@ -789,7 +822,8 @@
       "docs": "http://localhost:3000/docs/glass-popover",
       "registryDependencies": [
         "http://localhost:3000/r/glass-materials.json",
-        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-panel.json",
+        "http://localhost:3000/r/glass-utilities.json",
         "popover"
       ],
       "dependencies": [
@@ -1223,7 +1257,7 @@
       "description": "Tooltip provider and content.",
       "docs": "http://localhost:3000/docs/glass-tooltip",
       "registryDependencies": [
-        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-panel.json",
         "http://localhost:3000/r/glass-utilities.json",
         "tooltip"
       ],
@@ -1664,6 +1698,42 @@
         ".glass-tooltip-motion[data-state=\"closed\"]": {
           "animation": "glass-tooltip-out 140ms ease-out both"
         },
+        ".glass-bubble-motion": {
+          "--bubble-offset": "3px",
+          "--bubble-scale": ".97"
+        },
+        ".glass-panel-backdrop[data-panel-source=\"backdrop\"]": {
+          "backdrop-filter": "blur(var(--panel-blur))",
+          "-webkit-backdrop-filter": "blur(var(--panel-blur))"
+        },
+        ".glass-bubble-motion[data-side=\"bottom\"]": {
+          "--bubble-offset": "-3px"
+        },
+        ".glass-bubble-motion[data-state=\"open\"]": {
+          "animation": "glass-bubble-in 240ms var(--ease-out) both"
+        },
+        ".glass-bubble-motion[data-state=\"closed\"]": {
+          "animation": "glass-bubble-out 160ms ease-out both"
+        },
+        "@keyframes glass-bubble-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(var(--bubble-offset)) scale(var(--bubble-scale))"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translateY(0) scale(1)"
+          }
+        },
+        "@keyframes glass-bubble-out": {
+          "from": {
+            "opacity": "1"
+          },
+          "to": {
+            "opacity": "0",
+            "transform": "translateY(calc(var(--bubble-offset) / 2)) scale(var(--bubble-scale))"
+          }
+        },
         "@keyframes glass-tooltip-in": {
           "from": {
             "opacity": "0",
@@ -1705,6 +1775,11 @@
           "box-shadow": "none !important"
         },
         "@media (prefers-reduced-motion: reduce)": {
+          ".glass-bubble-motion": {
+            "--bubble-offset": "0px",
+            "--bubble-scale": "1",
+            "animation-duration": "100ms !important"
+          },
           ".glass-lens-action": {
             "scale": "1 !important",
             "transition": "none"
@@ -2236,6 +2311,42 @@
         ".glass-tooltip-motion[data-state=\"closed\"]": {
           "animation": "glass-tooltip-out 140ms ease-out both"
         },
+        ".glass-bubble-motion": {
+          "--bubble-offset": "3px",
+          "--bubble-scale": ".97"
+        },
+        ".glass-panel-backdrop[data-panel-source=\"backdrop\"]": {
+          "backdrop-filter": "blur(var(--panel-blur))",
+          "-webkit-backdrop-filter": "blur(var(--panel-blur))"
+        },
+        ".glass-bubble-motion[data-side=\"bottom\"]": {
+          "--bubble-offset": "-3px"
+        },
+        ".glass-bubble-motion[data-state=\"open\"]": {
+          "animation": "glass-bubble-in 240ms var(--ease-out) both"
+        },
+        ".glass-bubble-motion[data-state=\"closed\"]": {
+          "animation": "glass-bubble-out 160ms ease-out both"
+        },
+        "@keyframes glass-bubble-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(var(--bubble-offset)) scale(var(--bubble-scale))"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "translateY(0) scale(1)"
+          }
+        },
+        "@keyframes glass-bubble-out": {
+          "from": {
+            "opacity": "1"
+          },
+          "to": {
+            "opacity": "0",
+            "transform": "translateY(calc(var(--bubble-offset) / 2)) scale(var(--bubble-scale))"
+          }
+        },
         "@keyframes glass-tooltip-in": {
           "from": {
             "opacity": "0",
@@ -2277,6 +2388,11 @@
           "box-shadow": "none !important"
         },
         "@media (prefers-reduced-motion: reduce)": {
+          ".glass-bubble-motion": {
+            "--bubble-offset": "0px",
+            "--bubble-scale": "1",
+            "animation-duration": "100ms !important"
+          },
           ".glass-lens-action": {
             "scale": "1 !important",
             "transition": "none"
@@ -2440,6 +2556,11 @@
           "path": "lib/glass-lens-optics.ts",
           "type": "registry:lib",
           "target": "@lib/glass-lens-optics.ts"
+        },
+        {
+          "path": "lib/glass-lens-shape.ts",
+          "type": "registry:lib",
+          "target": "@lib/glass-lens-shape.ts"
         },
         {
           "path": "lib/glass-video.ts",
@@ -2635,6 +2756,11 @@
           "path": "components/glass/glass-navigation-menu.tsx",
           "type": "registry:ui",
           "target": "@components/glass/glass-navigation-menu.tsx"
+        },
+        {
+          "path": "components/glass/glass-panel.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-panel.tsx"
         },
         {
           "path": "components/glass/glass-popover.tsx",

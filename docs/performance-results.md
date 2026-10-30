@@ -1169,3 +1169,55 @@ No tests, lint, typecheck, production build or benchmark were run, as requested.
 Local visual appearance and interaction timing remain unverified because browser
 policy blocks the development URL. Registry packaging completed with 57 entries
 and 68 shared source files.
+
+## 2026-10-30 — compact bubbles, aligned examples and floating dock
+
+- `GlassPanel` reuses the control displacement field and `GlassFilterManager`
+  for tooltips, hover cards, popovers, dropdowns, drawers, cards, glass buttons
+  and the floating dock. Normal control calls retain the original quarter-map
+  path and cache key. Slider/switch presets, source composition and gestures
+  are unchanged. Selection alone moves from 1000ms to 1200ms.
+- The optional joined beak is a smooth union in the displacement, coverage and
+  neutral reflection fields. Its vertices are precomputed; triangle distance
+  work is limited to the small pointer neighborhood. Asymmetric bubbles compute
+  the full map; pointer-free shapes retain quarter symmetry. The twelve-bundle
+  cache and 1.5M-pixel allocation ceiling remain. This is a structural cost
+  inventory, not a measured generation time or frame-rate result.
+- A nominal 76 × 26px tooltip has 16px sampling padding with the shared control
+  preset and 0.5px blur. Its 108 × 58px field is 216 × 116 storage pixels at 2×,
+  or 25,056 pixels per texture. This example is derived from the formulas,
+  not a measured font/layout size. Its foreground text stays outside the filter.
+  Radius edits retain a complete prior field/contour/glint until the new bundle
+  decodes, without stretching it into a different size. Initial tooltip reveal
+  waits for its contour; map failure keeps the readable rounded fallback.
+- Covered panels mirror only an explicitly bounded scene, at most 4096px per
+  axis and 1.5M CSS pixels. SourceGraphic is clipped to the padded panel window.
+  Native SVG backdrop filtering is used outside a source only on the existing
+  supported Chromium route. There is no document mirror or CPU background pixel
+  readback for the fixed dock. Safari/Firefox without a covered scene retain a
+  local blur/glint fallback, not claimed DOM refraction. Reduced transparency
+  retains an opaque fallback. Native backdrop movement is compositor-driven;
+  source-less panels do not attach scroll-measurement listeners.
+- Light material removes the previous foreground-colored body tint and applies
+  1.04× brightness to source pixels. Dark material keeps a faint neutral finish.
+  Foreground labels and the contour glint are outside the background filter.
+  No shadow, gradient or painted border was added. Background blur is 0.5px for
+  tooltips, 0.25px for buttons, 3px for hover cards/cards, 4px for popovers,
+  5px for menus/dock and 8px for drawers. The drawer overlay only dims; it no
+  longer adds a viewport-wide blur pass.
+- The header now contains identity and two compact glass links. A single picker
+  below it mounts one example, initially Slider, at the same width and gutters.
+  Offscreen showcase content unmounts. The dock remains fixed with four blank
+  square slots, without hover translation or press scaling. Intro links can
+  request two slots, dock one, and the selected example one or two. Opening an
+  extra picker/tooltip may exceed that request count; admission still caps the
+  document at five/fine and three/coarse and falls back without hiding actions.
+  No idle animation loop or per-frame React update was introduced.
+- The original video/image shader and media example are unchanged. Native
+  Radix/shadcn/Vaul triggers, menu groups, focus, Escape and dismissal are retained.
+  The six panel documentation/gallery previews reuse the same plain stage.
+
+No tests, lint, typecheck, production build, registry verification or benchmark
+were run, as requested. Development-URL browser access remains blocked; visual
+parity, native-backdrop behavior and device frame timings are unverified. Registry
+packaging completed with 58 entries and 70 shared source files.

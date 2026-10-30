@@ -2,11 +2,10 @@
 
 import * as React from "react";
 import { Card } from "@/components/ui/card";
-import {
-  GlassSurface,
-  type GlassSurfaceProps,
-} from "@/components/glass/glass-surface";
+import type { GlassSurfaceProps } from "@/components/glass/glass-surface";
+import { GlassPanel, type GlassPanelProps } from "@/components/glass/glass-panel";
 import type { GlassSurface as GlassSurfaceKind } from "@/lib/glass-theme";
+import { cn } from "@/lib/utils";
 
 export function GlassCard({
   className,
@@ -15,26 +14,29 @@ export function GlassCard({
   ink,
   contrastProtection,
   config,
+  shape = "squircle",
+  lensParameters,
   children,
   ...props
 }: React.ComponentProps<typeof Card> & {
   surface?: GlassSurfaceKind;
   radius?: number;
-} & Pick<GlassSurfaceProps, "ink" | "contrastProtection" | "config">) {
+} & Pick<GlassSurfaceProps, "ink" | "contrastProtection" | "config"> &
+  Pick<GlassPanelProps, "shape" | "lensParameters">) {
   return (
-    <GlassSurface
+    <GlassPanel
       kind="card"
-      surface={surface}
       radius={radius}
+      shape={shape}
       ink={ink}
       contrastProtection={contrastProtection}
-      config={config}
+      lensParameters={{ ...(surface === "frosted" ? { blur: 8 } : {}), ...(config?.blur === undefined ? {} : { blur: config.blur }), ...lensParameters }}
       asChild
     >
-      <Card {...props} className={className}>
+      <Card {...props} className={cn("overflow-visible bg-transparent ring-0", className)}>
         {children}
       </Card>
-    </GlassSurface>
+    </GlassPanel>
   );
 }
 

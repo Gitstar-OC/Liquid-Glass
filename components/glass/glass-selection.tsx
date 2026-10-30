@@ -170,7 +170,7 @@ const server = () => false;
 const PADDING = 64;
 const OPTICS = CONTROL_LENS_PRESETS.selection;
 // Selection has its own pacing; the approved slider/switch springs stay intact.
-const SELECTION_DURATION = 1000;
+const SELECTION_DURATION = 1200;
 const CAP_RELEASE = 205;
 const CAP_SETTLE = 180;
 type Rect = { left: number; top: number; width: number; height: number };

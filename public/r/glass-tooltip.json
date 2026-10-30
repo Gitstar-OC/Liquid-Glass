@@ -7,14 +7,14 @@
     "radix-ui"
   ],
   "registryDependencies": [
-    "http://localhost:3000/r/glass-surface.json",
+    "http://localhost:3000/r/glass-panel.json",
     "http://localhost:3000/r/glass-utilities.json",
     "tooltip"
   ],
   "files": [
     {
       "path": "components/glass/glass-tooltip.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Tooltip as TooltipPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassSurface } from \"@/components/glass/glass-surface\";\n\n/**\n * Tooltips share the playground optics, with the compact control radius.\n */\nexport function GlassTooltipContent({\n  className,\n  sideOffset = 6,\n  children,\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Content>) {\n  return (\n    <TooltipPrimitive.Portal>\n      <TooltipPrimitive.Content\n        data-slot=\"tooltip-content\"\n        sideOffset={sideOffset}\n        className={cn(\n          \"glass-tooltip-motion z-50 inline-flex w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) items-center gap-1.5\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassSurface kind=\"tooltip\" className=\"px-3 py-2 text-xs font-medium\">\n          {children}\n        </GlassSurface>\n      </TooltipPrimitive.Content>\n    </TooltipPrimitive.Portal>\n  );\n}\n\nexport {\n  Tooltip,\n  TooltipTrigger,\n  TooltipProvider,\n} from \"@/components/ui/tooltip\";\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Tooltip as TooltipPrimitive } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\nimport { GlassPanel, type GlassPanelProps } from \"@/components/glass/glass-panel\";\n\n/**\n * Compact bubbles: one continuous contour, with or without a joined pointer.\n */\nexport function GlassTooltipContent({\n  className,\n  sideOffset = 6,\n  children,\n  variant = \"plain\",\n  radius = 13,\n  shape = \"round\",\n  lensParameters,\n  container,\n  ...props\n}: React.ComponentProps<typeof TooltipPrimitive.Content> &\n  Pick<GlassPanelProps, \"radius\" | \"shape\" | \"lensParameters\"> & {\n    variant?: \"plain\" | \"beak\";\n    container?: HTMLElement | null;\n  }) {\n  return (\n    <TooltipPrimitive.Portal container={container}>\n      <TooltipPrimitive.Content\n        data-slot=\"tooltip-content\"\n        sideOffset={sideOffset}\n        className={cn(\n          \"glass-tooltip-motion z-50 inline-flex w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) items-center gap-1.5\",\n          className,\n        )}\n        {...props}\n      >\n        <GlassPanel kind=\"tooltip\" radius={radius} shape={shape} beak={variant === \"beak\"}\n          lensParameters={lensParameters} className=\"px-3 py-1 text-xs leading-[18px] font-medium\">\n          {children}\n        </GlassPanel>\n        {variant === \"beak\" && <TooltipPrimitive.Arrow data-glass-beak-anchor=\"\" width={14} height={5} opacity={0} aria-hidden=\"true\" />}\n      </TooltipPrimitive.Content>\n    </TooltipPrimitive.Portal>\n  );\n}\n\nexport {\n  Tooltip,\n  TooltipTrigger,\n  TooltipProvider,\n} from \"@/components/ui/tooltip\";\n",
       "type": "registry:ui",
       "target": "@components/glass/glass-tooltip.tsx"
     }

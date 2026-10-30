@@ -3,19 +3,28 @@
 import * as React from "react";
 import { Tooltip as TooltipPrimitive } from "radix-ui";
 import { cn } from "@/lib/utils";
-import { GlassSurface } from "@/components/glass/glass-surface";
+import { GlassPanel, type GlassPanelProps } from "@/components/glass/glass-panel";
 
 /**
- * Tooltips share the playground optics, with the compact control radius.
+ * Compact bubbles: one continuous contour, with or without a joined pointer.
  */
 export function GlassTooltipContent({
   className,
   sideOffset = 6,
   children,
+  variant = "plain",
+  radius = 13,
+  shape = "round",
+  lensParameters,
+  container,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: React.ComponentProps<typeof TooltipPrimitive.Content> &
+  Pick<GlassPanelProps, "radius" | "shape" | "lensParameters"> & {
+    variant?: "plain" | "beak";
+    container?: HTMLElement | null;
+  }) {
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={container}>
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
         sideOffset={sideOffset}
@@ -25,9 +34,11 @@ export function GlassTooltipContent({
         )}
         {...props}
       >
-        <GlassSurface kind="tooltip" className="px-3 py-2 text-xs font-medium">
+        <GlassPanel kind="tooltip" radius={radius} shape={shape} beak={variant === "beak"}
+          lensParameters={lensParameters} className="px-3 py-1 text-xs leading-[18px] font-medium">
           {children}
-        </GlassSurface>
+        </GlassPanel>
+        {variant === "beak" && <TooltipPrimitive.Arrow data-glass-beak-anchor="" width={14} height={5} opacity={0} aria-hidden="true" />}
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );

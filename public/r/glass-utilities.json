@@ -424,6 +424,42 @@
     ".glass-tooltip-motion[data-state=\"closed\"]": {
       "animation": "glass-tooltip-out 140ms ease-out both"
     },
+    ".glass-bubble-motion": {
+      "--bubble-offset": "3px",
+      "--bubble-scale": ".97"
+    },
+    ".glass-panel-backdrop[data-panel-source=\"backdrop\"]": {
+      "backdrop-filter": "blur(var(--panel-blur))",
+      "-webkit-backdrop-filter": "blur(var(--panel-blur))"
+    },
+    ".glass-bubble-motion[data-side=\"bottom\"]": {
+      "--bubble-offset": "-3px"
+    },
+    ".glass-bubble-motion[data-state=\"open\"]": {
+      "animation": "glass-bubble-in 240ms var(--ease-out) both"
+    },
+    ".glass-bubble-motion[data-state=\"closed\"]": {
+      "animation": "glass-bubble-out 160ms ease-out both"
+    },
+    "@keyframes glass-bubble-in": {
+      "from": {
+        "opacity": "0",
+        "transform": "translateY(var(--bubble-offset)) scale(var(--bubble-scale))"
+      },
+      "to": {
+        "opacity": "1",
+        "transform": "translateY(0) scale(1)"
+      }
+    },
+    "@keyframes glass-bubble-out": {
+      "from": {
+        "opacity": "1"
+      },
+      "to": {
+        "opacity": "0",
+        "transform": "translateY(calc(var(--bubble-offset) / 2)) scale(var(--bubble-scale))"
+      }
+    },
     "@keyframes glass-tooltip-in": {
       "from": {
         "opacity": "0",
@@ -465,6 +501,11 @@
       "box-shadow": "none !important"
     },
     "@media (prefers-reduced-motion: reduce)": {
+      ".glass-bubble-motion": {
+        "--bubble-offset": "0px",
+        "--bubble-scale": "1",
+        "animation-duration": "100ms !important"
+      },
       ".glass-lens-action": {
         "scale": "1 !important",
         "transition": "none"

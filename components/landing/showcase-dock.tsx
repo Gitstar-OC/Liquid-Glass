@@ -20,8 +20,7 @@ export function ShowcaseDock({
 }) {
   return (
     <GlassDock
-      material="lens"
-      refractionTarget={<div className="absolute -inset-32 bg-background" />}
+      material="backdrop"
       aria-label="Explore Liquid Glass"
       className="showcase-dock"
     >

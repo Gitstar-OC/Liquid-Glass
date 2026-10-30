@@ -43,6 +43,7 @@ const INTERNAL = {
   "@/lib/glass-performance": "glass-lens",
   "@/lib/glass-filter": "glass-lens",
   "@/lib/glass-lens-optics": "glass-lens",
+  "@/lib/glass-lens-shape": "glass-lens",
   "@/lib/glass-video": "glass-lens",
   "@/components/glass-scene": "glass-lens",
   "@/components/glass-backdrop": "glass-lens",
@@ -103,7 +104,7 @@ function depsOf(path) {
 
   // CSS-level materials: every glass control is poured into one of these.
   if (
-    /glass-(lens-action|chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
+    /glass-(lens-action|chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|bubble-motion|panel-backdrop|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
       src,
     )
   )
@@ -156,6 +157,7 @@ const TITLES = {
   "glass-lens-button": "Glass Lens Button",
   "glass-elastic-button": "Elastic Glass Button",
   "glass-card": "Glass Card",
+  "glass-panel": "Glass Panel",
   "glass-input": "Glass Input",
   "glass-switch": "Glass Switch",
   "glass-progress": "Glass Progress",
@@ -218,6 +220,8 @@ const DESCRIPTIONS = {
   "glass-badge": "Compact status pills in the same optical material.",
   "glass-card":
     "Card, header, title, action and footer sub-components on the shared clear lens.",
+  "glass-panel":
+    "A compact, source-refracting panel with a continuous optional beak and sharp foreground content.",
   "glass-input":
     "Input, textarea, and label with shared form semantics and focus states.",
   "glass-switch":
@@ -608,6 +612,19 @@ const UTILITIES_CSS = {
   '.glass-tooltip-motion[data-state="closed"]': {
     animation: "glass-tooltip-out 140ms ease-out both",
   },
+  ".glass-bubble-motion": { "--bubble-offset": "3px", "--bubble-scale": ".97" },
+  '.glass-panel-backdrop[data-panel-source="backdrop"]': { "backdrop-filter": "blur(var(--panel-blur))", "-webkit-backdrop-filter": "blur(var(--panel-blur))" },
+  '.glass-bubble-motion[data-side="bottom"]': { "--bubble-offset": "-3px" },
+  '.glass-bubble-motion[data-state="open"]': { animation: "glass-bubble-in 240ms var(--ease-out) both" },
+  '.glass-bubble-motion[data-state="closed"]': { animation: "glass-bubble-out 160ms ease-out both" },
+  "@keyframes glass-bubble-in": {
+    from: { opacity: "0", transform: "translateY(var(--bubble-offset)) scale(var(--bubble-scale))" },
+    to: { opacity: "1", transform: "translateY(0) scale(1)" },
+  },
+  "@keyframes glass-bubble-out": {
+    from: { opacity: "1" },
+    to: { opacity: "0", transform: "translateY(calc(var(--bubble-offset) / 2)) scale(var(--bubble-scale))" },
+  },
   "@keyframes glass-tooltip-in": {
     from: {
       opacity: "0",
@@ -650,6 +667,7 @@ const UTILITIES_CSS = {
     "box-shadow": "none !important",
   },
   "@media (prefers-reduced-motion: reduce)": {
+    ".glass-bubble-motion": { "--bubble-offset": "0px", "--bubble-scale": "1", "animation-duration": "100ms !important" },
     ".glass-lens-action": { scale: "1 !important", transition: "none" },
     ".glass-lens-action [data-glass-target-lens]": { transition: "none" },
     ".glass-slider-thumb::before": {
@@ -741,6 +759,7 @@ const LENS = [
   file("lib/glass-performance.ts", "registry:lib"),
   file("lib/glass-filter.ts", "registry:lib"),
   file("lib/glass-lens-optics.ts", "registry:lib"),
+  file("lib/glass-lens-shape.ts", "registry:lib"),
   file("lib/glass-video.ts", "registry:lib"),
   file("components/glass-scene.tsx", "registry:ui"),
   file("components/glass-backdrop.ts", "registry:ui"),
@@ -781,7 +800,7 @@ items.push({
 function makeItem({ name, type, title, description, files, extraDeps = [] }) {
   const roll = rollUp(files.map((f) => f.path));
   const needsUtilities = files.some((f) =>
-    /glass-(lens-action|chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
+    /glass-(lens-action|chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|bubble-motion|panel-backdrop|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
       read(f.path),
     ),
   );

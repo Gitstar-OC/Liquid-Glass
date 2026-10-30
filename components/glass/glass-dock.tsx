@@ -24,6 +24,7 @@ import {
 } from "@/components/glass/glass-tooltip";
 import { GlassLens } from "@/components/glass/glass-target-lens";
 import { CONTROL_LENS_PRESETS } from "@/lib/glass-lens-optics";
+import { GlassPanel } from "@/components/glass/glass-panel";
 import { cn } from "@/lib/utils";
 
 type LensDockProps = ComponentProps<"nav"> & {
@@ -34,10 +35,20 @@ type LensDockProps = ComponentProps<"nav"> & {
 };
 export type GlassDockProps =
   | (GlassSurfaceProps & { material?: "scene"; refractionTarget?: never })
+  | (ComponentProps<"nav"> & { material: "backdrop"; radius?: number })
   | LensDockProps;
 
 /** A single optical surface; app controls and tooltips retain their own semantics. */
 export function GlassDock(props: GlassDockProps) {
+  if (props.material === "backdrop") {
+    const { children, className, radius = 22, material, ...nativeProps } = props;
+    return <TooltipProvider delayDuration={250} skipDelayDuration={300}>
+      <GlassPanel kind="dock" radius={radius} shape="round" asChild>
+        <nav {...nativeProps} aria-label={props["aria-label"] ?? "Dock"} data-glass-dock={material}
+          className={cn("flex w-fit items-center gap-3 p-3", className)}>{children}</nav>
+      </GlassPanel>
+    </TooltipProvider>;
+  }
   if (props.material === "lens") {
     return (
       <TooltipProvider delayDuration={250} skipDelayDuration={300}>
@@ -139,7 +150,7 @@ export function GlassDockItem({
           aria-label={label}
           {...props}
           className={cn(
-            "size-12 rounded-[13px] p-0 transition-transform duration-150 ease-(--ease-out) [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-1 motion-reduce:transform-none",
+            "size-12 rounded-[13px] p-0",
             className,
           )}
         >

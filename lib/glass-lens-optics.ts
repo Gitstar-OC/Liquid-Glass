@@ -1,4 +1,5 @@
 import { roundedLensSurface, type LensTextures } from "@/lib/glass";
+import { createControlLensSurface, type ControlLensShape } from "@/lib/glass-lens-shape";
 
 /** Units belong to this renderer. The reference values are a tuning starting point,
  * not a claim about the private implementation behind the Aave article. */
@@ -83,6 +84,7 @@ export function controlLensMetrics(
   width: number,
   height: number,
   parameters: ControlLensParameters,
+  geometry?: ControlLensShape,
 ) {
   const radius = Math.min(width, height) / 2;
   // Explicit control sources magnify the short axis themselves. Original DOM
@@ -102,7 +104,8 @@ export function controlLensMetrics(
   const sourceZoom = (Math.max(width, height) / 2) * (1 - 1 / magnification);
   const maximum = Math.max(1, amplitude, sourceZoom);
   return {
-    pad: Math.ceil(maximum + parameters.blur * 3 + 3),
+    pad: Math.max(Math.ceil(maximum + parameters.blur * 3 + 3),
+      geometry?.beak ? Math.ceil(Math.min(12, geometry.beak.height ?? 5) + 3) : 0),
     displacementScale: maximum * 2,
     maximum,
     magnification,
@@ -131,11 +134,14 @@ export function buildControlLensTextures(
   height: number,
   borderRadius: number,
   parameters: ControlLensParameters,
+  geometry?: ControlLensShape,
 ): ControlLensTextures {
   const { pad, maximum, amplitude, magnification, shoulderWidth } =
-    controlLensMetrics(width, height, parameters);
+    controlLensMetrics(width, height, parameters, geometry);
   const radius = Math.max(0, Math.min(borderRadius, width / 2, height / 2));
-  const key = JSON.stringify([width, height, radius, parameters]);
+  const key = JSON.stringify(geometry
+    ? [width, height, radius, parameters, geometry]
+    : [width, height, radius, parameters]);
   const cached = cache.get(key);
   if (cached) {
     cache.delete(key);
@@ -177,11 +183,17 @@ export function buildControlLensTextures(
   // panels must not acquire a huge rim; tiny controls retain room for the body.
   const lightScale = Math.max(width, height),
     rimHeight = Math.min(1.1, cap * 0.12);
-  for (let y = 0; y < Math.ceil(th / 2); y++)
-    for (let x = 0; x < Math.ceil(tw / 2); x++) {
+  // Ordinary controls retain the exact quarter-map path. A joined pointer is
+  // asymmetric; only that small bubble computes its complete contour.
+  const asymmetric = Boolean(geometry?.beak);
+  const sampleSurface = geometry ? createControlLensSurface(hw, hh, radius, geometry) : null;
+  for (let y = 0; y < (asymmetric ? th : Math.ceil(th / 2)); y++)
+    for (let x = 0; x < (asymmetric ? tw : Math.ceil(tw / 2)); x++) {
       const px = ((x + 0.5) / tw) * fw - fw / 2,
         py = ((y + 0.5) / th) * fh - fh / 2;
-      const surface = roundedLensSurface(px, py, hw, hh, radius),
+      const surface = sampleSurface
+        ? sampleSurface(px, py)
+        : roundedLensSurface(px, py, hw, hh, radius),
         inside = -surface.distance;
       const alpha = Math.max(0, Math.min(1, inside * resolution + 0.5));
       const shoulder = 1 - smooth(0, shoulderWidth, inside);
@@ -201,7 +213,7 @@ export function buildControlLensTextures(
       const zoom = (1 - 1 / magnification) * (1 - shoulder);
       const dx = inside >= 0 ? -surface.nx * bend * amplitude - px * zoom : 0;
       const dy = inside >= 0 ? -surface.ny * bend * amplitude * 0.7 - py * zoom : 0;
-      for (let q = 0; q < 4; q++) {
+      for (let q = 0; q < (asymmetric ? 1 : 4); q++) {
         const flipX = Boolean(q & 1),
           flipY = Boolean(q & 2),
           mx = flipX ? tw - 1 - x : x,

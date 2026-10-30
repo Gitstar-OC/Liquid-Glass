@@ -9,6 +9,7 @@ import {
 } from "@/components/glass/glass-surface";
 import type { VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { GlassPanel } from "@/components/glass/glass-panel";
 
 type ButtonVariant = VariantProps<typeof buttonVariants>["variant"];
 export type GlassButtonProps = Omit<
@@ -68,7 +69,8 @@ export function GlassButton({
   const bare = variant === "ghost" || variant === "link";
   const secondary = variant === "secondary";
   const core = !primary && !bare && !secondary;
-  const refract = Boolean(scene && !within && rendering === "auto" && core);
+  const compact = variant === "glass" && !liquidOnHold && !within && rendering === "auto";
+  const refract = compact || Boolean(scene && !within && rendering === "auto" && core);
   const classes = cn(
     "relative isolate h-10 select-text text-[13px] font-semibold tracking-[-.015em] text-foreground transition-[background-color,scale,transform] duration-150 ease-(--ease-out) hover:bg-foreground/4 active:bg-foreground/7 active:scale-[.97] motion-reduce:transform-none motion-reduce:active:scale-100",
     shape === "circle"
@@ -165,7 +167,11 @@ export function GlassButton({
       asChild={refract || asChild}
       className={classes}
     >
-      {refract ? (
+      {compact ? (
+        <GlassPanel kind="button" radius={shape === "default" ? 12 : 999} shape="round" asChild>
+          {asChild ? children : <button type={type}>{children}</button>}
+        </GlassPanel>
+      ) : refract ? (
         <GlassSurface
           kind="card"
           radius={shape === "default" ? 12 : 999}

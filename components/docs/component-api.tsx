@@ -14,6 +14,35 @@ type Prop = [
   description: string,
 ];
 const API: Record<string, Prop[]> = {
+  "glass-panel": [
+    ["kind", '"tooltip" | "hover-card" | "popover" | "dropdown" | "drawer" | "card" | "button" | "dock"', '"card"', "Tunes background softening for the component; all kinds share the compact curved field."],
+    ["radius / shape", 'number / "round" | "squircle"', '20 / "squircle"', "Controls the shared contour, coverage and optical normals."],
+    ["beak", "boolean", "false", "A continuous rounded pointer that follows Radix placement. No separate painted triangle."],
+    ["lensParameters", "ControlLensInput", "Shared control field", "Local optical tuning. Foreground text stays sharp; a bounded GlassScene supplies portable source pixels."],
+    ["asChild", "boolean", "false", "Compose onto one native or shadcn component that forwards ref and props."],
+  ],
+  "glass-tooltip": [
+    ["variant", '"plain" | "beak"', '"plain"', "A compact bubble, with or without one smoothly joined pointer."],
+    ["radius / shape", 'number / "round" | "squircle"', '13 / "round"', "Adjust roundedness without a separate outline or mismatched arrow."],
+    ["lensParameters", "ControlLensInput", "0.5px blur; shared control field", "Subtle source zoom and curved refraction. The 26px default bubble keeps its text outside the optical layer."],
+    ["container", "HTMLElement | null", "document.body", "Portal target. Keep inside a bounded scene for portable DOM refraction; native SVG backdrop filtering is used where supported, otherwise local CSS blur."],
+    ["Native tooltip props", "Radix Content props", "—", "Side, alignment, collision padding, Escape dismissal and refs are forwarded. Trigger hover and focus remain native."],
+  ],
+  "glass-hover-card": [
+    ["radius / shape / beak", 'number / GlassShape / boolean', '20 / "squircle" / false', "The same continuous bubble geometry with room for card content."],
+    ["lensParameters", "ControlLensInput", "3px blur", "Background material only; labels and actions stay sharp."],
+    ["container / side / align", "Native positioning props", 'body / bottom / center', "Native portal and collision placement; openDelay and closeDelay belong to HoverCard."],
+  ],
+  "glass-popover": [
+    ["radius / shape / beak", 'number / GlassShape / boolean', '22 / "squircle" / false', "One optical layer for the complete popover."],
+    ["lensParameters", "ControlLensInput", "4px blur", "Uses the compact curved field; nested actions share the panel's material."],
+    ["container", "HTMLElement | null", "document.body", "Portal target; native focus, outside dismissal and Escape behavior remain intact."],
+  ],
+  "glass-card": [
+    ["radius / shape", "number / GlassShape", '20 / "squircle"', "Card geometry and its refracting contour stay aligned."],
+    ["lensParameters", "ControlLensInput", "3px blur", "Tune the shared compact material. config.blur remains a compatibility override."],
+    ["children", "ReactNode", "—", "Compose CardHeader, CardTitle, CardDescription, CardContent and CardFooter. Nested glass cards inherit the parent optical layer."],
+  ],
   "glass-video-player": [
     [
       "src",
@@ -190,9 +219,9 @@ const API: Record<string, Prop[]> = {
     ["aria-label", "string", '"Dock"', "Names the navigation region."],
     [
       "material / refractionTarget",
-      '"scene" | "lens" / ReactNode',
+      '"scene" | "lens" | "backdrop" / ReactNode',
       '"scene"',
-      "Scene material uses the bounded scene. Lens material requires a small, aligned refractionTarget and uses the slider's compact optical field around the whole dock. Items remain sharp; no per-item lens is added.",
+      "Scene uses the bounded scene. Lens requires an aligned refractionTarget. Backdrop uses the compact field on the real native backdrop where supported, with a local blur fallback. Each dock owns one surface; items stay sharp.",
     ],
     [
       "radius",
@@ -270,9 +299,9 @@ const API: Record<string, Prop[]> = {
   "glass-button": [
     [
       "variant",
-      '"core" | "primary" | "secondary" | "ghost" | shadcn variant',
+      '"core" | "glass" | "primary" | "secondary" | "ghost" | shadcn variant',
       '"core"',
-      "Core refracts glass; primary is flat blue; secondary is a flat neutral control without a lens or gradient; ghost has bare content. Legacy glass/glass-strong/accent aliases remain supported.",
+      "Glass uses the compact control lens with sharp content. Core retains scene surface refraction. Primary is flat blue; secondary is flat neutral; ghost is bare. Nested controls share their parent material.",
     ],
     [
       "liquidOnHold",
@@ -395,7 +424,8 @@ const API: Record<string, Prop[]> = {
     ],
   ],
   "glass-dropdown": [
-    ["config", "Partial<LensParams>", "Menu material", "Overrides the content's glass finish, blur and displacement. A bounded GlassScene supplies the source; content outside it keeps the real CSS backdrop fallback."],
+    ["radius / shape / lensParameters", "number / GlassShape / ControlLensInput", '18 / "squircle" / 5px blur', "One compact curved lens behind the complete native menu. Foreground labels remain sharp."],
+    ["config.blur", "number", "5", "Compatibility blur override. Use lensParameters for the compact field's optical settings."],
     ["container", "HTMLElement | null", "Document body", "Optional portal host for a self-contained preview. Radix still manages positioning, keyboard navigation, Escape and focus return."],
     ["material", '"surface" | "external"', '"surface"', "External retains native menu behavior without adding a second material. Use when a GlassLens refracts the original source beneath the menu; supply a readable fallback while optics are unavailable."],
   ],
@@ -593,6 +623,7 @@ const API: Record<string, Prop[]> = {
     ],
   ],
   "glass-drawer": [
+    ["radius / shape / lensParameters", "number / GlassShape / ControlLensInput", '28 / "squircle" / 8px blur', "One compact material for the sheet, using its bounded source or native backdrop where supported."],
     [
       "container",
       "HTMLElement | null",
@@ -603,7 +634,7 @@ const API: Record<string, Prop[]> = {
       "config",
       "Partial<LensParams>",
       "blur: 8",
-      "Overrides the shared optics for the drawer surface.",
+      "config.blur remains a compatibility override. Use lensParameters for compact field settings.",
     ],
     ["surface", "GlassSurface", '"clear"', "Optional material override."],
     [

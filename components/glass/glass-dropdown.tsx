@@ -3,14 +3,12 @@
 import * as React from "react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import { cn } from "@/lib/utils";
-import { GlassSurface } from "@/components/glass/glass-surface";
+import { GlassPanel, type GlassPanelProps } from "@/components/glass/glass-panel";
 import type { GlassSurface as GlassSurfaceKind } from "@/lib/glass-theme";
 import type { LensParams } from "@/lib/glass";
-import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 
 const CONTENT_BASE =
   "z-50 overflow-clip max-h-(--radix-dropdown-menu-content-available-height) max-w-(--radix-dropdown-menu-content-available-width) min-w-40 origin-(--radix-dropdown-menu-content-transform-origin) outline-none duration-150 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0 motion-reduce:animate-none";
-const CONTENT_SCALE = "data-open:zoom-in-[.98] data-closed:zoom-out-[.98]";
 
 export function GlassDropdownMenuContent({
   className,
@@ -21,6 +19,9 @@ export function GlassDropdownMenuContent({
   config,
   container,
   material = "surface",
+  radius = 18,
+  shape = "squircle",
+  lensParameters,
   children,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content> & {
@@ -30,8 +31,7 @@ export function GlassDropdownMenuContent({
   container?: HTMLElement | null;
   /** External optics can filter original DOM while this keeps native semantics. */
   material?: "surface" | "external";
-}) {
-  const { resolvedMode } = useGlassTheme();
+} & Pick<GlassPanelProps, "radius" | "shape" | "lensParameters">) {
   const viewport = (
     <div
       data-glass-menu-viewport=""
@@ -49,7 +49,7 @@ export function GlassDropdownMenuContent({
         collisionPadding={collisionPadding}
         className={cn(
           CONTENT_BASE,
-          material === "surface" && CONTENT_SCALE,
+          material === "surface" && "glass-bubble-motion",
           material === "external" && "glass-menu-panel",
           className,
         )}
@@ -58,23 +58,14 @@ export function GlassDropdownMenuContent({
         {material === "external" ? (
           viewport
         ) : (
-          <GlassSurface
+          <GlassPanel
             kind="dropdown"
-            radius={18}
-            tintBlendMode="normal"
-            surface={surface}
-            config={{
-              blur: 16,
-              glint: 20,
-              depth: 0,
-              tint: resolvedMode === "dark" ? 0.72 : 0.82,
-              tintColor: resolvedMode === "dark" ? "#202126" : "#f0f0f3",
-              ...config,
-            }}
+            radius={radius} shape={shape}
+            lensParameters={{ ...(surface === "frosted" ? { blur: 8 } : {}), ...(config?.blur === undefined ? {} : { blur: config.blur }), ...lensParameters }}
             className="glass-menu-panel w-full"
           >
             {viewport}
-          </GlassSurface>
+          </GlassPanel>
         )}
       </DropdownMenuPrimitive.Content>
     </DropdownMenuPrimitive.Portal>
@@ -84,24 +75,27 @@ export function GlassDropdownMenuContent({
 export function GlassDropdownMenuSubContent({
   className,
   surface,
+  radius = 18,
+  shape = "squircle",
+  lensParameters,
   children,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent> & {
   surface?: GlassSurfaceKind;
-}) {
+} & Pick<GlassPanelProps, "radius" | "shape" | "lensParameters">) {
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.SubContent
         data-slot="dropdown-menu-sub-content"
         collisionPadding={16}
         sideOffset={8}
-        className={cn(CONTENT_BASE, CONTENT_SCALE, className)}
+        className={cn(CONTENT_BASE, "glass-bubble-motion", className)}
         {...props}
       >
-        <GlassSurface
+        <GlassPanel
           kind="dropdown"
-          radius={18}
-          surface={surface}
+          radius={radius} shape={shape}
+          lensParameters={{ ...(surface === "frosted" ? { blur: 8 } : {}), ...lensParameters }}
           className="glass-menu-panel w-full"
         >
           <div
@@ -110,7 +104,7 @@ export function GlassDropdownMenuSubContent({
           >
             {children}
           </div>
-        </GlassSurface>
+        </GlassPanel>
       </DropdownMenuPrimitive.SubContent>
     </DropdownMenuPrimitive.Portal>
   );

@@ -82,7 +82,6 @@ export default async function RegistryItemPage({ params }: ItemPageProps) {
 
       {[
         "glass-surface",
-        "glass-card",
         "glass-preferences",
         "liquid-glass",
       ].includes(item.name) && (
@@ -130,6 +129,41 @@ export default async function RegistryItemPage({ params }: ItemPageProps) {
             Sampling estimates accessible source pixels; it cannot guarantee
             contrast on every image. Cross-origin photos need CORS permission.
             Unsupported paints use a protected fallback.
+          </p>
+        </section>
+      )}
+
+      {[
+        "glass-panel", "glass-tooltip", "glass-hover-card", "glass-popover",
+        "glass-dropdown", "glass-drawer", "glass-card",
+      ].includes(item.name) && (
+        <section className="mt-12 flex flex-col gap-4 text-sm leading-6">
+          <h2 className="text-lg font-medium">One shared compact lens</h2>
+          <p className="text-muted-foreground">
+            These components use the slider lens field, with a local blur level
+            and sharp foreground content. Radius and shape control the same
+            contour used by the refraction and glint. Tooltips, hover cards and
+            popovers also support a continuously joined beak.
+          </p>
+          <CodeBlock
+            title="components/preview-tooltip.tsx"
+            code={`<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <GlassButton variant="glass">Preview</GlassButton>
+    </TooltipTrigger>
+    <GlassTooltipContent variant="beak" radius={13} shape="round">
+      Preview
+    </GlassTooltipContent>
+  </Tooltip>
+</TooltipProvider>`}
+          />
+          <p className="text-muted-foreground">
+            Place the components over a bounded GlassScene for portable DOM
+            refraction. Outside a scene, supported Chromium browsers filter the
+            actual backdrop; other browsers retain a local blur and glint
+            fallback. Portaled content must overlap the scene to use its source.
+            Nested actions share their panel&apos;s material.
           </p>
         </section>
       )}
@@ -197,14 +231,14 @@ export default async function RegistryItemPage({ params }: ItemPageProps) {
           <h2 className="text-lg font-medium">Action hierarchy</h2>
           <CodeBlock
             title="components/actions.tsx"
-            code={`<GlassButton variant="core">Continue</GlassButton>
+            code={`<GlassButton variant="glass">Continue</GlassButton>
 <GlassButton variant="primary">Save changes</GlassButton>
 <GlassButton variant="secondary">Cancel</GlassButton>
 <GlassButton liquidOnHold>Hold for glass</GlassButton>`}
           />
           <p className="text-muted-foreground">
             Use blue for the main confirmation, neutral for an alternative, and
-            core for a clear glass action. Keep the hold effect on an
+            glass for a compact refracting action. Keep the hold effect on an
             exploratory control with an explicit label; ordinary actions
             activate on click.
           </p>

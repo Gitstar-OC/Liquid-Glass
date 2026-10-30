@@ -11,7 +11,7 @@ pointers** and **3 on coarse pointers**. A provider can request a lower limit:
 </GlassSettingsProvider>
 ```
 
-The device cap still wins. Modal/overlay lenses have priority 10 over ordinary panels. The homepage uses priority 2 for its small intro atlas; the elastic example uses 5 while held. Offscreen and document-hidden lenses release their mirrored DOM/filter
+The device cap still wins. Modal/overlay lenses have priority 10 over ordinary panels. The homepage's compact links and dock use priority 5; the elastic example uses 5 while held. Offscreen and document-hidden lenses release their mirrored DOM/filter
 work. Excess surfaces keep a lightweight translucent CSS finish and remain
 interactive. No component disappears because it exceeded the optical budget.
 
@@ -58,9 +58,10 @@ or a claim about Apple's private renderer.
   not a reason to add more. Size and source complexity matter as much as count.
 - Transforming standalone controls can opt out of the atlas with
   `composite={false}` so their content, clipping and optics move together.
-  The homepage mounts one selected example, a compact intro atlas and a dock.
-  Two neutral lenses remain at rest. A pressed or inspector-pinned control adds
-  one compact lens; selected navigation keeps that one slot at rest. The device cap still wins.
+  The homepage mounts one selected example below its identity header, two small
+  compact intro links and a fixed dock. A pressed or inspector-pinned control adds
+  one compact lens; selected navigation keeps that one slot at rest. Scrolled-out
+  intro links release admission. The device cap still wins.
   Sources stay separately bounded.
   The Video example uses one admitted WebGL compositor for its four disjoint
   control shapes, one video texture upload per rendered frame, and cached maps.
@@ -122,9 +123,11 @@ Measured results from this change are recorded in [performance-results.md](perfo
 
 ## Homepage source bounds
 
-The homepage has no full-viewport atlas or animated scroll source. Its active example is a small flat control plane (the stage is 356px high,
-324px on phones). Intro links and
-the dock have their own small neutral sources. Only the selected example mounts;
+The homepage has no full-viewport atlas or animated scroll source. Its active
+example sits below the identity header in a 420px stage (440px on phones),
+sharing the header's max width and gutters. Intro links use a tiny neutral source;
+the fixed dock reads the native backdrop on supported Chromium versions and
+falls back to local CSS blur elsewhere. Only the selected example mounts;
 changing it releases the previous lens before the new one is admitted. Dynamic
 music and elastic components load on demand, and audio is removed on departure.
 The demo's refraction comparison changes displacement only. No idle RAF loop runs.
@@ -223,7 +226,7 @@ a second opacity transition. There is no compact black shade texture/layer.
 Maps decode
 before reveal and are reused through the press. Pointer switch travel uses a
 400ms spring and a matching 400ms settling window; keyboard travel is zero. Tabs/groups
-keep one selected glass pill. Explicit highlighted options use a 1000ms spring
+keep one selected glass pill. Explicit highlighted options use a 1200ms spring
 with retained velocity. Travel opens the lens by up to 4px width / 24px height;
 a 205ms release softens contraction after positional arrival, and the final
 180ms closes with a zero-slope envelope. Its real shape is
@@ -233,12 +236,13 @@ Decoded map, rounded contour and reflection are accepted together, never stretch
 The highlighted DOM retains native dimensions. One bounded travel callback ends
 on arrival, hidden-document changes, cancellation or unmount; no idle loop runs.
 Their persistent lens remains admitted until hidden/unmounted or deselected.
-The homepage dock uses one stationary `GlassLens` with the slider's compact
-optics and 22px corners. Its explicit source is only the surrounding neutral
-plane; four native square placeholders are sharp foreground children. A resize
-observer updates its fractional layout geometry, without an idle frame loop,
-scene mirror or per-item optical layer. Existing scene-backed docks retain
-their current renderer. The homepage still has one dock slot, not four.
+The homepage dock uses one stationary `GlassPanel` with the slider's compact
+optics and 22px corners. Four native square placeholders stay sharp, without
+hover lift or press scale. Resize/position events update geometry, without an
+idle frame loop, whole-page capture or per-item optical layer. The native
+backdrop route is Chromium-only; the accessible fallback blurs the true backdrop
+and retains the cached contour glint. Existing explicit-target and scene-backed
+dock consumers retain their renderers. The homepage still has one dock slot.
 Slider dragging follows its native value immediately. Elastic endpoint release
 returns over 180ms; endpoint offsets
 are coalesced to one update per input frame. Value/position/offset changes reuse

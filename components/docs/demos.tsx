@@ -14,6 +14,7 @@ import { GlassVideoPlayer } from "@/components/glass/glass-video-player";
 import { GlassToggleGroup } from "@/components/glass/glass-toggle";
 import { LensButtonExample } from "@/components/lens-button-example";
 import { useState } from "react";
+import { PanelShowcase } from "@/components/landing/panel-showcase";
 
 function TargetLensDemo() {
   const [progress, setProgress] = useState(0.5);
@@ -52,6 +53,12 @@ function TargetLensDemo() {
 
 /** The docs and catalogue render the same maintained, interactive examples. */
 export function ItemDemo({ name }: { name: string }) {
+  const panel = {
+    "glass-tooltip": "tooltip", "glass-hover-card": "hover-card",
+    "glass-popover": "popover", "glass-dropdown": "dropdown",
+    "glass-drawer": "drawer", "glass-card": "card", "glass-panel": "card",
+  } as const;
+  if (name in panel) return <PanelShowcase key={name} compact initialExample={panel[name as keyof typeof panel]} />;
   if (name === "glass-lens-button") return <LensButtonExample />;
   if (name === "glass-toggle")
     return (

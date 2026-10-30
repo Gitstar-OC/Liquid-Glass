@@ -3,30 +3,40 @@
 import * as React from "react";
 import { HoverCard as HoverCardPrimitive } from "radix-ui";
 import { cn } from "@/lib/utils";
-import { GlassSurface } from "@/components/glass/glass-surface";
+import { GlassPanel, type GlassPanelProps } from "@/components/glass/glass-panel";
 
 export function GlassHoverCardContent({
   className,
   align = "center",
   sideOffset = 6,
   children,
+  radius = 20,
+  shape = "squircle",
+  beak = false,
+  lensParameters,
+  container,
   ...props
-}: React.ComponentProps<typeof HoverCardPrimitive.Content>) {
+}: React.ComponentProps<typeof HoverCardPrimitive.Content> &
+  Pick<GlassPanelProps, "radius" | "shape" | "beak" | "lensParameters"> & {
+    container?: HTMLElement | null;
+  }) {
   return (
-    <HoverCardPrimitive.Portal>
+    <HoverCardPrimitive.Portal container={container}>
       <HoverCardPrimitive.Content
         data-slot="hover-card-content"
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 origin-(--radix-hover-card-content-transform-origin) outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "glass-bubble-motion z-50 w-64 origin-(--radix-hover-card-content-transform-origin) outline-hidden",
           className,
         )}
         {...props}
       >
-        <GlassSurface kind="hover-card" className="w-full p-3 text-sm">
+        <GlassPanel kind="hover-card" radius={radius} shape={shape} beak={beak}
+          lensParameters={lensParameters} className="w-full p-4 text-sm">
           {children}
-        </GlassSurface>
+        </GlassPanel>
+        {beak && <HoverCardPrimitive.Arrow data-glass-beak-anchor="" width={14} height={5} opacity={0} aria-hidden="true" />}
       </HoverCardPrimitive.Content>
     </HoverCardPrimitive.Portal>
   );

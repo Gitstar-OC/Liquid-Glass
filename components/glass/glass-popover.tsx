@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { cn } from "@/lib/utils";
-import { GlassSurface } from "@/components/glass/glass-surface";
+import { GlassPanel, type GlassPanelProps } from "@/components/glass/glass-panel";
 import type { GlassSurface as GlassSurfaceKind } from "@/lib/glass-theme";
 
 export function GlassPopoverContent({
@@ -11,30 +11,38 @@ export function GlassPopoverContent({
   align = "center",
   sideOffset = 6,
   surface,
+  radius = 22,
+  shape = "squircle",
+  beak = false,
+  lensParameters,
+  container,
   children,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content> & {
   surface?: GlassSurfaceKind;
-}) {
+  container?: HTMLElement | null;
+} & Pick<GlassPanelProps, "radius" | "shape" | "beak" | "lensParameters">) {
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={container}>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 origin-(--radix-popover-content-transform-origin) outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "glass-bubble-motion z-50 w-72 origin-(--radix-popover-content-transform-origin) outline-hidden",
           className,
         )}
         {...props}
       >
-        <GlassSurface
+        <GlassPanel
           kind="popover"
-          surface={surface}
-          className="flex w-full flex-col gap-3 p-3 text-sm"
+          radius={radius} shape={shape} beak={beak}
+          lensParameters={{ ...(surface === "frosted" ? { blur: 8 } : surface === "thick" ? { blur: 12 } : {}), ...lensParameters }}
+          className="flex w-full flex-col gap-3 p-4 text-sm"
         >
           {children}
-        </GlassSurface>
+        </GlassPanel>
+        {beak && <PopoverPrimitive.Arrow data-glass-beak-anchor="" width={14} height={5} opacity={0} aria-hidden="true" />}
       </PopoverPrimitive.Content>
     </PopoverPrimitive.Portal>
   );

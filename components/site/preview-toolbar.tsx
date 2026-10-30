@@ -9,19 +9,19 @@ import type { DEMO_PHOTOS } from "@/lib/demo-assets";
 
 /** Every preview uses the same detached toolbar and dimensions. */
 export function PreviewToolbar({
-  photo,
+  photo = "dunes",
   onPhotoChange,
-  blur,
+  blur = 0,
   onBlurChange,
   label,
   href,
   backgroundControls,
   blurControl,
 }: {
-  photo: keyof typeof DEMO_PHOTOS;
-  onPhotoChange: (value: keyof typeof DEMO_PHOTOS) => void;
-  blur: number;
-  onBlurChange: (value: number) => void;
+  photo?: keyof typeof DEMO_PHOTOS;
+  onPhotoChange?: (value: keyof typeof DEMO_PHOTOS) => void;
+  blur?: number;
+  onBlurChange?: (value: number) => void;
   label: string;
   href?: string;
   backgroundControls?: ReactNode;
@@ -30,14 +30,14 @@ export function PreviewToolbar({
   return (
     <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div className="flex flex-wrap items-center gap-4">
-        {backgroundControls ?? (
+        {backgroundControls ?? (onPhotoChange && (
           <BackdropPicker
             value={photo}
             onValueChange={onPhotoChange}
             label={`${label} backdrop`}
           />
-        )}
-        {blurControl === undefined ? (
+        ))}
+        {blurControl === undefined ? (onBlurChange && (
           <div className="flex items-center gap-3">
             <span className="text-muted-foreground">Blur</span>
             <GlassSlider
@@ -53,7 +53,7 @@ export function PreviewToolbar({
               {Number(blur.toFixed(2))}px
             </output>
           </div>
-        ) : (
+        )) : (
           blurControl
         )}
       </div>

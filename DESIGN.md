@@ -5,13 +5,15 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 ## Material
 
-- Use `GlassSurface` for independent panels and overlays.
+- Use `GlassPanel` for the compact tooltip, card, menu and overlay family.
+  `GlassSurface` remains the bounded scene/atlas material for larger compositions.
 - Use `GlassButton`, `GlassInput`, `GlassTextarea`, `GlassSelect`, `GlassSwitch`,
   `GlassSlider`, and `GlassToggleGroup` for site controls. Keep Radix/shadcn semantics.
 - Nested controls share the panel's glass finish. Do not create an independent
   SVG mirror for each field, label, icon, or button inside a panel.
-- Standalone controls without a bounded `GlassScene` use the lightweight glass
-  finish. Never describe this fallback as independent DOM refraction.
+- Compact `GlassPanel` controls outside a bounded `GlassScene` use native SVG
+  backdrop filtering where supported, otherwise a lightweight finish. Never
+  describe the lightweight fallback as independent DOM refraction.
 - No drop shadows, floating-card shadows, text shadows, glow, or stacked rings.
   Optical reflection and shade produced by the lens belong to its material.
   The solid resting slider thumb has one restrained 2px/8px lift shadow so it
@@ -38,13 +40,14 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 ## Backdrops
 
-- The homepage is a single-screen split composition with a dock. Its mark,
-  heading and two glass links sit on pure white or black. The right side shows
-  one focused reference: Slider, Switch, Navigation, Video, Buttons or Popover. Mount only that
-  example. Use a plain control plate on the quiet lavender/dark grid; the Video
-  example owns its flower footage. No autoplay, optical settings or hidden live
-  catalogue. Keep removed examples in
-  the component gallery; do not bring the old menu catalogue back to the hero.
+- The homepage starts with its mark, heading and two glass links on pure white
+  or black. Keep component examples below that header, sharing its max width and
+  gutters. One compact picker selects the single mounted example; start with
+  Slider. Do not bring the six-choice catalogue back into the hero. The dock is
+  fixed above the viewport's bottom safe area and stays visible while scrolling.
+  Use a plain control plate on the quiet lavender/dark grid; Video owns its flower
+  footage. No autoplay or hidden live catalogue. Bubble, panel and menu examples
+  use an ordinary, bounded file-list source, without an enclosing glass panel.
   The profile popover is one small bounded scene, with a local image, native
   menu actions and an edit dialog; it loads only when selected. Its menu uses
   the shared video/image finish over its displayed photo, with sharp action labels.
@@ -63,13 +66,13 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 | Item                   | Rule                                                                                                                  |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Page width             | Content `max-w-5xl` (1024px), centered; homepage uses a spacious split layout with a 48–112px gutter                  |
+| Page width             | Content `max-w-5xl` (1024px), centered; homepage header and preview share a 1120–1440px maximum and responsive gutters |
 | Page gutters           | 20px phone, 32px larger screens                                                                                       |
 | Section gap            | 48px, up to 64px between independent sections                                                                         |
-| Single preview stage   | 480px high; 560px on phones; center the example                                                                       |
-| Homepage canvas        | Full viewport on desktop; one bounded example at right, heading at left, dock below                                   |
+| Single preview stage   | Standard demos: 480px, 560px on phones; shared compact panel preview: 420px, 440px on phones; center the example        |
+| Homepage canvas        | Identity header, then one bounded example at the same max width and gutters; fixed floating dock                      |
 | Homepage controls      | No optical settings, standard navbar, or footer strip; dock links and theme controls only. No page has a site footer  |
-| Responsive composition | Two columns on tablets; one readable column on phones; preserve control sizes                                         |
+| Responsive composition | Identity above the single example; one readable column on phones; preserve control sizes                              |
 | Preview radius         | 20px single previews; no enclosing frame around the homepage                                                          |
 | Panel radius/padding   | 26px panels, 28px dialogs/drawers; 20px compact Sound/AirDrop widgets, 24px forms                                     |
 | Standard control       | 40px high; capsule by default; 12px radius for explicit rectangular variants                                          |
@@ -167,8 +170,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Keep the image's own pixels and source-colored rim, without a white body fill.
   Its native actions and checkbox controls share one optical layer. Profile
   identity stays outside the image so it is not replaced with sampled text.
-- The homepage has one tiny intro-link atlas and one dock lens at rest. A pressed
-  control adds one compact target lens, for three typical active lenses. The
+- The homepage's two intro links and floating dock use the shared compact field.
+  A pressed control adds one compact target lens. The
   inspector keeps that slot while pinned. Navigation's selected glass pill
   retains one slot at rest and releases optical work when hidden or unmounted.
   Sources stay separately bounded; the same five/fine, three/coarse cap applies.
@@ -184,7 +187,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   queue timers or remount icons to restart a keyframe. Keyboard activation is instant.
 - Reduced motion removes the transform and blur, retaining a 100ms opacity fade.
   Hover movement is allowed only for a fine pointer with hover capability.
-- The homepage has no artificial scroll runway or pinned scene. Clip optical
+- The homepage has no artificial scroll runway or pinned scene. Reserve only the
+  bottom clearance needed to keep content above the fixed dock. Clip optical
   sampling margins at the page boundary so the dock cannot create a phantom
   final scroll step. Keep a stable stage height while changing examples.
   No source animation or permanent frame loop runs on the homepage.
@@ -199,7 +203,10 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - The homepage dock has four blank 52px square placeholders (48px on phones) for
   future icons, with accessible action names, keyboard focus and tooltips. They
   share one stationary compact slider-style lens with 22px corners; do not give
-  each placeholder its own glass. Other docks can retain their app glyphs.
+  each placeholder its own glass. No hover lift, translation or press scale on
+  the dock items; only tooltips animate. The floating dock uses the real native
+  backdrop where SVG backdrop filtering is supported, with a bounded CSS blur
+  fallback elsewhere. Other docks can retain their app glyphs.
 - Action button groups use a capsule silhouette and individually rounded hit
   areas within one shared glass surface; do not inherit square shadcn group joins.
 - `liquidOnHold` reveals a standalone lens after 180ms of pointer intent. Release,
@@ -220,7 +227,7 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Cancellation, disabling and unmount clear work.
   Keyboard changes are instant; reduced motion removes travel and expansion.
 - Single-selection tabs/groups keep one persistent glass selection indicator.
-  Explicit targets use an interruptible 1000ms spring, preserving momentum when
+  Explicit targets use an interruptible 1200ms spring, preserving momentum when
   retargeted. Travel opens the cap by up to 4px width / 24px height; it closes
   delicately to normal dimensions while staying glass. A 205ms cap release and
   a smooth final 180ms contraction keep the expanded optics inspectable without
@@ -323,6 +330,21 @@ this fallback as DOM refraction. Keep menu rows and their scrolling viewport
 separate from the optical layer.
 
 ## Shared lens presets and buttons
+
+`GlassPanel` shares the control field with tooltips, hover cards, popovers,
+dropdowns, drawers, cards and `GlassButton variant="glass"`. Foreground content
+stays outside the filter. Small tooltips are 26px high with 0.5px softening;
+choose `variant="plain"` or `variant="beak"`. Radius and round/squircle shape
+remain adjustable. A beak is a smooth union in the coverage, displacement and
+reflection field, never an independently painted triangle or border. Its native
+Radix arrow is invisible and only supplies placement/collision geometry.
+The light finish uses 1.04× source brightness with no gray or black body tint;
+the dark finish retains a small neutral reflection. Do not add a glow, shadow
+or decorative gradient. Larger overlays progressively soften their backdrop.
+Use a bounded scene for portable DOM refraction. Outside one, the shared
+Chromium SVG-backdrop capability permits direct local refraction; other browsers
+keep local CSS blur and contour glints. Never capture the whole document for a
+floating dock or tooltip. Reduced transparency uses the opaque fallback.
 
 Slider, switch, selection, surface and magnification are presets of the same
 curved field. Keep their source composition and tuning separate; do not fork the

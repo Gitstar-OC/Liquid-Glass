@@ -6,6 +6,7 @@ import { GlassScene } from "@/components/glass-scene";
 import { GalleryExample } from "@/components/gallery/examples";
 import { DEMO_PHOTOS } from "@/lib/demo-assets";
 import { cn } from "@/lib/utils";
+import { PanelShowcase } from "@/components/landing/panel-showcase";
 
 /** One bounded live scene, shared by gallery and documentation examples. */
 export function GalleryPreview({
@@ -18,6 +19,12 @@ export function GalleryPreview({
   className?: string;
 }) {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const panel = {
+    "glass-tooltip": "tooltip", "glass-hover-card": "hover-card",
+    "glass-popover": "popover", "glass-dropdown": "dropdown",
+    "glass-drawer": "drawer", "glass-card": "card",
+  } as const;
+  if (name in panel) return <PanelShowcase key={name} compact initialExample={panel[name as keyof typeof panel]} />;
   return (
     <div
       ref={setContainer}
