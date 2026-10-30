@@ -529,8 +529,8 @@ const UTILITIES_CSS = {
     "border-radius": "999px",
     background: "var(--glass-selection-track,var(--muted))",
   },
-  ".glass-options-source .glass-options-source-item": { color: "var(--glass-action)" },
-  ".glass-options-source .glass-options-source-item svg": { color: "inherit", opacity: "1" },
+  ".glass-options-source .glass-options-source-item": { color: "var(--control-ink, var(--foreground))" },
+  ".glass-options-source .glass-options-source-item svg": { color: "var(--glass-option-color, var(--glass-action))", opacity: "1" },
   ".glass-options-source-item[data-disabled]": { opacity: ".4" },
   ".glass-selection-source > [data-glass-target-root]": {
     display: "flex",

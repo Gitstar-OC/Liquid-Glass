@@ -23,7 +23,7 @@ const DIALS = [
   { key: "blur", label: "Blur", min: 0, max: 5, step: 0.1 },
   {
     key: "rimStrength",
-    label: "Source rim strength",
+    label: "Rim light",
     min: 0,
     max: 1.5,
     step: 0.01,
@@ -99,6 +99,7 @@ export function ControlLensPlayground() {
                 refractionTarget={
                   <GlassSliderSource
                     inset={24}
+                    thickness={6}
                     magnification={parameters.magnification}
                     background="var(--card)"
                   >
@@ -109,7 +110,7 @@ export function ControlLensPlayground() {
                 }
               >
                 <div className="absolute inset-0 bg-card">
-                  <div className="absolute inset-x-6 top-1/2 h-2 -translate-y-1/2 overflow-hidden rounded-full bg-foreground/18">
+                  <div className="absolute inset-x-6 top-1/2 h-[6px] -translate-y-1/2 overflow-hidden rounded-full bg-foreground/18">
                     <div className="h-full w-1/2 rounded-full bg-(--glass-action)" />
                   </div>
                   <span className="absolute inset-x-6 bottom-8 text-center text-sm text-muted-foreground">

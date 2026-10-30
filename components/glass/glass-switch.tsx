@@ -79,23 +79,22 @@ export function GlassSwitch({
     }, 400);
   };
   const small = size === "sm",
-    width = small ? 56 : 72,
+    width = small ? 56 : 74,
     height = small ? 22 : 28;
-  const thumbWidth = small ? 32 : 42,
+  const thumbWidth = small ? 32 : 44,
     thumbHeight = small ? 18 : 22;
-  const lensWidth = small ? 50 : 68,
-    lensHeight = small ? 28 : 36;
+  const lensWidth = small ? 48 : 64,
+    lensHeight = small ? 26 : 32;
   const inset = (lensWidth - thumbWidth) / 2 - 3,
     verticalInset = (lensHeight - height) / 2;
   const position = dragPosition ?? (enabled ? 1 : 0);
-  const color = (dragPosition === null ? enabled : position >= 0.5)
-    ? "var(--glass-action,#006de5)"
-    : "color-mix(in oklab,var(--foreground) 14%,var(--card))";
+  const color = `color-mix(in srgb, var(--glass-switch-track, color-mix(in srgb, var(--foreground) 14%, var(--card))), var(--glass-action,#006de5) ${position * 100}%)`;
   const finish: React.CSSProperties = {
     position: "absolute",
     borderRadius: 999,
     background: color,
-    transition: pointer ? "background-color 180ms var(--ease-out)" : "none",
+    transition: pointer && dragPosition === null
+      ? "background-color 180ms var(--ease-out)" : "none",
   };
   return (
     <SwitchPrimitive.Root
@@ -213,7 +212,7 @@ export function GlassSwitch({
         x={position}
         active={!props.disabled}
         engaged={idle || pressed}
-        restScale={thumbWidth / lensWidth}
+        restScale={{ x: thumbWidth / lensWidth, y: thumbHeight / lensHeight }}
         parameters={{ ...CONTROL_LENS_PRESETS.switch, ...lensParameters }}
         rim="column"
         duration={pointer && dragPosition === null ? 400 : 0}
@@ -230,9 +229,9 @@ export function GlassSwitch({
               data-switch-optical-fill=""
               style={{
                 ...finish,
-                left: inset,
+                left: inset + width * 0.025,
                 top: verticalInset + height * 0.125,
-                width,
+                width: width * 0.95,
                 height: height * 0.75,
               }}
             />

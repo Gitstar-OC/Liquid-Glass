@@ -989,3 +989,45 @@ After the development reset change, the existing log recorded further automatic
 compilations (87ms, 283ms, 170ms and 222ms) without another entry for that hook
 warning in the reviewed tail. These are compile durations, not interaction frame
 times or a substitute for visual review.
+
+## 2026-10-30 — reference control cleanup
+
+Restore point: `c1e340c`, pushed to `origin/main` before any deletions.
+
+Reference evidence is recorded in [aave-reference.md](aave-reference.md): live
+computed geometry, explicit source dimensions and the public SVG graph were
+inspected, alongside the supplied resting/active screenshots.
+
+Changes and structural cost evidence:
+
+- Removed 43 component files and two supporting hooks unreachable from every
+  Next app route and installable registry source root. Public glass entries and
+  other routes remain. The snapshot preserves all removed source.
+  The subsequent dependency inventory covered 146 source files and reported no
+  remaining unreachable files or unresolved local imports. This was source
+  analysis, not a runtime test or typecheck.
+- Normal slider/switch/navigation filters no longer include the multi-channel
+  contrast, weighting, color projection and variable rim-height graph. Current
+  explicit-target defaults contain six SVG primitives for the held slider,
+  ten for the chromatic switch, and five for selection. Filter-function children
+  are excluded from these counts. Completion adds seven primitives only.
+- At the default active 64 × 32px geometry, slider maps use a 96 × 64px padded
+  source at up to 2× resolution (24,576 storage pixels). The switch uses
+  100 × 68px (27,200 storage pixels). These are geometry-derived allocation
+  figures, not measured GPU cost or frame-rate claims.
+- Translation, drag progress and press scale remain outside the map cache key.
+  Native range motion is immediate; endpoint pull stays bounded to 12px. The
+  selected navigation cap returns to normal height with its existing travel
+  frame, including compact items. A hidden-document travel tick settles at its
+  destination instead of leaving a partial pose. No new continuous loop or page-wide source was introduced.
+- The approved video's shader, four controls and displacement response remain;
+  DOM and video now call the same map implementation without a profile fork.
+- `npm run registry:build` repackaged 55 entries and 66 shared source files.
+  No tests, lint, typecheck, production build or benchmark was run.
+
+Existing Next dev logs reported successful automatic compiles after these edits
+(352ms, 148ms and 135ms at the time reviewed). These are development compilation
+times, not rendering timings. Browser policy still prevents local visual/frame
+inspection, so pixel accuracy, interaction feel and physical-device performance
+remain unverified. No claim of a perfect visual copy is made.
+

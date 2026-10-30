@@ -196,49 +196,24 @@ An optional `refractionTarget` switches to a lens-sized filter over an explicit
 presentational target. It does not clone the enclosing scene or read its pixels. The source window moves
 inversely to the normalized lens position; cached map generation depends on shape
 and dimensions, not x/y, target progress, source container size or press scale.
-The compact curved-cap model lives in `glass-lens-optics.ts`. It computes one
-quadrant and mirrors signed vectors. Sharp DOM sources use a low-slope inward
-shoulder, bounded against shoulder width, corner radius and magnification. This
-replaces the older fold that could echo a sharp purple/gray boundary into an
-inner contour. Source magnification is explicit; control fills keep a neutral
-center. The blue channel still stores directional
-transmission for the video backend. Compact DOM lenses omit the transmission
-multiply; darkening the source made gray tracks look black at their edge.
-There are no painted white caps or opaque gray body fill. A cached neutral 6%
-surface reflection and two diagonal glints retain presence on dark planes.
-Padding includes the maximum ray
-excursion so the source cannot get clipped at the filter boundary. At most 2×
-map resolution, 1.5M storage pixels and 12 cached texture bundles are retained.
-Reference defaults and presets are documented in [target-lens.md](target-lens.md).
+The compact curved-cap model lives in `glass-lens-optics.ts`. One quadrant is
+computed and signed vectors are mirrored. DOM and video use the same curved
+shoulder; a narrow explicit track source produces the source-colored rim and
+panel-colored crescent directly through displacement. Normal controls no longer
+run the multi-channel difference/weight/column-projection graph. The blue channel
+stores a small, edge-confined transmission response; there is no black texture,
+CSS border, or full-body gray wash. Cached diagonal glints retain the silhouette.
+Padding includes the maximum ray excursion. At most 2× map resolution,
+1.5M storage pixels and 12 cached bundles are retained.
 
-The source-light pass preserves original RGB and alpha before resolving color.
-Explicit controls weight contrast to their known flat source plane, keeping gray
-and colored track pixels without letting the surrounding black/white space drown
-them out. A bounded SVG difference/max-channel field supplies that weight; no
-source RGB is darkened or replaced. Original-DOM sources, whose plane is unknown,
-retain chroma weighting. The explicit graph drops the min-channel, inverse and
-subtraction passes and adds two plane-contrast passes instead.
-Column mode preserves neighboring columns; dominant mode optionally mixes
-the bounded area for custom lenses. Intermediate light primitives
-are bounded to the moving map; the final blend restores the full original source.
-This uses the existing SourceGraphic, not a CPU histogram or another capture.
-`rim=none` omits these passes. Chroma is normalized and mapped to restrained
-red/cyan dispersion; the slider preset uses zero chroma.
-Column mode projects its pre-normalized contribution as well as hue. The
-energy gates a rim band capped at 1.1 CSS pixels; a separate 0.65px neutral field remains
-underneath. The existing rim texture packs the neutral field in its unused blue
-channel, so the stronger edge requires no additional texture or capture. A short
-0.7px antialiased edge replaces the old shadow-like falloff.
-
-The switch uses that column estimate alongside the bounded DOM field. Its explicit target contains
-a full-width, 75%-height copy of the track fill on the real control plane.
-Inward displacement carries the fill's own color to the edge; the column pass
-extends colored arcs to the same pixel-bounded height. The source density floor
-is strong enough to retain gray/off-state light without widening neutral columns.
-This adds the same bounded source-light
-graph used by the slider; it needs no CPU histogram, extra source copy or black
-shade texture. Its ordinary visible track remains full size. The older 10-primitive
-switch observation in the results log describes the preceding revision.
+Only a completed slider requests the optional source-mixture reflection. It uses
+seven SVG primitives over the existing small SourceGraphic: map, coordinates,
+area blur, projection, opacity, mask and composition. Its 1.1px rim mixes actual
+RGB, including gray and the surrounding plane. There is no CPU histogram or
+additional capture. Normal sliders, switches and selection indicators omit it.
+The switch's explicit fill occupies 95% of track width and 75% of track height.
+Its source color mixes continuously with drag progress. Refraction supplies the
+colored edge; it is not a uniform primary-colored outline.
 
 Slider/switch thumbs rest solid. `engaged` opens and contracts the optical cap
 using the same 220ms scale/material transition. The cap remains visible through
@@ -259,7 +234,7 @@ returns over 180ms; endpoint offsets
 are coalesced to one update per input frame. Value/position/offset changes reuse
 the map. Only pointer gestures request the endpoint frame; there is no idle loop.
 Visible and optical rails share the same thumb-center inset, including both
-endpoints. `GlassSliderSource` supplies the same 3.2× optical track in the
+endpoints. `GlassSliderSource` supplies the same 17/6× optical track in the
 playground; its visible text and rail remain ordinary DOM. The single lens
 slider projects a single bounded area mixture over both axes around its full rim
 at maximum. It latches the pointer coordinate when max is first reached, even
@@ -306,8 +281,8 @@ It is not fetched by the default Slider example. Native Safari and physical
 device behavior still require separate platform review before broad claims.
 
 The Target lens and Original DOM renderers in `/lab` reports map revisions during 120 frames of
-motion; a settled run must report zero map revisions. Tests also compare texture
-encoding calls before/after x and target changes and verify cleanup/admission.
+motion; a settled run should report zero map revisions. This revision has not
+been benchmarked in the local browser; no tests were written or run.
 
 ## Portals and source coverage
 
@@ -322,12 +297,12 @@ optical sampling margins never belong in that scrolling container.
 
 The homepage's on-demand profile menu portals into its own small scene host.
 Its image and profile DOM stay bounded to 380 × 264px at most. The compact
-`GlassLens` filters that original DOM under the native menu using the video's
-media field, explicit 1.18× source magnification and 0.5px blur;
+`GlassLens` filters that original DOM under the native menu using the shared
+curved field, explicit 1.18× source magnification and 2px blur;
 action labels stay sharp. `material="external"` avoids another menu surface.
 A readable solid fallback remains until the lens is admitted/decoded. Native
 Radix positioning drives event-based rectangle updates; entrance animation scale
-is excluded from geometry, so it cannot regenerate the map each frame. Opening
+is excluded from geometry, so it cannot regenerate the map each frame.
 The lens also waits for the current menu node's measured position before reveal;
 external menu labels use a fade rather than an independently scaled silhouette.
 Edit profile replaces the menu with a native Radix dialog. No page-wide capture

@@ -118,8 +118,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   and `secondary` for an alternative. Preserve the legacy aliases.
 - Fine sliders use a 4px track, a small rounded thumb, and a generous pointer target.
   Keep the speaker thumb visible at rest. A pointer hold reveals an explicit track lens with a compact curved cap, without a drawn border. The dedicated lens appearance
-  uses a 64 × 34px solid resting thumb, a 96 × 52px active cap and an 8px track.
-  Its explicit optical fill is 3.2× taller/wider across the track's short axis;
+  uses a 44 × 22px solid resting thumb, a 64 × 32px active cap and a 6px track.
+  Its explicit optical fill is 17/6× taller/wider across the track's short axis;
   preserve the progress position and rounded endpoint. The visible rail and its
   optical copy both span the native thumb's center-to-center travel; never crop
   only one of them. Do not zoom the
@@ -203,9 +203,9 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - `liquidOnHold` reveals a standalone lens after 180ms of pointer intent. Release,
   cancellation, lost pointer capture, blur, and disabling restore the idle state.
   Keyboard feedback is immediate; reduced motion removes the scale.
-- Switches rest as solid, elongated capsules: 42 × 22px in a 72 × 28px track
-  (small: 32 × 18px in 56 × 22px). The active cap expands to 68 × 36px (small:
-  50 × 28px), projects past the track, and moves on a bounded spring. It remains
+- Switches rest as solid, elongated capsules: 44 × 22px in a 74 × 28px track
+  (small: 32 × 18px in 56 × 22px). The active cap expands to 64 × 32px (small:
+  48 × 26px), projects past the track, and moves on a bounded spring. It remains
   liquid through travel, then contracts and returns to solid. All appearances
   of the slider also rest solid. Active screenshots must not become idle styling.
   Holding allows direct horizontal dragging; release commits the side beyond
@@ -218,7 +218,7 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Keyboard changes are instant; reduced motion removes travel and expansion.
 - Single-selection tabs/groups keep one persistent glass selection indicator.
   Move it on an interruptible 500ms spring, preserving momentum when retargeted.
-  Explicit targets reserve 8px width and 16px height for travel. The pill grows
+  Explicit targets reserve 8px width and 28px height for travel. The pill grows
   while moving and returns to the selected item's normal dimensions, staying
   glass. Counter-scale its source so the highlighted labels retain their size.
   Use the existing travel frame, not another timer or map per animation frame.
@@ -229,26 +229,16 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   around the track. `--glass-lens-plane` must match it. Transparent target gaps
   expose the unbent original and produce a false double track. An explicit
   target never captures arbitrary scene pixels underneath the control.
-- Switch caps refract a centered source fill at full track width and 75% track
-  height. Keep the map center neutral and use a low-slope inward shoulder.
-  Bound the amplitude so a sharp purple/gray boundary stays one contour rather
-  than folding back across itself. Keep this field with the source edge (`rim=column`);
-  never replace the body with a colored perimeter estimate. Directional
-  transmission in the video backend uses the map's blue channel. Compact DOM
-  lenses omit that attenuation; it made gray source colors appear black.
-  Switches, sliders and navigation retain separate source columns.
-  Explicit source pixels distinct from the actual plane have more weight than
-  surrounding space. Their original colors still mix. Never paint a black shade
-  layer over that resolved hue. This is not an
-  exact dominant-color histogram.
-  The thin optical rim is composited after transmitted blur, without a CSS border.
-  White caps must be displaced/magnified source pixels. Never paint broad white
-  highlight bands or a gray body over the control. `rimStrength` adjusts source
-  energy only; the legacy glow name does not create an emissive overlay.
+- Switch caps refract a centered source fill at 95% track width and 75% track
+  height. The curved shoulder carries actual source pixels to the edge, while
+  the surrounding panel becomes the inner crescent. Do not add an independent
+  color-estimation border to normal controls. DOM and video share one field.
+  The map's blue channel carries a restrained transmission response at the
+  super edge; gray source colors must stay gray. There is no black shade texture
+  or full-body tint. White crescents are displaced source pixels, not glow.
   Native focus outlines remain for keyboard input; pointer input must not add
-  a second outline around the solid thumb or the track inside the active cap.
-  Photo popovers can select the video's media field with explicit source zoom,
-  while sharp controls use the bounded DOM field. Native menu labels stay sharp.
+  another outline around the native thumb. Photo popovers use the same field
+  with explicit source zoom. Foreground menu labels stay sharp.
 - Slider dragging follows the native value directly, with no positional easing
   while held. Only elastic endpoint release eases back over 180ms. Keep the
   translated frame separate from its scaling cap: scale must never multiply

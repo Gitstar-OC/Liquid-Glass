@@ -63,8 +63,6 @@ export interface GlassLensProps extends Omit<
   duration?: number;
   scale?: number;
   parameters?: ControlLensInput;
-  /** Sharp DOM fills use a non-folding field; photos can use the video field. */
-  opticalProfile?: "dom" | "media";
   rim?: "none" | "column" | "dominant";
   motion?: "ease" | "spring" | "smooth";
 }
@@ -139,7 +137,6 @@ export function GlassLens({
   curvature,
   optics,
   parameters,
-  opticalProfile = "dom",
   rim = "column",
   motion = "spring",
   duration = 0,
@@ -201,10 +198,10 @@ export function GlassLens({
     [parameterKey],
   );
   const geometryKey = JSON.stringify([
-    width, height, radius, parameterKey, opticalProfile,
+    width, height, radius, parameterKey,
   ]);
   const { pad, displacementScale } = controlLensMetrics(
-    width, height, optical, opticalProfile,
+    width, height, optical,
   );
   const depth = displacementScale,
     soften = optical.blur,
@@ -221,9 +218,9 @@ export function GlassLens({
   const zoom = active && !still ? clamp(scale, 1, 1.4, 1) : 1;
   const settling = !direct && Boolean(settledScale);
   const settleX = settling && settledScale
-      ? clamp(settledScale.x, 0.5, 1, 1) : 1,
+      ? clamp(settledScale.x, 0.25, 1, 1) : 1,
     settleY = settling && settledScale
-      ? clamp(settledScale.y, 0.5, 1, 1) : 1;
+      ? clamp(settledScale.y, 0.25, 1, 1) : 1;
   // Keep original-DOM source graphics conservatively bounded for WebKit.
   const withinBounds =
     size.width > 0 &&
@@ -292,7 +289,7 @@ export function GlassLens({
     let canceled = false;
     const started = performance.now();
     const next = buildControlLensTextures(
-      width, height, radius, optical, opticalProfile,
+      width, height, radius, optical,
     );
     if (root.current) {
       root.current.dataset.lensTextureMs = (
@@ -311,7 +308,7 @@ export function GlassLens({
     };
   }, [
     width, height, radius, reduced, optical,
-    opticalProfile, geometryKey, withinBounds,
+    geometryKey, withinBounds,
   ]);
   useEffect(() => {
     if (!requested || reduced || !withinBounds || !viewport.current) return;
@@ -341,22 +338,18 @@ export function GlassLens({
       depth: settings.refraction === false ? 0 : depth,
       chroma: dispersion,
       blur: soften,
-      ...(rim !== "none" && textures.rim && textures.coverage
+      opticalTransmission: settings.refraction !== false,
+      ...(rim === "dominant" && textures.rim && textures.coverage
         ? {
             sourceRim: {
               map: textures.rim,
-              coverage: textures.coverage,
               scale: textures.rimScale!,
               amount: Math.min(
                 1,
                 (optical.edgeHighlight / 0.39) * (optical.rimStrength / 0.61),
               ),
-              mode: rim,
               lensWidth: width,
               lensHeight: height,
-              ...(!direct ? {
-                planeColor: "var(--glass-lens-plane,var(--background))",
-              } : {}),
             },
           }
         : {}),
@@ -467,7 +460,12 @@ export function GlassLens({
     // One interruptible, gesture-bounded travel. Map and highlight use the same
     // coordinates; there is no CSS/JS timing mismatch or idle animation loop.
     const tick = (time: number) => {
-      if (document.hidden) return;
+      if (document.hidden) {
+        velocity.current = { left: 0, top: 0 };
+        place(left, top, zoom);
+        traveling.current = false;
+        return;
+      }
       const elapsed = Math.max(0, time - started);
       const progress = moveTime ? Math.min(1, elapsed / moveTime) : 1;
       const move = moveEase(progress);

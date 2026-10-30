@@ -16,8 +16,8 @@ export function GlassSliderSource({
   end = 0.5,
   vertical = false,
   inset = 0,
-  thickness = 8,
-  magnification = 3.2,
+  thickness = 6,
+  magnification = 17 / 6,
   color = "var(--glass-action,#006de5)",
   background = "var(--glass-lens-plane,var(--background))",
   dimmed = false,
@@ -136,20 +136,20 @@ export function GlassSlider({
   const visibleLens = appearance === "lens";
   const thumbWidth = visibleLens
     ? vertical
-      ? 34
-      : 64
+      ? 22
+      : 44
     : appearance === "well"
       ? 12
       : 18;
   const thumbHeight = visibleLens
     ? vertical
-      ? 64
-      : 34
+      ? 44
+      : 22
     : appearance === "well"
       ? 24
       : 14;
-  const width = visibleLens ? (vertical ? 52 : 96) : thumbWidth * 1.33;
-  const height = visibleLens ? (vertical ? 96 : 52) : thumbHeight * 1.33;
+  const width = visibleLens ? (vertical ? 32 : 64) : thumbWidth * 1.33;
+  const height = visibleLens ? (vertical ? 64 : 32) : thumbHeight * 1.33;
   const extension = vertical
     ? (height - thumbHeight) / 2
     : (width - thumbWidth) / 2;
@@ -158,7 +158,7 @@ export function GlassSlider({
   // the optical copy displaced its fill; leaving both full-width separated the
   // fill endpoint from the thumb at low/high values. Keep the two identical.
   const sourceInset = extension + trackInset;
-  const rail = appearance === "well" ? 28 : visibleLens ? 8 : 4;
+  const rail = appearance === "well" ? 28 : visibleLens ? 6 : 4;
   const magnification = visibleLens
     ? resolveControlLens({
         ...CONTROL_LENS_PRESETS.slider,
@@ -379,7 +379,7 @@ export function GlassSlider({
             "grow-0",
             appearance === "well" &&
               "glass-inset data-horizontal:h-7 data-vertical:w-7",
-            visibleLens && "data-horizontal:h-2 data-vertical:w-2",
+            visibleLens && "data-horizontal:h-[6px] data-vertical:w-[6px]",
           )}
         >
           <SliderPrimitive.Range
@@ -403,7 +403,7 @@ export function GlassSlider({
             lens={{
               lensW: width,
               lensH: height,
-              borderRadius: visibleLens ? 26 : 6,
+              borderRadius: visibleLens ? 16 : 6,
             }}
             x={vertical ? 0.5 : position(v)}
             y={vertical ? position(v) : 0.5}
@@ -414,7 +414,7 @@ export function GlassSlider({
             refractionTarget={target}
             active={!props.disabled}
             engaged={opticalIdle || (pressed && activeThumb === index)}
-            restScale={thumbWidth / width}
+            restScale={{ x: thumbWidth / width, y: thumbHeight / height }}
             parameters={{
               ...CONTROL_LENS_PRESETS.slider,
               ...(!visibleLens

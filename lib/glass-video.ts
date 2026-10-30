@@ -176,7 +176,7 @@ export class GlassVideoRenderer {
     const revision = ++this.revision;
     this.metrics = next.flatMap((lens) => {
       const p = resolveControlLens(lens.parameters),
-        m = controlLensMetrics(lens.width, lens.height, p, "media");
+        m = controlLensMetrics(lens.width, lens.height, p);
       return [
         m.pad,
         m.maximum,
@@ -201,7 +201,6 @@ export class GlassVideoRenderer {
           lens.height,
           lens.radius,
           p,
-          "media",
         ).displacement;
         await image.decode();
         return image;

@@ -114,10 +114,9 @@ export function ProfilePopoverExample() {
               x={lens.x}
               y={lens.y}
               active={Boolean(menu && lens.owner === menu)}
-              opticalProfile="media"
               parameters={{
                 depth: 8,
-                blur: 0.5,
+                blur: 2,
                 chroma: 0,
                 rimStrength: 0.42,
                 magnification: 1.18,

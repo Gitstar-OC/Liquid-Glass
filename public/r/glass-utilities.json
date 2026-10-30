@@ -310,10 +310,10 @@
       "background": "var(--glass-selection-track,var(--muted))"
     },
     ".glass-options-source .glass-options-source-item": {
-      "color": "var(--glass-action)"
+      "color": "var(--control-ink, var(--foreground))"
     },
     ".glass-options-source .glass-options-source-item svg": {
-      "color": "inherit",
+      "color": "var(--glass-option-color, var(--glass-action))",
       "opacity": "1"
     },
     ".glass-options-source-item[data-disabled]": {

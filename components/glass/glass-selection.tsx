@@ -100,7 +100,7 @@ export function GlassSelection({
   const indicator = {
     lens: {
       lensW: selection.width + (refractionTarget ? 8 : 0),
-      lensH: selection.height + (refractionTarget ? 16 : 0),
+      lensH: selection.height + (refractionTarget ? 28 : 0),
       borderRadius: 999,
     },
     x: selection.x,
@@ -136,11 +136,11 @@ export function GlassSelection({
             {...indicator}
             settledScale={{
               x: selection.width / (selection.width + 8),
-              y: selection.height / (selection.height + 16),
+              y: selection.height / (selection.height + 28),
             }}
             style={{
               position: "absolute",
-              inset: "-8px -4px",
+              inset: "-14px -4px",
               zIndex: 2,
               pointerEvents: "none",
             }}
@@ -148,9 +148,9 @@ export function GlassSelection({
               <div style={{
                 position: "absolute",
                 left: 4,
-                top: 8,
+                top: 14,
                 width: "calc(100% - 8px)",
-                height: "calc(100% - 16px)",
+                height: "calc(100% - 28px)",
               }}>
                 {refractionTarget}
               </div>

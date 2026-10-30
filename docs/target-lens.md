@@ -18,14 +18,16 @@ instead keep a frequently moving control's filter source lens-sized.
 </GlassLens>
 ```
 
-`x`/`y` are normalized across the available travel. The cached rounded-rectangle
-map uses a low-slope shoulder for sharp DOM fills. Its amplitude is bounded
-against shoulder width, corner radius and source magnification so a source
-boundary does not fold back into a second contour. White regions are source
-pixels, not painted highlight bands. Compact DOM lenses do not darken those
-pixels with a transmission multiply. The blue map channel remains available to
-the separate video backend. There is no black texture or CSS border. Outside
-coverage, the original-DOM source stays unchanged.
+`x`/`y` are normalized across available travel. Position changes move the
+filter window and its source together, without rebuilding a map. The lens stays
+at those coordinates until the caller changes them; hover does not move it.
+
+One curved displacement field serves DOM and video. It bends the track's actual
+purple or gray pixels toward the edge and reveals the surrounding panel just
+inside that edge. Those white crescents are transmitted source pixels. A thin
+map-encoded transmission response and two diagonal neutral glints define the
+shoulder; there is no painted white cap, CSS border or broad gray surface wash.
+Outside coverage, the original DOM remains unchanged.
 
 ## Rest and active states
 
@@ -36,9 +38,9 @@ handing back to the native thumb. It does not fade away halfway through shrinkin
 permanently transparent thumb. The reference screenshots of large glass handles
 represent the active state.
 
-- `GlassSlider appearance="lens"`: 64 × 34px resting thumb, 96 × 52px active cap,
-  8px visible track. The explicit optical target enlarges that track's short
-  axis by 3.2×, preserving the value position and smooth rounded fill endpoint.
+- `GlassSlider appearance="lens"`: 44 × 22px resting thumb, 64 × 32px active cap,
+  6px visible track. The explicit optical target enlarges that track's short
+  axis to 17px (17/6×), preserving the value position and smooth rounded fill endpoint.
   The visible and optical rails both span the thumb's center-to-center travel,
   so the fill endpoint stays under the lens near the start and end.
   `lensParameters.magnification` adjusts this source zoom (1–5). The map center
@@ -55,20 +57,18 @@ represent the active state.
   reached. A further 14px of pointer travel returns to local column highlights;
   returning within 8px restores the full rim. Large input jumps cannot skip the
   complete state. No fixed purple outline is painted.
-- `GlassSwitch`: 72 × 28px track, 42 × 22px resting thumb, 68 × 36px active cap.
-  The small variant uses 56 × 22px / 32 × 18px / 50 × 28px respectively. Pointer
+- `GlassSwitch`: 74 × 28px track, 44 × 22px resting thumb, 64 × 32px active cap.
+  The small variant uses 56 × 22px / 32 × 18px / 48 × 26px respectively. Pointer
   travel uses a bounded spring; it remains liquid through settling, then rests.
-  Its optical target uses a centered fill at full track width and 75% track height,
-  on the actual control plane. The visible track keeps its original dimensions.
-  Gentle inward displacement preserves one source boundary. `rim="column"`
-  extends the source-colored edge up to 1.1 CSS pixels where a column contains
-  color. A stronger neutral response preserves the edge when switched off.
-  It does not paint the whole perimeter with the primary color.
+  Its optical target is 95% of track width and 75% of track height on the
+  actual panel. The source color mixes continuously during a drag. The visible
+  track keeps its original dimensions. Normal source-colored arcs come directly
+  from displacement, with no separate color-estimation filter.
   Hold and drag horizontally to change sides. Drag motion is direct; release
   commits the side beyond halfway once, then settles. A cancelled drag restores
   the checked state. Click and keyboard activation remain native Radix actions.
 - Single-selection tabs/groups keep the selected indicator glass after travel.
-  An explicit target uses a pill 8px wider and 16px taller than its item and a
+  An explicit target uses a pill 8px wider and 28px taller than its item and a
   500ms spring that preserves momentum when interrupted. It grows during travel
   and returns to the item's normal dimensions while staying glass. Source
   counter-scaling keeps the highlighted labels at their original size. Keyboard
@@ -82,10 +82,10 @@ also accepts independent `{ x, y }` dimensions:
 
 ```tsx
 <GlassLens
-  lens={{ lensW: 96, lensH: 52, borderRadius: 26 }}
+  lens={{ lensW: 64, lensH: 32, borderRadius: 16 }}
   x={handlePosition}
   engaged={pressed}
-  restScale={0.65}
+  restScale={{ x: 44 / 64, y: 22 / 32 }}
   refractionTarget={<TrackFill progress={progress} />}
 >
   <SliderTrack />
@@ -131,54 +131,32 @@ Geometry is in CSS pixels; radius is bounded to half the smaller dimension.
 | `splay`                 |         0.89 | 0.2–2                                        |
 | `chroma`                |         0.38 | 0–1                                          |
 | `blur`                  |            1 | 0–5px                                        |
-| `rimStrength`           |         0.61 | 0–1.5, source-colored rim energy             |
+| `rimStrength`           |         0.61 | 0–1.5, rim light / completion reflection             |
 | `edgeHighlight`         |         0.39 | 0–1                                          |
 | `specularAngle`         |           45 | −180–180°                                    |
-| `magnification`         |            1 | 1–5, interior source zoom; slider preset 3.2 |
+| `magnification`         |            1 | 1–5, interior source zoom; slider preset 17/6 |
 
 Supply these in `parameters`. Slider, switch and selection presets share the
 model, with a gentler slider and zero slider chroma. The switch uses 0.45px
 transmitted blur to keep the source-plane crescents distinct. `chroma` is a normalized
 control mapped to a restrained red/cyan dispersion; it adds a displacement pass.
-The playground exposes geometry/optical controls (Source rim strength replaces
+The playground exposes geometry/optical controls (Rim light replaces
 the misleading Glow label) and the actual map.
 Its selectable-text preview uses `GlassSliderSource` for the same explicit
-3.2× track optics as the slider, with an unscaled visible rail and selectable
+17/6× track optics as the slider, with an unscaled visible rail and selectable
 original text. Magnification changes the optical source's short axis; the map
 preview shows the neutral-center map actually used, without applying zoom twice.
 Its Scene glass tab retains the separate bounded-scene renderer.
 
-`rim="column"` keeps neighboring source columns separate for sliders/navigation.
-`rim="dominant"` is an optional full-area color estimate for custom lenses.
-Explicit targets weight each pixel's contrast to their actual flat source plane.
-This preserves gray tracks as well as colored tracks, instead of weighting only
-saturation or letting the surrounding black/white space overwhelm them. Original
-source RGB is mixed; the contrast field controls contribution, never the output
-hue. Original-DOM mode, which has no known flat plane, retains chroma weighting.
-The crisp color pass is composed after transmitted blur with no RGB darkening.
-This is a bounded weighted estimate, not an exact color
-histogram or Aave's private switch implementation. Use `rim="none"` to omit the
-extra source-light passes while retaining inward displacement.
-Column mode projects both source hue and its unnormalized contribution.
-That energy chooses rim height: content-bearing columns occupy a band bounded to 1.1 CSS
-pixels; the neutral plane retains a 0.65px profile. These widths cap further on tiny
-lenses. They do not grow with a drawer's or panel's height. A neutral density floor
-keeps gray/off-state sources visible; it is excluded when deciding to widen the band.
-The source-color band has a constant profile and a 0.7px antialiased edge, rather
-than the long falloff that resembled an inset shadow. It is not a uniform-opacity
-brand-color ring. Generic lenses can opt into map-based interior magnification;
-the switch retains the default neutral center.
+`rim="column"` uses the source-colored shoulder produced by displacement. It
+adds no color-extraction graph. `rim="dominant"` adds a small optional area-mixture
+pass, used by the completed slider. Its 1.1px mask projects original source RGB
+around the lens, including neutral pixels. It does not estimate a brand hue or
+replace gray with black. `rim="none"` skips this optional completion treatment.
 
-Two restrained neutral-gray glints follow the same cached contour, strongest
-on the upper-left and lower-right shoulders. They keep the lens visible on a
-plain white or black plane. A 6% neutral surface reflection gives the clear body
-some presence on dark planes. There is no CSS border or shadow, and pointer
-gestures do not show the solid thumb's keyboard focus outline inside the lens.
-
-`opticalProfile="media"` selects the same stronger displacement field used by
-the video shader. The photo popover uses this with 1.18× source magnification and
-0.5px blur; its foreground labels remain outside the filtered DOM. The video
-compositor keeps its existing profile, transmission, settings and shader.
+The photo popover uses this same shared field with 1.18× source magnification
+and 2px blur. Its foreground menu labels stay outside the filtered DOM. The
+video keeps its shader, source, controls and map response.
 
 Legacy `strength`, `blur`, `chroma`, `curvature`, `splay`, `feather` and
 `optics.lightAngle` inputs remain mapped for compatibility; prefer `parameters`.

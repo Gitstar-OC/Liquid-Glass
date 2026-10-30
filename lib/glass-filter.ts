@@ -19,18 +19,13 @@ export interface GlassFilterConfig {
   /** A small moving map in a larger, original DOM source. Outside stays neutral. */
   mapRegion?: { x: number; y: number; width: number; height: number };
   coverage?: string;
-  /** Optional source light. Columns preserve spatial color;
-   * dominant mixes the bounded lens area. No CPU readback. */
+  /** Optional completed-slider reflection of its bounded source mixture. */
   sourceRim?: {
     map: string;
-    coverage: string;
     scale: number;
     amount: number;
-    mode: "column" | "dominant";
     lensWidth: number;
     lensHeight: number;
-    /** Flat explicit targets weight their content against this actual plane. */
-    planeColor?: string;
   };
 }
 const SVG = "http://www.w3.org/2000/svg";
@@ -161,7 +156,9 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
     );
   let transmitted = blur > 0 ? "transmitted" : "displaced";
   if (config.opticalTransmission) {
-    const neutralBlue = 1 + (1.5 * 128) / 255;
+    // The reference's 2% transmission loss is applied to the source itself,
+    // rather than adding a black overlay or a gray body over the clear cap.
+    const neutralBlue = 0.98 + (1.5 * 128) / 255;
     filter.append(
       element("feColorMatrix", {
         in: "map",
@@ -224,283 +221,48 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
     );
     transmitted = "boundedTransmission";
   }
+  // A completed slider can carry its actual source mixture around the cap.
+  // Normal controls get their colored edge directly from displacement. Avoid
+  // extracting RGB channels, estimating a primary hue or painting a dark ring.
   if (config.sourceRim && config.sourceRim.amount > 0) {
     const light = config.sourceRim;
-    const firstPrimitive = filter.children.length;
     const mask = element("feImage", {
-      href: light.map,
-      ...region,
-      preserveAspectRatio: "none",
-      result: "sourceRimMask",
+      href: light.map, ...region, preserveAspectRatio: "none", result: "sourceRimMask",
     });
-    mask.setAttributeNS(
-      "http://www.w3.org/1999/xlink",
-      "xlink:href",
-      light.map,
-    );
-    if (config.mapRegion) mask.dataset.positionedMap = "";
-    filter.append(mask);
-    if (!config.mapRegion || !config.coverage) {
-      const coverage = element("feImage", {
-        href: light.coverage,
-        ...region,
-        preserveAspectRatio: "none",
-        result: "sourceBounds",
-      });
-      coverage.setAttributeNS(
-        "http://www.w3.org/1999/xlink",
-        "xlink:href",
-        light.coverage,
-      );
-      filter.append(coverage);
-    }
-    filter.append(
-      element("feComposite", {
-        in: "SourceGraphic",
-        in2:
-          config.mapRegion && config.coverage ? "lensCoverage" : "sourceBounds",
-        operator: "in",
-        result: "lensLightSource",
-      }),
-    );
-    // A gray track must contribute just like a colored track. Explicit targets
-    // know their flat plane, so weight contrast to that plane, not saturation
-    // or darkness. Blend the ORIGINAL source RGB; the contrast field only
-    // decides how much each pixel contributes. No invented dark/brand color.
-    if (light.planeColor) {
-      filter.append(
-        element("feFlood", {
-          "flood-color": light.planeColor,
-          result: "rimSourcePlane",
-        }),
-        element("feBlend", {
-          in: "lensLightSource",
-          in2: "rimSourcePlane",
-          mode: "difference",
-          result: "rimSourceContrast",
-        }),
-      );
-    }
-    for (const [name, row] of [
-      ["red", "1 0 0"],
-      ["green", "0 1 0"],
-      ["blue", "0 0 1"],
-    ] as const) {
-      filter.append(
-        element("feColorMatrix", {
-          in: light.planeColor ? "rimSourceContrast" : "lensLightSource",
-          type: "matrix",
-          values: `${row} 0 0  ${row} 0 0  ${row} 0 0  0 0 0 1 0`,
-          result: `light-${name}`,
-        }),
-      );
-    }
-    filter.append(
-      element("feBlend", {
-        in: "light-red",
-        in2: "light-green",
-        mode: "lighten",
-        result: "light-max-rg",
-      }),
-      element("feBlend", {
-        in: "light-max-rg",
-        in2: "light-blue",
-        mode: "lighten",
-        result: "light-max",
-      }),
-    );
-    if (!light.planeColor) {
-      filter.append(
-        element("feBlend", {
-          in: "light-red",
-          in2: "light-green",
-          mode: "darken",
-          result: "light-min-rg",
-        }),
-        element("feBlend", {
-          in: "light-min-rg",
-          in2: "light-blue",
-          mode: "darken",
-          result: "light-min",
-        }),
-      );
-      const inverse = element("feComponentTransfer", {
-        in: "light-min",
-        result: "light-inverse-min",
-      });
-      for (const channel of ["feFuncR", "feFuncG", "feFuncB"] as const)
-        inverse.append(
-          element(channel, { type: "linear", slope: -1, intercept: 1 }),
-        );
-      // max + (1-min) - 1 keeps alpha at one. Direct max-min subtraction
-      // would also subtract alpha and erase the color before weighting it.
-      filter.append(
-        inverse,
-        element("feComposite", {
-          in: "light-max",
-          in2: "light-inverse-min",
-          operator: "arithmetic",
-          k1: 0,
-          k2: 1,
-          k3: 1,
-          k4: -1,
-          result: "light-chroma",
-        }),
-      );
-    }
-    filter.append(
-      element("feColorMatrix", {
-        in: light.planeColor ? "light-max" : "light-chroma",
-        type: "matrix",
-        values: `0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 ${light.planeColor ? 0.03 : 0.08}`,
-        result: "light-density",
-      }),
-    );
-    const weight = element("feComponentTransfer", {
-      in: "light-density",
-      result: "weightedDensity",
-    });
-    weight.append(
-      element("feFuncA", {
-        type: "gamma",
-        amplitude: 1,
-        exponent: 2,
-        offset: 0,
-      }),
-    );
-    filter.append(
-      weight,
-      element("feComposite", {
-        in: "lensLightSource",
-        in2: "weightedDensity",
-        operator: "in",
-        result: "visibleLight",
-      }),
-    );
-    filter.append(
-      element("feGaussianBlur", {
-        in: "visibleLight",
-        stdDeviation: `${light.mode === "dominant" ? light.lensWidth / 2 : 0.6} ${light.lensHeight / 2}`,
-        result: "columnLight",
-      }),
-    );
-    const color = element("feComponentTransfer", {
-      in: "columnLight",
-      result: "resolvedColumnLight",
-    });
-    // Preserve source RGB. Darkening it made the colored rim read as a shadow.
-    color.append(element("feFuncA", { type: "linear", slope: 256 }));
     const coordinates = element("feComponentTransfer", {
-      in: "sourceRimMask",
-      result: "rimCoordinates",
+      in: "sourceRimMask", result: "rimCoordinates",
     });
-    coordinates.append(
-      element("feFuncR", {
-        type: "linear",
-        slope: light.mode === "dominant" ? 255 / 254 : 0,
-        intercept: light.mode === "dominant" ? -1 / 254 : 0.5,
-      }),
-      element("feFuncG", {
-        type: "linear",
-        slope: 255 / 254,
-        intercept: -1 / 254,
-      }),
-    );
+    for (const channel of ["feFuncR", "feFuncG"] as const)
+      coordinates.append(element(channel, {
+        type: "linear", slope: 255 / 254, intercept: -1 / 254,
+      }));
     const projection = element("feDisplacementMap", {
-      in: "resolvedColumnLight",
-      in2: "rimCoordinates",
-      scale: light.scale,
-      xChannelSelector: "R",
-      yChannelSelector: "G",
-      result: "rimColumnColor",
+      in: "sourceMixture", in2: "rimCoordinates", scale: light.scale,
+      xChannelSelector: "R", yChannelSelector: "G", result: "rimMixture",
     });
     if (config.mapRegion) {
+      mask.dataset.positionedMap = "";
       projection.dataset.positionedScale = String(light.scale);
       projection.dataset.mapWidth = String(region.width);
     }
-    filter.append(color, coordinates, projection);
-    if (light.mode === "column") {
-      const thin = element("feColorMatrix", {
-        in: "sourceRimMask",
-        type: "matrix",
-        // The map's blue channel stores the independent neutral rim profile.
-        // Alpha stores the wider, pixel-bounded source-color band.
-        values: "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 1 0 0",
-        result: "neutralRimHeight",
-      });
-      const energyProjection = element("feDisplacementMap", {
-        in: "columnLight",
-        in2: "rimCoordinates",
-        scale: light.scale,
-        xChannelSelector: "R",
-        yChannelSelector: "G",
-        result: "columnRimEnergy",
-      });
-      if (config.mapRegion) {
-        energyProjection.dataset.positionedScale = String(light.scale);
-        energyProjection.dataset.mapWidth = String(region.width);
-      }
-      const energy = element("feComponentTransfer", {
-        in: "columnRimEnergy",
-        result: "resolvedRimEnergy",
-      });
-      // Discard the neutral density floor when deciding whether to widen the
-      // band. Gray/off-state light stays visible without becoming a broad tint.
-      energy.append(element("feFuncA", {
-        type: "linear", slope: 32, intercept: -0.12,
-      }));
-      filter.append(
-        thin,
-        energyProjection,
-        energy,
-        element("feComposite", {
-          in: "sourceRimMask",
-          in2: "resolvedRimEnergy",
-          operator: "in",
-          result: "chromaticRimHeight",
-        }),
-        element("feComposite", {
-          in: "chromaticRimHeight",
-          in2: "neutralRimHeight",
-          operator: "over",
-          result: "columnRimHeight",
-        }),
-      );
-    }
-    filter.append(
-      element("feComposite", {
-        in: "rimColumnColor",
-        in2:
-          light.mode === "dominant" ? "sourceRimMask" : "columnRimHeight",
-        operator: "in",
-        result: "sourceRimColor",
-      }),
-    );
     const opacity = element("feComponentTransfer", {
-      in: "sourceRimColor",
-      result: "sourceRimLight",
+      in: "rimMixture", result: "sourceRimLight",
     });
-    opacity.append(
-      element("feFuncA", {
-        type: "linear",
-        slope: Math.max(0, Math.min(1, light.amount)),
-      }),
-    );
-    filter.append(opacity);
-    if (config.mapRegion)
-      for (const node of [...filter.children].slice(firstPrimitive)) {
-        for (const [key, value] of Object.entries(region))
-          node.setAttribute(key, String(value));
-        (node as SVGElement).dataset.positionedMap = "";
-      }
-    // The final composition covers the complete original source, restoring all
-    // pixels outside the small light region. Never clip this blend to the lens.
+    opacity.append(element("feFuncA", {
+      type: "linear", slope: Math.max(0, Math.min(1, light.amount)),
+    }));
     filter.append(
+      mask, coordinates,
+      element("feGaussianBlur", {
+        in: "SourceGraphic", stdDeviation: `${light.lensWidth / 4} ${light.lensHeight / 4}`,
+        edgeMode: "duplicate", result: "sourceMixture",
+      }),
+      projection, opacity,
+      element("feComposite", {
+        in: "sourceRimLight", in2: "sourceRimMask", operator: "in", result: "completedRim",
+      }),
       element("feBlend", {
-        in: "sourceRimLight",
-        in2: transmitted,
-        mode: "normal",
-        result: "litTransmission",
+        in: "completedRim", in2: transmitted, mode: "normal", result: "litTransmission",
       }),
     );
     transmitted = "litTransmission";

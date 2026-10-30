@@ -30,11 +30,11 @@ export const CONTROL_LENS_DEFAULTS: ControlLensParameters = {
 export const CONTROL_LENS_PRESETS = {
   slider: {
     ...CONTROL_LENS_DEFAULTS,
-    depth: 14,
-    curvature: 68,
+    depth: 4.5,
+    curvature: 58,
     chroma: 0,
     blur: 0.15,
-    magnification: 3.2,
+    magnification: 17 / 6,
   },
   switch: { ...CONTROL_LENS_DEFAULTS, chroma: 0.22, blur: 0.45 },
   selection: {
@@ -75,33 +75,24 @@ export function controlLensMetrics(
   width: number,
   height: number,
   parameters: ControlLensParameters,
-  profile: "dom" | "media" = "dom",
 ) {
   const radius = Math.min(width, height) / 2;
-  // Explicit tracks keep a neutral center; media-style DOM previews may opt
-  // into magnification of their original source pixels.
+  // Explicit control sources magnify the short axis themselves. Original DOM
+  // can instead magnify its own painted source in this map.
   const magnification = parameters.magnification ?? 1;
-  const mediaAmplitude = Math.min(
+  const amplitude = Math.min(
     radius * 0.85,
     parameters.depth *
       (1 + parameters.curvature / 35) *
       (parameters.scale / 0.089),
   );
-  const shoulderWidth = Math.max(
-    1, Math.min(24, radius * 0.6 * Math.pow(parameters.splay / 0.89, 0.3)),
-  );
-  // Sharp DOM boundaries cannot tolerate the media field's fold. Bound the
-  // slope of the shoulder so a colored fill keeps one boundary, not an echo.
-  const amplitude = profile === "media"
-    ? mediaAmplitude
-    : shoulderWidth * 0.28 / magnification * Math.tanh(
-        parameters.depth / 17 * parameters.scale / 0.089 *
-        parameters.curvature / 58 * 0.75,
-      );
+  // The curved shoulder samples the source toward the lens center. A narrow
+  // colored track therefore reaches the outer edge, while its surrounding
+  // panel becomes the white crescent just inside it. This is refraction, not
+  // an extra painted border or a blurred copy of the primary color.
+  const shoulderWidth = radius * 0.2;
   const sourceZoom = (Math.max(width, height) / 2) * (1 - 1 / magnification);
-  const maximum = profile === "media"
-    ? Math.max(1, amplitude, sourceZoom)
-    : Math.max(1, amplitude + sourceZoom);
+  const maximum = Math.max(1, amplitude, sourceZoom);
   return {
     pad: Math.ceil(maximum + parameters.blur * 3 + 3),
     displacementScale: maximum * 2,
@@ -125,19 +116,18 @@ const smooth = (a: number, b: number, value: number) => {
 const encode = (value: number) =>
   Math.round(128 + Math.max(-1, Math.min(1, value)) * 127);
 
-/** Bounded DOM optics or the established media field. Displacement, coverage,
+/** One curved field for DOM and media. Displacement, coverage,
  * reflection and source-light coordinates share one physical contour. */
 export function buildControlLensTextures(
   width: number,
   height: number,
   borderRadius: number,
   parameters: ControlLensParameters,
-  profile: "dom" | "media" = "dom",
 ): ControlLensTextures {
   const { pad, maximum, amplitude, magnification, shoulderWidth } =
-    controlLensMetrics(width, height, parameters, profile);
+    controlLensMetrics(width, height, parameters);
   const radius = Math.max(0, Math.min(borderRadius, width / 2, height / 2));
-  const key = JSON.stringify([width, height, radius, parameters, profile]);
+  const key = JSON.stringify([width, height, radius, parameters]);
   const cached = cache.get(key);
   if (cached) {
     cache.delete(key);
@@ -178,8 +168,7 @@ export function buildControlLensTextures(
   // Optical edge widths are CSS pixels, not a percentage of a surface. Large
   // panels must not acquire a huge rim; tiny controls retain room for the body.
   const lightScale = Math.max(width, height),
-    rimHeight = Math.min(1.1, cap * 0.12),
-    neutralHeight = Math.min(0.65, rimHeight * 0.65);
+    rimHeight = Math.min(1.1, cap * 0.12);
   for (let y = 0; y < Math.ceil(th / 2); y++)
     for (let x = 0; x < Math.ceil(tw / 2); x++) {
       const px = ((x + 0.5) / tw) * fw - fw / 2,
@@ -187,35 +176,23 @@ export function buildControlLensTextures(
       const surface = roundedLensSurface(px, py, hw, hh, radius),
         inside = -surface.distance;
       const alpha = Math.max(0, Math.min(1, inside * resolution + 0.5));
-      // DOM uses a broad, low-slope shoulder. The sampling field must not turn
-      // back across a sharp fill boundary and make an inner ring. Media keeps
-      // its established transfer curve.
-      const shoulder = 1 - smooth(
-        0, profile === "media" ? cap * 0.2 : shoulderWidth, inside,
+      const shoulder = 1 - smooth(0, shoulderWidth, inside);
+      const u = Math.max(0, Math.min(0.9998, 1 - Math.max(0, inside) / cap));
+      const slope =
+        ((parameters.depth / cap) * (parameters.curvature / 58) * u) /
+        Math.sqrt(Math.max(0.0001, 1 - u * u));
+      const nz = 1 / Math.sqrt(1 + slope * slope),
+        nxy = slope * nz,
+        eta = 1 / 1.5;
+      const k = eta * nz - Math.sqrt(1 - eta * eta * (1 - nz * nz));
+      const ray = Math.pow(
+        Math.max(0, Math.min(1, (-k * nxy) / Math.max(0.001, eta - k * nz))),
+        1 / parameters.splay,
       );
-      let bend = shoulder;
-      if (profile === "media") {
-        const u = Math.max(0, Math.min(0.9998, 1 - Math.max(0, inside) / cap));
-        const slope =
-          ((parameters.depth / cap) * (parameters.curvature / 58) * u) /
-          Math.sqrt(Math.max(0.0001, 1 - u * u));
-        const nz = 1 / Math.sqrt(1 + slope * slope),
-          nxy = slope * nz,
-          eta = 1 / 1.5;
-        const k = eta * nz - Math.sqrt(1 - eta * eta * (1 - nz * nz));
-        const ray = Math.pow(
-          Math.max(0, Math.min(1, (-k * nxy) / Math.max(0.001, eta - k * nz))),
-          1 / parameters.splay,
-        );
-        bend = Math.min(1, ray / 0.6) * shoulder;
-      }
-      const bendAmount = profile === "media"
-        ? amplitude
-        : Math.min(amplitude, Math.max(1, radius) * 0.38 / magnification);
-      const zoom = (1 - 1 / magnification) * (profile === "media" ? 1 - shoulder : 1);
-      const dx = inside >= 0 ? -surface.nx * bend * bendAmount - px * zoom : 0;
-      const dy =
-        inside >= 0 ? -surface.ny * bend * bendAmount * 0.7 - py * zoom : 0;
+      const bend = Math.min(1, ray / 0.6) * shoulder;
+      const zoom = (1 - 1 / magnification) * (1 - shoulder);
+      const dx = inside >= 0 ? -surface.nx * bend * amplitude - px * zoom : 0;
+      const dy = inside >= 0 ? -surface.ny * bend * amplitude * 0.7 - py * zoom : 0;
       for (let q = 0; q < 4; q++) {
         const flipX = Boolean(q & 1),
           flipY = Boolean(q & 2),
@@ -233,8 +210,8 @@ export function buildControlLensTextures(
           ny = surface.ny * (flipY ? -1 : 1);
         const facing = nx * lx + ny * ly;
         // Encode a small directional transmission loss in the otherwise unused
-        // blue channel for the video backend. Compact DOM lenses leave their
-        // original RGB unchanged instead of multiplying it by attenuation.
+        // blue channel for the video backend. The RGB source stays intact; only the thin
+        // curved shoulder loses a small amount of transmitted light.
         const attenuation =
           Math.min(
             0.16,
@@ -244,36 +221,26 @@ export function buildControlLensTextures(
               parameters.edgeHighlight) /
               0.39,
           ) * alpha;
-        if (profile === "media")
-          map.data[i + 2] = Math.round(128 + (attenuation * 255) / 1.5);
+        map.data[i + 2] = Math.round(128 + (attenuation * 255) / 1.5);
         // Two neutral glints anchor the upper-left and lower-right shoulders.
         // This finish is independent of source hue. Keep the displacement and
         // blue transmission fields unchanged for the approved video backend.
         const glintFacing = nx * glintX + ny * glintY,
           glintSquared = glintFacing * glintFacing;
         const edge = Math.exp(-Math.max(0, inside) / 0.5) *
-          (parameters.edgeHighlight / 0.39) *
+          (parameters.edgeHighlight / 0.39) * (parameters.rimStrength / 0.61) *
           (0.02 + 0.26 * glintSquared * glintSquared);
-        const diffuse = 0.06 * parameters.edgeHighlight / 0.39;
-        const reflectionAlpha = diffuse + edge;
-        const neutral = Math.round((230 * diffuse + 180 * edge) / Math.max(0.001, reflectionAlpha));
         reflection.data[i] =
           reflection.data[i + 1] =
           reflection.data[i + 2] =
-            neutral;
-        reflection.data[i + 3] = Math.round(reflectionAlpha * alpha * 255);
-        // Both coordinates project to the lens center. Column mode neutralizes
-        // X; area mode retains it so the SAME sampled mixture covers the rim.
+            180;
+        reflection.data[i + 3] = Math.round(edge * alpha * 255);
+        // Optional completion reflection projects the same source mixture
+        // toward the lens center in both axes.
         rim.data[i] = encode((-px * (flipX ? -1 : 1)) / lightScale);
         rim.data[i + 1] = encode((-py * (flipY ? -1 : 1)) / lightScale);
-        // Blue is free in this coordinate texture. Pack the separate neutral
-        // profile here, so widening a colored arc never fattens a neutral one.
-        rim.data[i + 2] = Math.round(
-          alpha * (1 - smooth(neutralHeight - 0.35, neutralHeight + 0.35, inside)) * 255,
-        );
-        // Source color occupies an actual band, rather than the fading tail of
-        // a dark inset. Its height is capped at 1.1 CSS pixels; source-bearing
-        // columns receive this wider profile in the SVG filter.
+        rim.data[i + 2] = 128;
+        // Only the completed slider adds this thin source-mixture band.
         rim.data[i + 3] = Math.round(
           alpha * (1 - smooth(rimHeight - 0.35, rimHeight + 0.35, inside)) * 255,
         );

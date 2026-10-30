@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import dynamic from "next/dynamic";
 import { GlassSlider } from "@/components/glass/glass-slider";
 import { GlassSwitch } from "@/components/glass/glass-switch";
@@ -64,13 +64,22 @@ export const HOME_EXAMPLES = [
   },
 ] as const;
 export type HomeExampleId = (typeof HOME_EXAMPLES)[number]["id"];
-const SECTIONS = [
-  { value: "hubs", label: "Hubs", icon: <GlassIcon name="hubs" /> },
-  { value: "spokes", label: "Spokes", icon: <GlassIcon name="spokes" /> },
-  { value: "reserves", label: "Reserves", icon: <GlassIcon name="reserves" /> },
-  { value: "assets", label: "Assets", icon: <GlassIcon name="assets" /> },
-  { value: "chains", label: "Chains", icon: <GlassIcon name="chains" /> },
-] as const;
+const SECTIONS = ([
+  { value: "hubs", label: "Hubs", color: "#008aff" },
+  { value: "spokes", label: "Spokes", color: "#9896ff" },
+  { value: "reserves", label: "Reserves", color: "#00827b" },
+  { value: "assets", label: "Assets", color: "#f45d35" },
+  { value: "chains", label: "Chains", color: "#d7a400" },
+] as const).map(({ value, label, color }) => ({
+  value,
+  label,
+  icon: (
+    <GlassIcon
+      name={value}
+      style={{ "--glass-option-color": color } as CSSProperties}
+    />
+  ),
+}));
 
 export function HomeExample({
   id,

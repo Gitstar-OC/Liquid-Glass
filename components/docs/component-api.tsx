@@ -87,13 +87,7 @@ const API: Record<string, Prop[]> = {
       "rim",
       '\"none\" | \"column\" | \"dominant\"',
       '\"column\"',
-      "Column mode mixes source pixels along a thin 1.1px edge (0.65px neutral). Gray contributes alongside color. Dominant projects one bounded area mixture around the complete rim in both axes. Neutral reflection and diagonal glints preserve visibility. No CSS outline or CPU readback.",
-    ],
-    [
-      "opticalProfile",
-      '"dom" | "media"',
-      '"dom"',
-      "DOM bounds the shoulder slope to preserve sharp fill boundaries. Media uses the video's stronger field for photos; parameters.magnification zooms actual source pixels. Position changes reuse the map in either profile.",
+      "Column mode uses the source-colored edge produced by displacement without extra color-extraction passes. Dominant adds an optional source mixture around a 1.1px rim at slider completion. Diagonal neutral glints preserve visibility. No CSS outline or CPU readback.",
     ],
     [
       "duration / motion / scale",
@@ -311,13 +305,13 @@ const API: Record<string, Prop[]> = {
       "appearance",
       '"line" | "well" | "hud" | "lens"',
       '"line"',
-      "All appearances rest as solid thumbs. Lens expands its 64 × 34px resting thumb into a 96 × 52px optical cap while held; other appearances use compact caps. Each engaged thumb counts against the budget.",
+      "All appearances rest as solid thumbs. Lens expands its 44 × 22px resting thumb into a 64 × 32px optical cap while held; other appearances use compact caps. Each engaged thumb counts against the budget.",
     ],
     [
       "opticalIdle / lensParameters",
       "boolean / Partial<ControlLensParameters>",
       "false / Slider preset",
-      "Pin the active state or tune the lens. Magnification defaults to 3.2 for the lens appearance's explicit fill; the visible rail and value position remain unchanged. Normal controls release their optical source at rest.",
+      "Pin the active state or tune the lens. Magnification defaults to 17/6 for the lens appearance's explicit fill; the visible rail and value position remain unchanged. Normal controls release their optical source at rest.",
     ],
     [
       "tone",
@@ -346,7 +340,7 @@ const API: Record<string, Prop[]> = {
     [
       "GlassSliderSource",
       "Optical target helper",
-      "8px × 3.2 magnification",
+      "6px × 17/6 magnification",
       "Shared by the installed slider and control-lens playground. Accepts normalized start/end, rail inset, thickness, magnification, orientation, plane and fill color.",
     ],
     [
