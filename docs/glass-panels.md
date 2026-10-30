@@ -8,10 +8,12 @@ Foreground labels, inputs and actions remain normal DOM outside the filter.
 <TooltipProvider delayDuration={300}>
   <Tooltip>
     <TooltipTrigger asChild>
-      <GlassButton variant="glass">Preview</GlassButton>
+      <GlassButton variant="ghost" size="icon" aria-label="Copy image link">
+        <Link />
+      </GlassButton>
     </TooltipTrigger>
     <GlassTooltipContent variant="beak" radius={13} shape="round">
-      Preview
+      Copy link
     </GlassTooltipContent>
   </Tooltip>
 </TooltipProvider>
@@ -52,3 +54,12 @@ the viewport. Frames use the dimensions that suit the component. The profile
 lens refracts a centered illustration over its paper plane, with two actions.
 Docs retain radius/shape and refraction controls. Normal-glass comparisons are
 deferred; these examples focus on the actual lens.
+
+The six lower examples share an asset-workspace context. A toolbar icon owns
+the tooltip, a collaborator link owns the hover card, and the View popover
+changes the grid/list layout and file details. File-row ellipses expose copy,
+duplicate and download actions. Filenames open a native details drawer. The
+collection card uses its cover as the optical source and opens its asset grid.
+These are ordinary product layouts; the overlay or collection caption is the
+only lens. On the homepage, tooltips and hover cards open on hover/focus. The
+documentation inspector can still pin them for shape and refraction editing.

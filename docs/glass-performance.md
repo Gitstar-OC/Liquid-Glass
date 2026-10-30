@@ -138,6 +138,13 @@ the same global optical budget governs all visible sections. Dynamic
 music and elastic components load on demand, and audio is removed on departure.
 The docs preview's refraction comparison changes displacement only. Landing
 illustrations expose native component interactions without editing controls.
+The six compact examples use one bounded asset workspace each. Normal toolbar,
+table, image and activity content belongs to the source; glass portals stay in
+the preview container, outside the mirrored source DOM. Closed row menus and
+drawers allocate no lens. Only the active menu/drawer or collection caption
+requests its existing compact panel slot. Hover surfaces are not pinned on the
+homepage; the docs inspector retains explicit pinning. File lists have a bounded
+scroll viewport. There are no new renderers or background animation callbacks.
 No idle RAF loop runs.
 Clip the page's sampling margins so the bottom lens cannot extend scroll height.
 

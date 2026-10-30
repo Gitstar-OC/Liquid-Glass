@@ -1276,3 +1276,24 @@ packaging completed with 58 entries and 70 shared source files.
   70 shared source files. The PNG source illustration was retained; only the
   optimized 53KB WebP is referenced by the site.
 
+## 2026-10-30 — contextual compact examples
+
+- Replaced the six isolated lower triggers with an asset workspace: toolbar
+  tooltip, collaborator hover card, library view options, row action menus,
+  file-details drawers and a collection card over its cover. Actions update
+  the preview layout/list, copy local asset links, download an asset, or open
+  a collection. Documentation and gallery reuse these maintained examples.
+- Each visible example still owns one bounded `GlassScene`. Its ordinary product
+  DOM paints the source; local overlay portals are outside that source DOM.
+  Closed per-row menus/drawers mount no optical panel. The collection caption
+  has one lens; its surrounding layout has none. Homepage hover surfaces are
+  unpinned, while the documentation inspector keeps explicit pinning.
+- Source review: the largest landing frame is 832 × 560 CSS pixels (465,920),
+  below the existing 1.5M source-area ceiling. Tables have a 254px scroll viewport.
+  Existing tab/visibility unmounting and five/fine, three/coarse admission remain
+  in place. No renderer, cached map, filter graph, RAF loop or shader changed.
+- No tests, lint, typecheck, production build, registry verification or benchmark
+  were run, as requested. Browser access to the development URL remains blocked;
+  the new composition and native-device timings have not been visually verified.
+  No installable shared component changed, so no registry regeneration was needed.
+

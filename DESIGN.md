@@ -52,8 +52,13 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   fixed above the viewport's bottom safe area and stays visible while scrolling.
   Use a plain control plate on the quiet lavender/dark grid; Video owns its flower
   footage. No autoplay or hidden live catalogue. Bubble, panel and menu examples
-  use an ordinary, bounded file-list and displayed-image source, without an
-  enclosing glass panel. Keep only the short Aave/Apple attribution below the
+  use a bounded asset workspace, without an enclosing glass panel. Demonstrate
+  tooltips on toolbar icons, hover cards on collaborator names, view popovers
+  in the library toolbar, menus on file-row ellipses, drawers from filenames,
+  and glass collection cards over their cover images. No isolated demo-only
+  trigger buttons. Actions change the preview or open the actual local asset.
+  Homepage hover surfaces respond to pointer/focus; docs can pin them open.
+  Keep only the short Aave/Apple attribution below the
   hero heading; remove Controls and explanatory example subtext.
   The profile has a centered, local illustration on a complete paper plane,
   and a visible lens with two actions: Edit profile and Share profile. The
