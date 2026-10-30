@@ -24,23 +24,23 @@ const API: Record<string, Prop[]> = {
   "glass-tooltip": [
     ["variant", '"plain" | "beak"', '"plain"', "A compact bubble, with or without one smoothly joined pointer."],
     ["radius / shape", 'number / "round" | "squircle"', '13 / "round"', "Adjust roundedness without a separate outline or mismatched arrow."],
-    ["lensParameters", "ControlLensInput", "0.5px blur; shared control field", "Subtle source zoom and curved refraction. The 26px default bubble keeps its text outside the optical layer."],
+    ["lensParameters", "ControlLensInput", "0.35px blur; surface field", "Subtle source zoom and curved refraction. The 26px default bubble keeps its text outside the optical layer."],
     ["container", "HTMLElement | null", "document.body", "Portal target. Keep inside a bounded scene for portable DOM refraction; native SVG backdrop filtering is used where supported, otherwise local CSS blur."],
     ["Native tooltip props", "Radix Content props", "—", "Side, alignment, collision padding, Escape dismissal and refs are forwarded. Trigger hover and focus remain native."],
   ],
   "glass-hover-card": [
     ["radius / shape / beak", 'number / GlassShape / boolean', '20 / "squircle" / false', "The same continuous bubble geometry with room for card content."],
-    ["lensParameters", "ControlLensInput", "3px blur", "Background material only; labels and actions stay sharp."],
+    ["lensParameters", "ControlLensInput", "1px blur", "Background material only; labels and actions stay sharp."],
     ["container / side / align", "Native positioning props", 'body / bottom / center', "Native portal and collision placement; openDelay and closeDelay belong to HoverCard."],
   ],
   "glass-popover": [
     ["radius / shape / beak", 'number / GlassShape / boolean', '22 / "squircle" / false', "One optical layer for the complete popover."],
-    ["lensParameters", "ControlLensInput", "4px blur", "Uses the compact curved field; nested actions share the panel's material."],
+    ["lensParameters", "ControlLensInput", "1.25px blur", "Uses the compact curved field; nested actions share the panel's material."],
     ["container", "HTMLElement | null", "document.body", "Portal target; native focus, outside dismissal and Escape behavior remain intact."],
   ],
   "glass-card": [
     ["radius / shape", "number / GlassShape", '20 / "squircle"', "Card geometry and its refracting contour stay aligned."],
-    ["lensParameters", "ControlLensInput", "3px blur", "Tune the shared compact material. config.blur remains a compatibility override."],
+    ["lensParameters", "ControlLensInput", "0.7px blur", "Tune the shared compact material. config.blur remains a compatibility override."],
     ["children", "ReactNode", "—", "Compose CardHeader, CardTitle, CardDescription, CardContent and CardFooter. Nested glass cards inherit the parent optical layer."],
   ],
   "glass-video-player": [
@@ -210,6 +210,7 @@ const API: Record<string, Prop[]> = {
     ],
   ],
   "glass-dock": [
+    ["GlassDockItem.tooltipVariant", '"plain" | "beak"', '"plain"', "Uses the same compact lens tooltip as the component previews. The homepage chooses the continuously joined beak."],
     [
       "children",
       "ReactNode",

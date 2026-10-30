@@ -23,7 +23,7 @@ export function LensButtonExample() {
           </GlassLensButton>
         </div>
       </div>
-      <span role="status" className="home-lens-buttons-status">{status || "Press an action."}</span>
+      <span role="status" className="sr-only">{status}</span>
     </div>
   );
 }

@@ -19,6 +19,7 @@ export function GlassCollection() {
           <div className="home-intro">
             <LiquidMark variant="landing" />
             <h1>Liquid Glass</h1>
+            <p className="home-description">Inspired by <a href="https://aave.com/design/building-glass-for-the-web">Aave</a> and <a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass">Apple</a>.</p>
             <GlassScene appearance={resolvedMode} className="home-links-scene"
               content={<div className="absolute inset-0 bg-background" />}>
               <div className="home-links">

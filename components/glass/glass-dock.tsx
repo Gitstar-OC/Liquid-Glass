@@ -43,7 +43,7 @@ export function GlassDock(props: GlassDockProps) {
   if (props.material === "backdrop") {
     const { children, className, radius = 22, material, ...nativeProps } = props;
     return <TooltipProvider delayDuration={250} skipDelayDuration={300}>
-      <GlassPanel kind="dock" radius={radius} shape="round" asChild>
+      <GlassPanel kind="dock" radius={radius} shape="squircle" asChild>
         <nav {...nativeProps} aria-label={props["aria-label"] ?? "Dock"} data-glass-dock={material}
           className={cn("flex w-fit items-center gap-3 p-3", className)}>{children}</nav>
       </GlassPanel>
@@ -137,10 +137,11 @@ function LensDock({
 }
 export function GlassDockItem({
   label,
+  tooltipVariant = "plain",
   children,
   className,
   ...props
-}: GlassButtonProps & { label: string }) {
+}: GlassButtonProps & { label: string; tooltipVariant?: "plain" | "beak" }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -157,7 +158,7 @@ export function GlassDockItem({
           {children}
         </GlassButton>
       </TooltipTrigger>
-      <GlassTooltipContent side="top" sideOffset={12}>
+      <GlassTooltipContent side="top" sideOffset={12} variant={tooltipVariant}>
         {label}
       </GlassTooltipContent>
     </Tooltip>

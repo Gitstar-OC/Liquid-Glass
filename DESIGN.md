@@ -42,20 +42,25 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 - The homepage starts with its mark, heading and two glass links on pure white
   or black. Keep component examples below that header, sharing its max width and
-  gutters within `max-w-4xl` (896px including page padding). A swipeable,
-  scroll-snapping carousel presents five controls, starting with Slider, with
-  arrows and pagination instead of a dropdown. Only its current slide mounts
-  interactive content at rest; an entering/leaving slide may overlap during a
-  swipe, under the same optical budget. Below it, show one panel example per spacious section;
-  mount each as it enters the viewport. Keep editing controls in the docs and
+  gutters within `max-w-4xl` (896px including page padding). Named tabs show
+  Slider, Switch, Navigation, Buttons and Video, starting with Slider. Mount only
+  the active tab. Give navigation, media, panels and small controls their own
+  useful width and height. Below, use three spaced sections: Profile, Overlays
+  (Popover/Menu/Drawer) and Details (Tooltip/Hover card/Card). Mount one example
+  in each section, only while visible. Keep editing controls in the docs and
   playground. Do not bring a component catalogue into the hero. The dock is
   fixed above the viewport's bottom safe area and stays visible while scrolling.
   Use a plain control plate on the quiet lavender/dark grid; Video owns its flower
   footage. No autoplay or hidden live catalogue. Bubble, panel and menu examples
-  use an ordinary, bounded file-list source, without an enclosing glass panel.
-  The profile popover is one small bounded scene, with a local image, native
-  menu actions and an edit dialog; it loads only when selected. Its menu uses
-  the shared video/image finish over its displayed photo, with sharp action labels.
+  use an ordinary, bounded file-list and displayed-image source, without an
+  enclosing glass panel. Keep only the short Aave/Apple attribution below the
+  hero heading; remove Controls and explanatory example subtext.
+  The profile has a centered, local illustration on a complete paper plane,
+  and a visible lens with two actions: Edit profile and Share profile. The
+  popover uses 1.18× actual DOM refraction so the portrait's colors and features
+  visibly bend. It opens without taking focus and retains a native edit dialog.
+  The non-refracting component family is deferred; do not show normal-glass
+  material choices in these previews.
   A small active-state inspector pins the expanded material for comparison.
   Slider/switch thumbs start solid; navigation keeps its selected glass pill.
   Phones stack identity above the preview in flow.
@@ -74,8 +79,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 | Page width             | Content `max-w-5xl` (1024px), centered; homepage header and examples share `max-w-4xl` (896px) with responsive gutters |
 | Page gutters           | 20px phone, 32px larger screens                                                                                       |
 | Section gap            | 48px, up to 64px between independent sections                                                                         |
-| Single preview stage   | Standard demos: 480px/560px phone; docs compact: 420px/440px; homepage carousel: 400px/360px; lower panels: 400px          |
-| Homepage canvas        | Identity header, five-slide controls carousel, then spaced individual examples; fixed floating dock                    |
+| Single preview stage   | Docs compact: 420px/440px phone; homepage uses 280–560px by component, with wider local navigation and media frames      |
+| Homepage canvas        | Identity, five interaction tabs, then Profile/Overlays/Details sections; fixed floating dock                            |
 | Homepage controls      | No optical settings, standard navbar, or footer strip; dock links and theme controls only. No page has a site footer  |
 | Responsive composition | Lower examples pair a short label with a preview; stack them on phones and preserve control sizes                      |
 | Preview radius         | 20px single previews; no enclosing frame around the homepage                                                          |
@@ -91,9 +96,9 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   appropriate Group inside Select/Command/menu primitives.
 - A preview has exactly one stage and one detached toolbar (`PreviewToolbar`).
   Controls above and below it stay separate from the photo. No attached browser
-  chrome on one example and a separate footer on another. The homepage carousel
-  uses the shared detached caption/source toolbar. Lower illustrations have a
-  short adjacent label and component link, without an editing toolbar. Optical
+  chrome on one example and a separate footer on another. Homepage sections use
+  named tabs and the shared detached source toolbar, without explanatory copy.
+  Their example frames size to the component rather than sharing one height. Optical
   tuning and refraction comparison remain in the docs and playground.
 - Every control uses the same family styling in all contexts. Core actions use clear glass, primary actions use blue, and secondary actions
   use a subdued neutral finish. Bare transport icons use the ghost variant.
@@ -210,11 +215,15 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - Sound and AirDrop use the same 20px rounded rectangle. They are not full capsules.
 - The homepage dock has four blank 52px square placeholders (48px on phones) for
   future icons, with accessible action names, keyboard focus and tooltips. They
-  share one stationary compact slider-style lens with 22px corners; do not give
+  share one stationary compact lens with 22px squircle corners; do not give
   each placeholder its own glass. No hover lift, translation or press scale on
   the dock items; only tooltips animate. The floating dock uses the real native
   backdrop where SVG backdrop filtering is supported, with a bounded CSS blur
   fallback elsewhere. Other docks can retain their app glyphs.
+  Use the same compact, joined lens tooltip for dock hints. The dock's 2px
+  source-colored edge diffuses actual local background columns; it is not a
+  painted accent border or an invented white source. Neutral glints retain
+  its silhouette on light backgrounds.
 - Action button groups use a capsule silhouette and individually rounded hit
   areas within one shared glass surface; do not inherit square shadcn group joins.
 - `liquidOnHold` reveals a standalone lens after 180ms of pointer intent. Release,

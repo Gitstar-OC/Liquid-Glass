@@ -23,11 +23,14 @@ boolean. The transparent native Radix arrow supplies placement and collision
 coordinates. The visible pointer is a smooth union in the same coverage,
 displacement and reflection map as the body, with no joining line.
 
-The default tooltip is 26px high with 0.5px background softening and 1.04× source
-zoom. Light surfaces have no gray body tint and use 1.04× source brightness.
+The default tooltip is 26px high with 0.35px background softening and 1.04× source
+zoom. Light surfaces have no gray body tint or added source brightness.
 Dark surfaces retain a faint neutral reflection. These are material defaults,
 not a claim about Apple's renderer. `lensParameters` overrides the shared field.
-Larger panels use 3–8px background softening, while their foreground stays sharp.
+Larger panels use 0.7–2px background softening and 1.06–1.12× source zoom, while
+their foreground stays sharp. Source-colored shoulders reuse the bounded
+source and cached rim mask. The dock has a fixed 2px local-color band and
+22px squircle corners; there is no painted accent border.
 
 Put a small, complete background in `GlassScene` for portable DOM refraction,
 and keep portals within that source's bounds. Backgrounds must paint their
@@ -43,6 +46,9 @@ The existing `scene` and explicit-target `lens` modes remain available.
 `GlassButton variant="glass"` uses the compact material; nested actions share
 their parent's surface. Primary and secondary actions remain plain controls.
 
-The homepage and the six component documentation previews share one plain
-stage. The homepage mounts only its selected example and releases it when the
-section leaves view. Radius and shape controls live in the detached toolbar.
+The homepage uses interaction tabs and three lower sections: Profile, Overlays
+and Details. Each section mounts one example at a time and releases it outside
+the viewport. Frames use the dimensions that suit the component. The profile
+lens refracts a centered illustration over its paper plane, with two actions.
+Docs retain radius/shape and refraction controls. Normal-glass comparisons are
+deferred; these examples focus on the actual lens.

@@ -30,7 +30,7 @@ const ProfilePopover = dynamic(
     ),
   {
     loading: () => (
-      <Skeleton className="h-[264px] w-full max-w-[380px] rounded-[28px]" />
+      <Skeleton className="h-[400px] w-full max-w-[640px] rounded-[28px]" />
     ),
   },
 );

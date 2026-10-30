@@ -1243,3 +1243,36 @@ packaging completed with 58 entries and 70 shared source files.
   benchmark were run. Local visual review remains unavailable under the browser
   access restriction. No shared registry component or renderer was changed.
 
+## 2026-10-30 — lens-only illustration showcase and dock color
+
+- Replaced the carousel with named native tabs and three lower sections:
+  Profile, Overlays and Details. Each mounts one selected example only while
+  visible. Removed the normal-glass comparison implementation following the
+  updated request. Media and navigation use wider local frames; stage heights
+  vary from 280px to 560px. Transitions are CSS-only with reduced-motion support.
+- Rebuilt the profile around a generated illustration: a transparent 720×720
+  WebP, 53,126 bytes, displayed at 300px on an opaque 640×400px source plane.
+  Its two native popover actions use one 1.18× DOM lens. Removed the former
+  image-coordinate observer, WebGL profile layer and preference checkbox rows.
+  Initial opening prevents autofocus; actions edit the name or copy a URL.
+- Dock and panel color now reuse the existing colorBleed graph over their
+  bounded SourceGraphic. Its 1px-horizontal/24px-vertical kernel retains local
+  color columns, masked by the already cached rim PNG. The dock requests a
+  fixed 2px band; other compact panels use 1.1px. No new capture, CPU sampling,
+  texture channel, whole-page mirror or permanent frame callback was added.
+- Compact panels use the surface preset; buttons/dock use the button preset.
+  Reduced panel blur preserves visible source zoom. Removed source brightness
+  boosting and reduced dark-plane reflection from 9% to 3%. The switch/slider
+  presets, gestures and default maps remain unchanged. The video shader is
+  unchanged. Navigation keeps its 1200ms spring with a 1.04× highlighted source.
+- Source review confirms the same five/fine, three/coarse lens admission cap.
+  Dock hints use the joined tooltip from the lower examples; no per-item lens
+  or hover translation was added. Map/filter readiness gates tooltip reveal.
+- No tests, lint, typecheck, production build, registry verification or frame
+  benchmark were run. The existing development log recorded compilation after
+  removal of the superseded comparison imports. Local browser policy still
+  prevents visual review and timing measurement, so appearance and cross-browser
+  rendering remain unverified. Registry packaging completed with 58 entries and
+  70 shared source files. The PNG source illustration was retained; only the
+  optimized 53KB WebP is referenced by the site.
+

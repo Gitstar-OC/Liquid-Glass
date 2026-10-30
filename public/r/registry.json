@@ -757,6 +757,7 @@
       "description": "A refracting navigation surface for your brand, links, and actions.",
       "docs": "http://localhost:3000/docs/glass-navbar",
       "registryDependencies": [
+        "http://localhost:3000/r/glass-panel.json",
         "http://localhost:3000/r/glass-surface.json"
       ],
       "files": [

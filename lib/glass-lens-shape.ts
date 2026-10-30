@@ -10,6 +10,8 @@ export interface GlassBeak {
 export interface ControlLensShape {
   shape?: GlassShape;
   beak?: GlassBeak;
+  /** Fixed CSS-pixel source-color shoulder for larger panels; controls omit it. */
+  rimWidth?: number;
 }
 
 /** One smooth union, including its normals: the beak is never a second layer. */

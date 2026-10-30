@@ -42,7 +42,7 @@ export const CONTROL_LENS_PRESETS = {
     chroma: 0, blur: 0.15, magnification: 21 / 6,
   },
   switch: { ...CONTROL_LENS_DEFAULTS, chroma: 0.22, blur: 0.45 },
-  selection: { ...CONTROL_LENS_DEFAULTS, chroma: 0, blur: 0, magnification: 1 },
+  selection: { ...CONTROL_LENS_DEFAULTS, chroma: 0, blur: 0, magnification: 1.04, rimStrength: 0.8, edgeHighlight: 0.46 },
   surface: SURFACE_LENS,
   popover: { ...CONTROL_LENS_DEFAULTS, chroma: 0, blur: 1.25, magnification: 1.12 },
   button: {
@@ -182,7 +182,7 @@ export function buildControlLensTextures(
   // Optical edge widths are CSS pixels, not a percentage of a surface. Large
   // panels must not acquire a huge rim; tiny controls retain room for the body.
   const lightScale = Math.max(width, height),
-    rimHeight = Math.min(1.1, cap * 0.12);
+    rimHeight = Math.min(geometry?.rimWidth ?? 1.1, cap * 0.12);
   // Ordinary controls retain the exact quarter-map path. A joined pointer is
   // asymmetric; only that small bubble computes its complete contour.
   const asymmetric = Boolean(geometry?.beak);

@@ -58,8 +58,7 @@ or a claim about Apple's private renderer.
   not a reason to add more. Size and source complexity matter as much as count.
 - Transforming standalone controls can opt out of the atlas with
   `composite={false}` so their content, clipping and optics move together.
-  The homepage mounts the current slide of a five-control carousel (with the
-  entering/leaving slide briefly overlapping during a swipe), two small
+  The homepage mounts the active content of five interaction tabs, two small
   compact intro links and a fixed dock. Lower examples mount only when their
   individual sections enter the viewport. A pressed or inspector-pinned control adds
   one compact lens; selected navigation keeps that one slot at rest. Scrolled-out
@@ -72,7 +71,7 @@ or a claim about Apple's private renderer.
   outside that source. Do not mirror an entire document by default.
 - Put text/images/forms in the explicit source. Put interactive glass in children.
 - Use a single parent panel for a form, toolbar, player, or settings group.
-- Mount only visible carousel slides and viewport-visible lower examples on
+- Mount only the active interaction tab and viewport-visible lower examples on
   the homepage; the gallery mounts only its active example. Unmounting
   releases the previous media, observers, gestures, portals and optical layers.
   Do not use CSS hiding to keep an entire catalogue alive. An atlas is useful
@@ -126,24 +125,32 @@ Measured results from this change are recorded in [performance-results.md](perfo
 
 ## Homepage source bounds
 
-The homepage has no full-viewport atlas or animated scroll source. Its five-slide
-controls carousel sits below the identity header in a 400px stage (360px on
-phones), sharing the header's 896px maximum width and gutters. Native scroll
-snapping handles swipes; one event-coalesced callback changes the current slide
-when the nearest snap point changes. It mounts an incoming slide after 10% enters
-and releases an outgoing slide below 10%, so one slide is live at rest and at
-most two are live during a swipe. The small next-card peek stays inactive.
-Lower examples use 400px bounded stages in
-separate, spaced sections and release their content when outside the viewport.
+The homepage has no full-viewport atlas or animated scroll source. Five named
+interaction tabs share the header's 896px maximum and gutters. Radix mounts one
+panel at a time; a 420ms directional CSS entrance replaces scroll measurement.
+Stages vary from 280px to 560px by component and viewport. Navigation/media
+have wider local frames. Profile, Overlays and Details each show one lower
+example at a time, releasing their content when outside the viewport.
 Intro links use a tiny neutral source;
 the fixed dock reads the native backdrop on supported Chromium versions and
-falls back to local CSS blur elsewhere. Only visible carousel examples mount;
-the same global budget governs a brief transition overlap. Dynamic
+falls back to local CSS blur elsewhere. Only the selected interaction mounts;
+the same global optical budget governs all visible sections. Dynamic
 music and elastic components load on demand, and audio is removed on departure.
 The docs preview's refraction comparison changes displacement only. Landing
 illustrations expose native component interactions without editing controls.
 No idle RAF loop runs.
 Clip the page's sampling margins so the bottom lens cannot extend scroll height.
+
+The compact panel lens uses 0.35–2px blur and 1.04–1.12× source magnification,
+with no source brightness boost. Its thin source-color band reuses the existing
+cached rim PNG and bounded SourceGraphic through the existing colorBleed graph.
+The narrow 1px horizontal / 24px vertical kernel preserves neighboring columns.
+Dock geometry requests a fixed 2px band; other panels retain 1.1px. This adds no
+new map, CPU pixel readback, whole-page mirror or idle animation. Slider/switch
+and video maps omit this geometry option and retain their approved output.
+Background softening stays inside the SVG transmission pass, before the colored
+edge is composed; no outer blur softens the rim.
+The optional non-refracting component family is deferred.
 
 ## Nested controls and deliberate presses
 
@@ -323,29 +330,24 @@ capture is introduced. Bounds are observed on layout, scroll and position change
 without an idle polling loop. Menus keep content scrolling in a separate viewport;
 optical sampling margins never belong in that scrolling container.
 
-The homepage's on-demand profile menu portals into its own small scene host.
-The image stays bounded to 380 × 240px, with identity below it. The menu uses
-`GlassImageLens` and the actual video-control WebGL shader over that displayed
-image, with 1.12× zoom and slight 1.25px softening. It duplicates no image DOM and
-performs no scene capture. Sharp native menu rows render above it. Material and rows share
-one trigger-origin CSS entrance/exit transform; no displacement map is regenerated
-for opening scale. Native Radix wrapper positioning supplies source coordinates,
-with resize/position/scroll observers and no idle polling. Opacity crossfades the
-ready lens while the readable fallback softens behind it. Reduced transparency
-uses the solid fallback; reduced motion removes travel and fades.
+The profile example now portals a native popover into its 640 × 400px bounded
+scene (380px high on phones). A local 720px transparent WebP illustration is
+displayed at 300px over a complete opaque paper plane. One compact DOM lens
+refracts that composition at 1.18× magnification and 1px blur; foreground actions
+remain sharp. No separate WebGL context, custom image-coordinate observer or
+whole-document capture is needed. The two actions edit the name or copy a link.
+Initial open prevents autofocus. Closing, scrolling out or unmounting releases
+its source/filter work under the same document budget.
 The Surface playground preset retains its supplied 0.5px blur; the menu has a
-separate preset. Its two native checkbox controls add no independent lenses.
-The shader's softening samples five nearby image pixels, leaving its source-colored
-rim and neutral highlight sharp. The full source texture uploads only when the
-displayed image changes; position-only redraws reuse it. Each lens has its own
-bounded WebGL canvas, covered by the same admission budget and teardown rules.
+local 1px override. The former checkbox rows and per-image alignment observer
+were removed from the profile demonstration.
 
-`GlassLensButton imageRef` uses that same shader and a displayed-image ref.
+`GlassLensButton imageRef` retains the video's shader and a displayed-image ref.
 Its ResizeObserver is event driven; the complete button scales through CSS and
 keeps cached maps. The two-button example requests two lenses, so the homepage
-with its intro/dock requests four at most; admission still caps this at five/fine
-or three/coarse. The menu example has the same upper request count with its
-lens button trigger and open menu. No document-wide filter or capture is added.
+with its intro/dock can request five; admission still caps this at five/fine
+or three/coarse. Lower visible examples share this same document cap.
+No document-wide filter or capture is added.
 Image-backed fallback buttons use transparent 1.5px blur, never an 80% solid
 plane. The active photo material uses 1.12× zoom with zero blur and the video rim;
 it has no white body fill. Reduced transparency retains the opaque fallback.

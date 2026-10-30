@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Eye, FileImage, MoreHorizontal, Copy, FolderOpen, ArrowDownToLine, X } from "lucide-react";
 import { GlassScene, GlassSettingsProvider } from "@/components/glass-scene";
+import { SceneBackdrop } from "@/components/site/scene-backdrop";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { GlassButton } from "@/components/glass/glass-button";
 import { GlassSlider } from "@/components/glass/glass-slider";
@@ -58,7 +59,7 @@ function FileDetails() {
 
 function PanelExample({ example, container, radius, shape, beak, pinned, onUnpin }: PreviewProps) {
   const [hovered, setHovered] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(example === "popover");
   const [metadata, setMetadata] = useState(true);
   const [status, setStatus] = useState("");
   const fieldId = useId();
@@ -94,7 +95,7 @@ function PanelExample({ example, container, radius, shape, beak, pinned, onUnpin
   if (example === "popover") return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild><GlassButton variant="glass">Image details</GlassButton></PopoverTrigger>
-      <GlassPopoverContent {...positioning} {...geometry} beak={beak} sideOffset={12}>
+      <GlassPopoverContent {...positioning} {...geometry} beak={beak} sideOffset={12} onOpenAutoFocus={event => event.preventDefault()}>
         <PopoverHeader><PopoverTitle>Dunes.jpg</PopoverTitle><PopoverDescription>Landscape studies</PopoverDescription></PopoverHeader>
         <FileDetails />
         <FieldGroup>
@@ -165,7 +166,7 @@ export function PanelShowcase({ initialExample = "slider", compact = false, mini
   const example = initialExample;
   const [radius, setRadius] = useState(initialExample === "tooltip" ? 13 : initialExample === "drawer" ? 28 : 20);
   const [shape, setShape] = useState<GlassShape>(initialExample === "tooltip" ? "round" : "squircle");
-  const [beak, setBeak] = useState(true), [pinned, setPinned] = useState(!minimal && (initialExample === "tooltip" || initialExample === "hover-card"));
+  const [beak, setBeak] = useState(true), [pinned, setPinned] = useState(initialExample === "tooltip" || initialExample === "hover-card");
   const [refraction, setRefraction] = useState(true);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
@@ -193,7 +194,7 @@ export function PanelShowcase({ initialExample = "slider", compact = false, mini
           {control ? <div className="home-control-stage size-full" data-example={example === "profile" ? "popover" : example}>
             {mounted && <HomeExample key={example} id={(example === "profile" ? "popover" : example) as HomeExampleId} previewActive={pinned} />}
           </div> : mounted ? <GlassScene appearance={resolvedMode} className="size-full" content={
-            <div className="panel-source-plane"><div className="panel-preview-source">
+            <div className="panel-source-plane"><div className="panel-source-art"><SceneBackdrop photo={resolvedMode === "dark" ? "ocean" : "dunes"} /></div><div className="panel-preview-source">
               <div className="panel-source-title">Landscape studies</div>
               <div className="panel-source-row"><span className="panel-source-mark" /><span>Dunes.jpg</span><span>2.4 MB</span></div>
               <div className="panel-source-row"><span className="panel-source-mark" /><span>Ocean.jpg</span><span>1.8 MB</span></div>
