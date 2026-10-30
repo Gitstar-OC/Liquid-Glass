@@ -17,7 +17,7 @@ export function GlassSliderSource({
   vertical = false,
   inset = 0,
   thickness = 6,
-  magnification = 17 / 6,
+  magnification = CONTROL_LENS_PRESETS.slider.magnification,
   color = "var(--glass-action,#006de5)",
   background = "var(--glass-lens-plane,var(--background))",
   dimmed = false,

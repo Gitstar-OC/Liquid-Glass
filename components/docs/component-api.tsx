@@ -302,7 +302,7 @@ const API: Record<string, Prop[]> = {
   ],
   "glass-lens-button": [
     ["refractionTarget / sourceRef", "ReactNode / RefObject<HTMLElement | null>", "Local fill", "Optional visual source and alignment element. No DOM capture: render the same small backdrop in the source and target. Text stays sharp above the lens."],
-    ["lensParameters", "ControlLensInput", "Button preset", "Uses the shared curved field with 1.12× source zoom and 0.5px blur. Geometry comes from the native button, with cached maps reused through press scale."],
+    ["lensParameters", "ControlLensInput", "Button preset", "Uses the shared curved field with 1.06× source zoom, 0.35px blur and restrained neutral glints. Image-backed fallbacks stay transparent. Geometry comes from the native button; press scale reuses its cached map."],
     ["Native button props", "Button props", "size=lg", "Click, keyboard activation, disabled, type, ref and accessible labels remain native. The complete button including its lens scales on press."],
   ],
   "glass-slider": [
@@ -316,7 +316,7 @@ const API: Record<string, Prop[]> = {
       "opticalIdle / lensParameters",
       "boolean / Partial<ControlLensParameters>",
       "false / Slider preset",
-      "Pin the active state or tune the lens. Magnification defaults to 17/6 for the lens appearance's explicit fill; the visible rail and value position remain unchanged. Normal controls release their optical source at rest.",
+      "Pin the active state or tune the lens. Magnification defaults to 21/6 for the lens appearance's explicit fill, matching the switch's optical height and shoulder. The visible rail and value position remain unchanged. Normal controls release their optical source at rest.",
     ],
     [
       "tone",
@@ -345,7 +345,7 @@ const API: Record<string, Prop[]> = {
     [
       "GlassSliderSource",
       "Optical target helper",
-      "6px × 17/6 magnification",
+      "6px × 21/6 magnification",
       "Shared by the installed slider and control-lens playground. Accepts normalized start/end, rail inset, thickness, magnification, orientation, plane and fill color.",
     ],
     [

@@ -119,7 +119,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 - Fine sliders use a 4px track, a small rounded thumb, and a generous pointer target.
   Keep the speaker thumb visible at rest. A pointer hold reveals an explicit track lens with a compact curved cap, without a drawn border. The dedicated lens appearance
   uses a 44 × 22px solid resting thumb, a 64 × 32px active cap and a 6px track.
-  Its explicit optical fill is 17/6× taller/wider across the track's short axis;
+  Its explicit optical fill is 21/6× taller/wider across the track's short axis,
+  matching the switch's 21px optical fill and curved shoulder response;
   preserve the progress position and rounded endpoint. The visible rail and its
   optical copy both span the native thumb's center-to-center travel; never crop
   only one of them. Do not zoom the
@@ -139,23 +140,17 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   blur, photos use the configured blur (4px by default), and text/controls or lower glass use at least 8px
   with zero displacement, so background letters soften without splitting.
   Explicit local blur overrides and playground controls take precedence.
-- Carry nearby source colors into the glint through the existing bounded mirror.
-  Resolve a narrow vertical source column, then project each lens's central
-  column color to both arcs with coordinates packed in its cached rim texture.
-  Keep neighboring columns separate. Blur transmitted content before the
-  colored rim is composed so its light stays crisp on white and black backgrounds.
-  Source-bearing columns occupy a band bounded to 1.1 CSS pixels; the neutral plane keeps
-  a separate 0.65px profile, including the off switch. Very small lenses cap
-  these widths further to preserve their interior. Keep a short antialiased
-  taper, without a dark inset falloff. Do not implement this by increasing opacity uniformly.
-  Compact explicit tracks weight source contrast against their actual flat
-  plane, rather than saturation alone. Gray/off tracks contribute alongside
-  accent colors; the resolved mixture retains the source RGB without darkening.
+- Compact controls carry source color to the shoulder through displacement,
+  rather than an estimated primary hue or a uniformly painted border. Keep
+  purple and gray pixels from the actual explicit track. The separate bounded
+  scene renderer retains its column-lighting path; do not confuse these paths.
   Slider completion projects one bounded area mixture around the full rim in
   both axes. Latch the pointer position at first reaching max; only a further
   14px of pointer travel returns to local columns (8px return hysteresis).
   Do not use a fixed colored perimeter, a second source capture, or continuous
-  CPU pixel sampling. Keep the small white optical reflection for neutral light.
+  CPU pixel sampling. Keep the restrained neutral-gray diagonal glints.
+  Image-backed buttons never add a solid plane-colored fallback or a white
+  transmission wash. Their clear fallback blurs the actual image by 1.5px.
   Stronger refraction remains available as a deliberate playground adjustment.
 - The homepage comparison changes only refraction strength. Keep the scene,
   geometry, blur, and optical finish unchanged so the difference is inspectable.
@@ -167,6 +162,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   tooltips 4px. Local blur overrides remain available. Higher layers soften the
   lower content they capture. Reveal overlays after admission/texture readiness
   to avoid a bright CSS fallback flashing before the actual glass.
+  The compact profile menu uses 12px transmitted blur and a matching fallback;
+  its native actions and checkbox controls share one optical layer.
 - The homepage has one tiny intro-link atlas and one dock lens at rest. A pressed
   control adds one compact target lens, for three typical active lenses. The
   inspector keeps that slot while pinned. Navigation's selected glass pill
@@ -219,9 +216,10 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Keyboard changes are instant; reduced motion removes travel and expansion.
 - Single-selection tabs/groups keep one persistent glass selection indicator.
   Move it on an interruptible 500ms spring, preserving momentum when retargeted.
-  Explicit targets reserve 8px width and 28px height for travel. The pill grows
-  while moving and returns to the selected item's normal dimensions, staying
-  glass. Counter-scale its source so the highlighted labels retain their size.
+  Explicit targets reserve 20% uniform expansion during travel. The pill grows
+  with actual spring distance and returns to the item's normal dimensions,
+  staying glass. Keep circular ends circular instead of stretching a tall cap
+  unequally. Counter-scale its source so highlighted labels retain their size.
   Use the existing travel frame, not another timer or map per animation frame.
   `GlassToggleGroup options` builds the native items and inert highlighted source
   from one list. Keep overflow headroom around the track.

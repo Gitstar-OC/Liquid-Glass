@@ -224,7 +224,8 @@ Maps decode
 before reveal and are reused through the press. Pointer switch travel uses a
 400ms spring and a matching 400ms settling window; keyboard travel is zero. Tabs/groups
 keep one selected glass pill and use a 500ms spring with retained velocity when
-retargeted. A scale envelope shares that travel frame: it grows during movement
+retargeted. A uniform 20% scale envelope shares that travel frame and follows
+actual distance to the destination, rather than elapsed timeout. It grows during movement
 and returns to the item's normal dimensions, staying glass. The source is
 counter-scaled to retain label size. No per-frame map regeneration, extra frame
 loop, hold/settle timer or material release is introduced.
@@ -234,7 +235,7 @@ returns over 180ms; endpoint offsets
 are coalesced to one update per input frame. Value/position/offset changes reuse
 the map. Only pointer gestures request the endpoint frame; there is no idle loop.
 Visible and optical rails share the same thumb-center inset, including both
-endpoints. `GlassSliderSource` supplies the same 17/6× optical track in the
+endpoints. `GlassSliderSource` supplies the same 21/6× optical track in the
 playground; its visible text and rail remain ordinary DOM. The single lens
 slider projects a single bounded area mixture over both axes around its full rim
 at maximum. It latches the pointer coordinate when max is first reached, even
@@ -300,13 +301,16 @@ optical sampling margins never belong in that scrolling container.
 The homepage's on-demand profile menu portals into its own small scene host.
 The profile's visual DOM stays bounded to 380 × 264px. The menu filters an explicit
 aligned copy of that visual source in its own lens-sized viewport with 1.12× zoom
-and 0.5px blur. The source function is shared with the visible profile; it performs
+and 12px blur. The source function is shared with the visible profile; it performs
 no scene capture. Sharp native menu rows render above it. Material and rows share
 one trigger-origin CSS entrance/exit transform; no displacement map is regenerated
 for opening scale. Native Radix wrapper positioning supplies source coordinates,
 with resize/position/scroll observers and no idle polling. Opacity crossfades the
 ready lens while the readable fallback softens behind it. Reduced transparency
 uses the solid fallback; reduced motion removes travel and fades.
+The Surface playground preset retains its supplied 0.5px blur; the menu has a
+separate preset. Its two native checkbox controls add no independent lenses.
+Zero menu chroma avoids a second displacement pass while blur increases.
 
 `GlassLensButton` likewise aligns an explicit target using source geometry only.
 Its ResizeObserver is event driven; the complete button scales through CSS and
@@ -314,3 +318,6 @@ keeps cached maps. The two-button example requests two lenses, so the homepage
 with its intro/dock requests four at most; admission still caps this at five/fine
 or three/coarse. The menu example has the same upper request count with its
 lens button trigger and open menu. No document-wide filter or capture is added.
+Image-backed fallback buttons use transparent 1.5px blur, never an 80% solid
+plane. The active photo material uses 1.06× zoom and restrained edge glints;
+it has no white body fill. Reduced transparency retains the opaque fallback.

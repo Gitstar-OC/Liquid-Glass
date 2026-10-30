@@ -66,3 +66,18 @@ The menu uses an aligned explicit profile target so that lens and native rows
 can share the trigger-origin entrance/exit transform. This replaces filtering
 the profile in place beneath independently appearing menu labels. New lens
 buttons use that same explicit-source model over the existing image assets.
+
+## Follow-up: slider color and clear image buttons
+
+The current slider deliberately uses a 21px optical source and the switch's
+depth-17 shoulder response. This is local tuning to make its source-colored
+upper/lower arcs more visible; it is not a new measurement of Aave's 17px copy.
+The 6px visible rail, native value alignment and neutral center remain intact.
+
+Image buttons now use a shallower 1.06× lens, weaker neutral glints and a
+transparent fallback. The old 80%-plane fallback could paint a white capsule
+over a photo before readiness or when a lens was denied admission.
+The profile menu uses 12px blur, with separate 0.5px Surface tuning retained in
+the playground. Its additional native checkbox rows share its existing lens.
+Navigation uses uniform 20% travel expansion tied to actual spring distance,
+avoiding the previous unequal scale and late growth after arrival.

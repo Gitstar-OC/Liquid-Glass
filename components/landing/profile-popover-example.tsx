@@ -7,6 +7,8 @@ import {
   DropdownMenu,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   GlassDropdownMenuContent,
 } from "@/components/glass/glass-dropdown";
@@ -35,6 +37,8 @@ export function ProfilePopoverExample() {
   const [draft, setDraft] = useState(name);
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState("");
+  const [showEmail, setShowEmail] = useState(true);
+  const [notifications, setNotifications] = useState(false);
   const [menu, setMenu] = useState<HTMLDivElement | null>(null);
   const [lens, setLens] = useState({
     width: 232, height: 116, left: 0, top: 0, sourceWidth: 380, sourceHeight: 264,
@@ -114,7 +118,7 @@ export function ProfilePopoverExample() {
           appearance={resolvedMode}
           content={
             <div ref={profile} className="size-full">
-              <ProfileBackdrop name={name} />
+              <ProfileBackdrop name={name} showEmail={showEmail} />
             </div>
           }
         >
@@ -122,12 +126,12 @@ export function ProfilePopoverExample() {
             <div className="absolute top-5 left-5">
               <DropdownMenuTrigger asChild>
                 <GlassLensButton
-                ref={trigger}
-                size="icon-lg"
-                sourceRef={profile}
-                refractionTarget={<ProfileBackdrop name={name} />}
-                aria-label="Profile actions"
-              >
+                  ref={trigger}
+                  size="icon-lg"
+                  sourceRef={profile}
+                  refractionTarget={<ProfileBackdrop name={name} showEmail={showEmail} />}
+                  aria-label="Profile actions"
+                >
                   <GlassIcon name="more" />
                 </GlassLensButton>
               </DropdownMenuTrigger>
@@ -158,7 +162,8 @@ export function ProfilePopoverExample() {
                     width: lens.sourceWidth,
                     height: lens.sourceHeight,
                   }}>
-                    <ProfileBackdrop name={name} />
+                    <div className="home-profile-optical-plane" />
+                    <ProfileBackdrop name={name} showEmail={showEmail} />
                   </div>
                 }
               />
@@ -178,11 +183,30 @@ export function ProfilePopoverExample() {
                   onSelect={() => void copyLink()}
                 >
                   <GlassIcon name="share" />
-                  <span className="flex flex-col gap-0.5">
-                    Copy link
-                    <span className="text-xs opacity-60">Preview URL</span>
-                  </span>
+                  Copy link
                 </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator className="home-profile-menu-separator" />
+              <DropdownMenuGroup aria-label="Profile preferences">
+                <DropdownMenuCheckboxItem
+                  className="home-profile-menu-item home-profile-menu-choice"
+                  checked={showEmail}
+                  onCheckedChange={(checked) => setShowEmail(checked === true)}
+                  onSelect={(event) => event.preventDefault()}
+                >
+                  Show email
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  className="home-profile-menu-item home-profile-menu-choice"
+                  checked={notifications}
+                  onCheckedChange={(checked) => {
+                    setNotifications(checked === true);
+                    setStatus(checked ? "Preview notifications enabled." : "Preview notifications paused.");
+                  }}
+                  onSelect={(event) => event.preventDefault()}
+                >
+                  Notifications
+                </DropdownMenuCheckboxItem>
               </DropdownMenuGroup>
             </GlassDropdownMenuContent>
           </DropdownMenu>
@@ -260,13 +284,13 @@ export function ProfilePopoverExample() {
 }
 
 /** One visual source for the profile and its small, inert menu target. */
-function ProfileBackdrop({ name }: { name: string }) {
+function ProfileBackdrop({ name, showEmail }: { name: string; showEmail: boolean }) {
   return (
     <div className="home-profile-backdrop">
       <div className="home-profile-photo"><SceneBackdrop photo="ocean" /></div>
       <div className="home-profile-identity">
         <h2>{name}</h2>
-        <p>alex@example.com</p>
+        <p style={{ visibility: showEmail ? "visible" : "hidden" }}>alex@example.com</p>
       </div>
     </div>
   );

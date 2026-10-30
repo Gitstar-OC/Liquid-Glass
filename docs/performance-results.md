@@ -1067,3 +1067,34 @@ Packaging completed with 56 registry entries and 67 shared source files. The
 read-only dependency inventory covered 148 source files with no unreachable
 files or unresolved local imports. This does not establish runtime behavior,
 pixel parity, or a frame-rate result.
+
+## 2026-10-30 — slider source color, clear photo buttons and menu blur
+
+- Slider depth now matches the switch at 17, and its explicit short-axis source
+  grows from 17px to 21px. This changes cached vectors/source layout, not the
+  filter graph: six normal SVG primitives, with the existing optional seven at
+  completion. Its amplitude remains capped at 13.6px for a 64 × 32px lens;
+  the padded map stays 100 × 68px / 27,200 storage pixels at 2× resolution.
+  Native value tracking, source endpoints and the switch preset are unchanged.
+- Photo-button fallbacks are transparent with 1.5px backdrop blur. They no longer
+  insert the old 80% solid plane while a map decodes or admission is unavailable.
+  Active button optics use 1.06× zoom, 0.35px blur and weaker neutral edge glints.
+  No new capture, readback or source-color synthesis is introduced.
+- Profile-menu blur increases from 0.5px to 12px, while chroma becomes zero.
+  The explicit menu graph therefore drops from ten to six primitives. Stronger
+  blur increases padding and GPU work; this count is not a timing measurement.
+  At its 232px width the optical parameters reserve 58px padding on each side;
+  height comes from native menu layout. Allocation retains the 1.5M-pixel cap.
+  Two native checkbox rows reuse this menu's lens; no nested lenses are added.
+- Navigation uses uniform 20% expansion instead of adding 8px horizontally and
+  28px vertically. Expansion follows actual spring distance in the existing
+  travel callback and returns to normal size at arrival. No additional timer,
+  frame loop, map generation per frame or independent filter is added.
+- The shared renderer's budgets remain five/fine and three/coarse. The video
+  renderer and its parameters are unchanged. Surface tuning remains separate
+  from the stronger popover preset.
+
+No tests, lint, typecheck, production build or benchmark were run, as requested.
+Local browser inspection remains unavailable under the existing development-URL
+policy restriction; appearance, interaction feel and frame timings are unverified.
+Registry packaging completed: 56 entries and 67 shared source files.

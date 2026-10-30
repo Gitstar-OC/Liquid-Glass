@@ -40,7 +40,9 @@ represent the active state.
 
 - `GlassSlider appearance="lens"`: 44 × 22px resting thumb, 64 × 32px active cap,
   6px visible track. The explicit optical target enlarges that track's short
-  axis to 17px (17/6×), preserving the value position and smooth rounded fill endpoint.
+  axis to 21px (21/6×), preserving the value position and smooth rounded fill endpoint.
+  It uses the switch's curved shoulder response so actual track pixels reach
+  the upper and lower arcs, rather than painting a colored outline.
   The visible and optical rails both span the thumb's center-to-center travel,
   so the fill endpoint stays under the lens near the start and end.
   `lensParameters.magnification` adjusts this source zoom (1–5). The map center
@@ -70,8 +72,8 @@ represent the active state.
   travel; the state stays clamped. Release springs the cap back before contraction.
   Click and keyboard activation remain native Radix actions.
 - Single-selection tabs/groups keep the selected indicator glass after travel.
-  An explicit target uses a pill 8px wider and 28px taller than its item and a
-  500ms spring that preserves momentum when interrupted. It grows during travel
+  An explicit target reserves 20% uniform expansion and uses a 500ms spring
+  that preserves momentum when interrupted. It grows with actual spring distance
   and returns to the item's normal dimensions while staying glass. Source
   counter-scaling keeps the highlighted labels at their original size. Keyboard
   and reduced-motion changes use normal dimensions immediately.
@@ -132,20 +134,20 @@ Geometry is in CSS pixels; radius is bounded to half the smaller dimension.
 | `curvature`             |           58 | 1–100                                        |
 | `splay`                 |         0.89 | 0.2–2                                        |
 | `chroma`                |         0.38 | 0–1                                          |
-| `blur`                  |            1 | 0–5px                                        |
+| `blur`                  |            1 | 0–24px                                       |
 | `rimStrength`           |         0.61 | 0–1.5, rim light / completion reflection             |
 | `edgeHighlight`         |         0.39 | 0–1                                          |
 | `specularAngle`         |           45 | −180–180°                                    |
-| `magnification`         |            1 | 1–5, interior source zoom; slider preset 17/6 |
+| `magnification`         |            1 | 1–5, interior source zoom; slider preset 21/6 |
 
 Supply these in `parameters`. Slider, switch and selection presets share the
-model, with a gentler slider and zero slider chroma. The switch uses 0.45px
+model, with a shared slider/switch shoulder and zero slider chroma. The switch uses 0.45px
 transmitted blur to keep the source-plane crescents distinct. `chroma` is a normalized
 control mapped to a restrained red/cyan dispersion; it adds a displacement pass.
 The playground exposes geometry/optical controls (Rim light replaces
 the misleading Glow label) and the actual map.
 Its selectable-text preview uses `GlassSliderSource` for the same explicit
-17/6× track optics as the slider, with an unscaled visible rail and selectable
+21/6× track optics as the slider, with an unscaled visible rail and selectable
 original text. Magnification changes the optical source's short axis; the map
 preview shows the neutral-center map actually used, without applying zoom twice.
 Its Scene glass tab retains the separate bounded-scene renderer.
@@ -157,9 +159,10 @@ around the lens, including neutral pixels. It does not estimate a brand hue or
 replace gray with black. `rim="none"` skips this optional completion treatment.
 
 The photo popover uses a small aligned visual target inside the native menu,
-with 1.12× source magnification and 0.5px blur. The lens and labels enter together
+with 1.12× source magnification and 12px blur. The lens and labels enter together
 from Radix's trigger origin and close toward that origin. Foreground labels stay
-sharp. Native menu scale never changes the map geometry. The video keeps its
+sharp, including its email-visibility and notification checkbox controls.
+Native menu scale never changes the map geometry. The video keeps its
 shader, source, controls and map response.
 
 ### Presets and optical controls
@@ -193,6 +196,10 @@ only; it never captures or clones the provided element:
 
 Keep that source bounded. The default button uses its own local fill when no
 explicit target is provided. Each ready button counts against the shared budget.
+The image preset uses 1.06× magnification, 0.35px blur and restrained neutral
+edge glints. It never introduces a white plane into the image. An image-backed
+button awaiting admission uses a transparent 1.5px backdrop blur; reduced
+transparency still uses the accessible solid fallback.
 The homepage mounts only the selected example, including the new two-button scene.
 
 Legacy `strength`, `blur`, `chroma`, `curvature`, `splay`, `feather` and

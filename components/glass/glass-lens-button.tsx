@@ -57,7 +57,12 @@ export function GlassLensButton({
     };
   }, [sourceRef]);
   return (
-    <div ref={root} className="glass-lens-action" data-disabled={disabled || undefined}>
+    <div
+      ref={root}
+      className="glass-lens-action"
+      data-disabled={disabled || undefined}
+      data-has-source={refractionTarget !== undefined || undefined}
+    >
       <GlassLens
         lens={{ lensW: frame.width, lensH: frame.height, borderRadius: frame.height / 2 }}
         active={!disabled && frame.width > 0 && frame.height > 0}

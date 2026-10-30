@@ -479,8 +479,9 @@ const UTILITIES_CSS = {
   },
   ".glass-lens-action::before": {
     content: '\"\"', position: "absolute", inset: "0", "border-radius": "inherit",
-    background: "color-mix(in srgb,var(--glass-lens-plane,var(--background)) 80%,transparent)", "pointer-events": "none",
+    background: "color-mix(in srgb,currentColor 5%,transparent)", "pointer-events": "none",
   },
+  ".glass-lens-action[data-has-source]::before": { background: "transparent", "backdrop-filter": "blur(1.5px)" },
   '.glass-lens-action:has([data-target-lens-ready="true"])::before': { opacity: "0" },
   ".glass-lens-action [data-glass-target-lens]": { transition: "opacity 140ms var(--ease-out)" },
   ".glass-lens-action > .glass-lens-action-label": {
@@ -689,7 +690,9 @@ const UTILITIES_CSS = {
     ".glass-video-controls": { gap: "16px" },
   },
   "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
-    ".glass-lens-action::before": { background: "var(--glass-lens-plane,var(--background))" },
+    ".glass-lens-action::before, .glass-lens-action[data-has-source]::before": {
+      background: "var(--glass-lens-plane,var(--background))", "backdrop-filter": "none",
+    },
     '[data-liquid-pressed="true"] .glass-slider-thumb': {
       background: "var(--foreground)",
       "backdrop-filter": "none",

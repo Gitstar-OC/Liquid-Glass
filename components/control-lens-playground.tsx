@@ -22,7 +22,7 @@ const DIALS = [
   { key: "curvature", label: "Curvature", min: 1, max: 100, step: 1 },
   { key: "splay", label: "Splay", min: 0.2, max: 2, step: 0.01 },
   { key: "chroma", label: "Chroma", min: 0, max: 1, step: 0.01 },
-  { key: "blur", label: "Blur", min: 0, max: 5, step: 0.1 },
+  { key: "blur", label: "Blur", min: 0, max: 24, step: 0.1 },
   {
     key: "rimStrength",
     label: "Rim light",
@@ -55,7 +55,7 @@ const HELP: Record<string, string> = {
   edgeHighlight: "Contrast of the thin optical edge.",
   specularAngle: "Direction of the two neutral edge glints, in degrees.",
 };
-type Preset = "slider" | "switch" | "popover" | "magnifier";
+type Preset = "slider" | "switch" | "surface" | "magnifier";
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
 export function ControlLensPlayground() {
   const [preset, setPreset] = useState<Preset>("slider");
@@ -95,7 +95,7 @@ export function ControlLensPlayground() {
   };
   const choosePreset = (next: Preset) => {
     setPreset(next);
-    setGeometry(next === "popover" ? { width: 70, height: 60, radius: 22 } :
+    setGeometry(next === "surface" ? { width: 70, height: 60, radius: 22 } :
       next === "magnifier" ? { width: 96, height: 72, radius: 28 } : INITIAL);
     setParameters(CONTROL_LENS_PRESETS[next]);
     setPosition({ x: 0.5, y: 0.5 });
@@ -254,7 +254,7 @@ export function ControlLensPlayground() {
             backgroundControls={
               <div className="flex flex-wrap items-center gap-2">
                 <ToggleGroup type="single" value={preset} onValueChange={next => next && choosePreset(next as Preset)} aria-label="Lens preset" spacing={0}>
-                  {([ ["slider", "Slider"], ["switch", "Switch"], ["popover", "Surface"], ["magnifier", "Magnify"] ] as const).map(([value, label]) => (
+                  {([ ["slider", "Slider"], ["switch", "Switch"], ["surface", "Surface"], ["magnifier", "Magnify"] ] as const).map(([value, label]) => (
                     <ToggleGroupItem key={value} value={value} className="h-8 rounded-full px-3 text-xs">{label}</ToggleGroupItem>
                   ))}
                 </ToggleGroup>

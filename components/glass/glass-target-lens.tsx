@@ -472,9 +472,8 @@ export function GlassLens({
       const grow = zoomTime
         ? easeOut(Math.min(1, elapsed / zoomTime))
         : 1;
-      // Lift grows WITH travel and returns as the spring settles. It does not
-      // expand first or release the persistent selection afterward.
-      const lift = settling ? Math.sin(Math.PI * progress) : 0;
+      const liftAt = (position: number) => settling
+        ? Math.sin(Math.PI * Math.max(0, Math.min(1, position))) : 0;
       if (motion === "spring" && moveTime) {
         const a = sampleControlLensSpring(
             from.left, left, momentum.left, elapsed, moveTime,
@@ -483,14 +482,19 @@ export function GlassLens({
             from.top, top, momentum.top, elapsed, moveTime,
           );
         velocity.current = { left: a.velocity, top: b.velocity };
-        place(a.value, b.value, from.zoom + (zoom - from.zoom) * grow, lift, progress);
+        // Follow actual spring distance, not its timeout. Otherwise the cap
+        // keeps growing after it has already reached the selected label.
+        const distance = Math.hypot(left - from.left, top - from.top),
+          arrival = 1 - Math.min(1,
+            Math.hypot(left - a.value, top - b.value) / Math.max(0.01, distance));
+        place(a.value, b.value, from.zoom + (zoom - from.zoom) * grow, liftAt(arrival), arrival);
       } else {
         velocity.current = { left: 0, top: 0 };
         place(
           from.left + (left - from.left) * move,
           from.top + (top - from.top) * move,
           from.zoom + (zoom - from.zoom) * grow,
-          lift,
+          liftAt(move),
           progress,
         );
       }

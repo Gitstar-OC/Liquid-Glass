@@ -36,14 +36,18 @@ const SURFACE_LENS: ControlLensParameters = {
 export const CONTROL_LENS_PRESETS = {
   slider: {
     ...CONTROL_LENS_DEFAULTS,
-    // The center is neutral. This adjustment only brings the fill into the
-    // top/bottom shoulder, preserving the 6px rail and its value position.
-    depth: 5.5, curvature: 58, chroma: 0, blur: 0.15, magnification: 17 / 6,
+    // Use the switch shoulder and the same 21px optical fill. Color at the
+    // top/bottom is displaced source, not a separate accent-colored outline.
+    chroma: 0, blur: 0.15, magnification: 21 / 6,
   },
   switch: { ...CONTROL_LENS_DEFAULTS, chroma: 0.22, blur: 0.45 },
-  selection: { ...SURFACE_LENS, chroma: 0, blur: 0, magnification: 1 },
-  popover: SURFACE_LENS,
-  button: { ...SURFACE_LENS, chroma: 0 },
+  selection: { ...SURFACE_LENS, depth: 8, chroma: 0, blur: 0, magnification: 1 },
+  surface: SURFACE_LENS,
+  popover: { ...SURFACE_LENS, chroma: 0, blur: 12 },
+  button: {
+    ...SURFACE_LENS, scale: 0.025, depth: 8, chroma: 0, blur: 0.35,
+    rimStrength: 0.45, edgeHighlight: 0.3, magnification: 1.06,
+  },
   magnifier: {
     ...CONTROL_LENS_DEFAULTS,
     scale: 0.025, depth: 8, curvature: 47, splay: 1,
@@ -69,7 +73,7 @@ export function resolveControlLens(
     curvature: finite(value.curvature, d.curvature, 1, 100),
     splay: finite(value.splay, d.splay, 0.2, 2),
     chroma: finite(value.chroma, d.chroma, 0, 1),
-    blur: finite(value.blur, d.blur, 0, 5),
+    blur: finite(value.blur, d.blur, 0, 24),
     rimStrength: finite(value.rimStrength ?? value.glow, d.rimStrength, 0, 1.5),
     edgeHighlight: finite(value.edgeHighlight, d.edgeHighlight, 0, 1),
     specularAngle: finite(value.specularAngle, d.specularAngle, -180, 180),

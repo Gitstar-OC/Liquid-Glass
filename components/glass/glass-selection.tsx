@@ -97,10 +97,14 @@ export function GlassSelection({
     };
   }, []);
 
+  // A uniform cap scale keeps circular ends circular. The old +28px height
+  // stretched a short pill into an ellipse, even after it had settled.
+  const marginX = refractionTarget ? selection.width * 0.1 : 0,
+    marginY = refractionTarget ? selection.height * 0.1 : 0;
   const indicator = {
     lens: {
-      lensW: selection.width + (refractionTarget ? 8 : 0),
-      lensH: selection.height + (refractionTarget ? 28 : 0),
+      lensW: selection.width + marginX * 2,
+      lensH: selection.height + marginY * 2,
       borderRadius: 999,
     },
     x: selection.x,
@@ -135,22 +139,22 @@ export function GlassSelection({
           <GlassLens
             {...indicator}
             settledScale={{
-              x: selection.width / (selection.width + 8),
-              y: selection.height / (selection.height + 28),
+              x: 1 / 1.2,
+              y: 1 / 1.2,
             }}
             style={{
               position: "absolute",
-              inset: "-14px -4px",
+              inset: `${-marginY}px ${-marginX}px`,
               zIndex: 2,
               pointerEvents: "none",
             }}
             refractionTarget={
               <div style={{
                 position: "absolute",
-                left: 4,
-                top: 14,
-                width: "calc(100% - 8px)",
-                height: "calc(100% - 28px)",
+                left: marginX,
+                top: marginY,
+                width: `calc(100% - ${marginX * 2}px)`,
+                height: `calc(100% - ${marginY * 2}px)`,
               }}>
                 {refractionTarget}
               </div>
