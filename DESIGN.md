@@ -40,14 +40,14 @@ examples, and every new component. Read alongside [performance rules](docs/glass
 
 - The homepage is a single-screen split composition with a dock. Its mark,
   heading and two glass links sit on pure white or black. The right side shows
-  one focused reference: Slider, Switch, Navigation, Video or Popover. Mount only that
+  one focused reference: Slider, Switch, Navigation, Video, Buttons or Popover. Mount only that
   example. Use a plain control plate on the quiet lavender/dark grid; the Video
   example owns its flower footage. No autoplay, optical settings or hidden live
   catalogue. Keep removed examples in
   the component gallery; do not bring the old menu catalogue back to the hero.
   The profile popover is one small bounded scene, with a local image, native
   menu actions and an edit dialog; it loads only when selected. Its menu uses
-  the compact lens on original DOM, with sharp foreground action labels.
+  the shared video/image finish over its displayed photo, with sharp action labels.
   A small active-state inspector pins the expanded material for comparison.
   Slider/switch thumbs start solid; navigation keeps its selected glass pill.
   Phones stack identity above the preview in flow.
@@ -162,8 +162,11 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   tooltips 4px. Local blur overrides remain available. Higher layers soften the
   lower content they capture. Reveal overlays after admission/texture readiness
   to avoid a bright CSS fallback flashing before the actual glass.
-  The compact profile menu uses 12px transmitted blur and a matching fallback;
-  its native actions and checkbox controls share one optical layer.
+  Image buttons and the profile menu use the video's actual WebGL finish over
+  a displayed image. Buttons are clear; the menu uses only 1.25px softening.
+  Keep the image's own pixels and source-colored rim, without a white body fill.
+  Its native actions and checkbox controls share one optical layer. Profile
+  identity stays outside the image so it is not replaced with sampled text.
 - The homepage has one tiny intro-link atlas and one dock lens at rest. A pressed
   control adds one compact target lens, for three typical active lenses. The
   inspector keeps that slot while pinned. Navigation's selected glass pill
@@ -215,12 +218,13 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   Cancellation, disabling and unmount clear work.
   Keyboard changes are instant; reduced motion removes travel and expansion.
 - Single-selection tabs/groups keep one persistent glass selection indicator.
-  Move it on an interruptible 500ms spring, preserving momentum when retargeted.
-  Explicit targets reserve 20% uniform expansion during travel. The pill grows
-  with actual spring distance and returns to the item's normal dimensions,
-  staying glass. Keep circular ends circular instead of stretching a tall cap
-  unequally. Counter-scale its source so highlighted labels retain their size.
-  Use the existing travel frame, not another timer or map per animation frame.
+  Explicit targets use an interruptible 650ms spring, preserving momentum when
+  retargeted. Travel opens the cap by up to 4px width / 24px height; it closes
+  delicately to normal dimensions while staying glass. Generate its real curved
+  shape on half-pixel geometry changes, never by stretching a tall bitmap.
+  Pure translation reuses the field. The highlighted source retains its native
+  size; a 46px navigation rail uses a 42px optical rail and 36px source items.
+  Use one gesture-bounded frame callback; no idle animation or React frame loop.
   `GlassToggleGroup options` builds the native items and inert highlighted source
   from one list. Keep overflow headroom around the track.
   Native Radix controls remain mounted and retain focus and input state.

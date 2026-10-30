@@ -1,20 +1,24 @@
 import { DEMO_PHOTOS, DEFAULT_BACKDROP } from "@/lib/demo-assets";
 import { cn } from "@/lib/utils";
+import type { Ref } from "react";
 
 /** Local, responsive assets keep scene pixels readable and decode costs bounded. */
 export function SceneBackdrop({
   photo = DEFAULT_BACKDROP,
   className,
   priority = false,
+  ref,
 }: {
   photo?: keyof typeof DEMO_PHOTOS;
   className?: string;
   priority?: boolean;
+  ref?: Ref<HTMLImageElement>;
 }) {
   const local = photo !== "coast";
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      ref={ref}
       src={DEMO_PHOTOS[photo].src}
       alt={DEMO_PHOTOS[photo].alt}
       width={1280}

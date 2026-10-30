@@ -3,10 +3,13 @@
 import { useLayoutEffect, useRef, useState, type ComponentProps, type ReactNode, type RefObject } from "react";
 import { Button } from "@/components/ui/button";
 import { GlassLens } from "@/components/glass/glass-target-lens";
+import { GlassImageLens } from "@/components/glass/glass-image-lens";
 import { CONTROL_LENS_PRESETS, type ControlLensInput } from "@/lib/glass-lens-optics";
 import { cn } from "@/lib/utils";
 
 export interface GlassLensButtonProps extends Omit<ComponentProps<typeof Button>, "variant" | "asChild"> {
+  /** Use the video-control material directly on this displayed image. */
+  imageRef?: RefObject<HTMLImageElement | null>;
   /** Optional explicit visual source, just like the slider's TrackFill. */
   refractionTarget?: ReactNode;
   /** Aligns that visual source. It never captures or clones this element. */
@@ -16,12 +19,13 @@ export interface GlassLensButtonProps extends Omit<ComponentProps<typeof Button>
 
 /** Native button semantics, sharp labels, and the same cached control lens. */
 export function GlassLensButton({
-  children, className, sourceRef, refractionTarget, lensParameters,
+  children, className, imageRef, sourceRef, refractionTarget, lensParameters,
   ref, disabled, size = "lg", type = "button", ...props
 }: GlassLensButtonProps) {
   const root = useRef<HTMLDivElement>(null);
   const [frame, setFrame] = useState({ width: 0, height: 0, left: 0, top: 0, sourceWidth: 0, sourceHeight: 0 });
   useLayoutEffect(() => {
+    if (imageRef) return;
     const node = root.current;
     if (!node) return;
     const source = sourceRef?.current;
@@ -55,15 +59,17 @@ export function GlassLensButton({
       node.removeEventListener("transitionend", settled);
       source?.removeEventListener("scroll", measure);
     };
-  }, [sourceRef]);
+  }, [imageRef, sourceRef]);
   return (
     <div
       ref={root}
       className="glass-lens-action"
       data-disabled={disabled || undefined}
-      data-has-source={refractionTarget !== undefined || undefined}
+      data-has-source={Boolean(imageRef || refractionTarget !== undefined) || undefined}
     >
-      <GlassLens
+      {imageRef ? (
+        <GlassImageLens imageRef={imageRef} active={!disabled} parameters={{ ...CONTROL_LENS_PRESETS.button, ...lensParameters }} />
+      ) : <GlassLens
         lens={{ lensW: frame.width, lensH: frame.height, borderRadius: frame.height / 2 }}
         active={!disabled && frame.width > 0 && frame.height > 0}
         parameters={{ ...CONTROL_LENS_PRESETS.button, ...lensParameters }}
@@ -75,7 +81,7 @@ export function GlassLensButton({
             {refractionTarget}
           </div>
         )}
-      />
+      />}
       <Button {...props} ref={ref} type={type} disabled={disabled} size={size} variant={null} className={cn("glass-lens-action-label", size === "lg" && "h-11 px-[18px] text-[13px]", className)}>
         {children}
       </Button>

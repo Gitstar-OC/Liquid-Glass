@@ -41,12 +41,11 @@ export const CONTROL_LENS_PRESETS = {
     chroma: 0, blur: 0.15, magnification: 21 / 6,
   },
   switch: { ...CONTROL_LENS_DEFAULTS, chroma: 0.22, blur: 0.45 },
-  selection: { ...SURFACE_LENS, depth: 8, chroma: 0, blur: 0, magnification: 1 },
+  selection: { ...CONTROL_LENS_DEFAULTS, chroma: 0, blur: 0, magnification: 1 },
   surface: SURFACE_LENS,
-  popover: { ...SURFACE_LENS, chroma: 0, blur: 12 },
+  popover: { ...CONTROL_LENS_DEFAULTS, chroma: 0, blur: 1.25, magnification: 1.12 },
   button: {
-    ...SURFACE_LENS, scale: 0.025, depth: 8, chroma: 0, blur: 0.35,
-    rimStrength: 0.45, edgeHighlight: 0.3, magnification: 1.06,
+    ...CONTROL_LENS_DEFAULTS, chroma: 0, blur: 0, magnification: 1.12,
   },
   magnifier: {
     ...CONTROL_LENS_DEFAULTS,

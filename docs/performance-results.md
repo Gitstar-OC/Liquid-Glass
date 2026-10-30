@@ -1098,3 +1098,40 @@ No tests, lint, typecheck, production build or benchmark were run, as requested.
 Local browser inspection remains unavailable under the existing development-URL
 policy restriction; appearance, interaction feel and frame timings are unverified.
 Registry packaging completed: 56 entries and 67 shared source files.
+
+## 2026-10-30 — shared video/image finish and true selection resizing
+
+- `GlassImageLens` reuses the video shader over the actual displayed image.
+  There are no duplicate backdrop images or DOM captures. Buttons use zero
+  softening; the popover uses a five-tap 1.25px softening kernel. The original
+  video's zero-softening path retains its source sampling and optical formula.
+- Static images upload to each admitted lens's texture on source change.
+  Load, resize, scroll and settled transforms schedule a coalesced redraw;
+  no playing-media callback or idle RAF is started for an image. Each image
+  lens owns a small canvas and budget slot. The two-button example still
+  requests four total slots with the intro/dock; limits remain five/fine,
+  three/coarse. Context loss, failed/CORS-blocked images, denied admission and
+  reduced transparency keep the native control and its lightweight fallback.
+- The profile source is 380 × 240px at most. Its caption is outside that image;
+  the local portal's collision boundary keeps menu samples inside the photo.
+  The menu's native checkbox rows share one lens. A 232 × 181px menu canvas at
+  the 1.5 DPR ceiling is 348 × 272 storage pixels (94,656), excluding its cached
+  displacement texture and the uploaded photo. This is an allocation derived
+  from geometry, not a measured GPU or frame-time result.
+- Highlighted-option selection now uses one 650ms interaction callback and true
+  shape maps on a half-pixel grid, with 4px/24px maximum travel growth. Only
+  dimension changes regenerate maps; pure translation repositions the existing
+  graph. The same quadrant computation and twelve-bundle cache apply. The map,
+  clipping contour and reflection are presented together after decode.
+  Accepted geometry never stretches. No React state update is made per frame.
+- Selection's source is the small option row with 64px sampling padding, bounded
+  to 1.5M CSS pixels and 4096px per axis. Its seven-primitive SVG graph is reused
+  while map images, displacement scale and position change. WebKit retains the
+  fresh-ID workaround. Source labels stay at native size. A separate clipped
+  presentation frame prevents its padding from increasing scroll dimensions.
+
+No tests, lint, typecheck, production build or benchmark were run, as requested.
+The public Aave navigation was inspected through its DOM and screenshots.
+Local visual parity, physical-device timing and the new media path remain
+unverified because browser policy blocks the development URL.
+Registry packaging completed with 57 entries and 68 shared source files.

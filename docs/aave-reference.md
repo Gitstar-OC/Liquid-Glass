@@ -81,3 +81,24 @@ The profile menu uses 12px blur, with separate 0.5px Surface tuning retained in
 the playground. Its additional native checkbox rows share its existing lens.
 Navigation uses uniform 20% travel expansion tied to actual spring distance,
 avoiding the previous unequal scale and late growth after arrival.
+
+## Follow-up: direct media finish and measured navigation source
+
+Revisited the live reference on 2026-10-30. At a 1274px viewport its navigation
+has five options in a 504.734px × 46px rail. Native items are 40px high, with
+13px horizontal padding, 6px gaps and 20px glyphs. Its highlighted copy has a
+42px rail and 36px items, keeping the same horizontal positions. The resting
+selected pill is exactly the selected item's width and 40px high; the traveling
+state is visibly taller. Source labels are black and the highlighted glyphs
+carry their section colors. This is observed DOM/style data, not private source.
+
+The local selection now resizes its actual lens field and contour together,
+instead of scaling an oversized bitmap. It retains the highlighted source's
+native size and releases its bounded spring callback after each interaction.
+
+The approved video shader is now also used directly for image buttons and the
+popover. This includes its original source-column color mixture and narrow
+highlight, rather than trying to match it with different SVG glints. The menu
+uses only slight 1.25px softening; the previous 12px frosted material is removed.
+The profile image is the actual source, with identity outside that source area.
+Local browser visual comparison remains blocked; no tests or timing run were made.

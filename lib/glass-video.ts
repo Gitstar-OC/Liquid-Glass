@@ -19,9 +19,15 @@ varying vec2 uv;
 uniform sampler2D videoFrame;
 uniform sampler2D map0; uniform sampler2D map1; uniform sampler2D map2; uniform sampler2D map3;
 uniform vec2 size; uniform vec2 crop;
+uniform vec2 sourceSize; uniform vec2 sourceOffset;
+uniform float softness[4];
 uniform vec4 rects[4]; uniform vec4 maps[4]; uniform float radii[4];
 uniform int count; uniform float refraction;
-vec3 source(vec2 p){vec2 v=vec2(p.x/size.x,1.-p.y/size.y);return texture2D(videoFrame,clamp((v-.5)*crop+.5,0.,1.)).rgb;}
+vec3 source(vec2 p){vec2 v=(p+sourceOffset)/sourceSize;v.y=1.-v.y;return texture2D(videoFrame,clamp((v-.5)*crop+.5,0.,1.)).rgb;}
+vec3 transmitted(vec2 p,float blur){
+ if(blur<=0.)return source(p);
+ return source(p)*.4+(source(p+vec2(blur,0.))+source(p-vec2(blur,0.))+source(p+vec2(0.,blur))+source(p-vec2(0.,blur)))*.15;
+}
 float chroma(vec3 c){return max(c.r,max(c.g,c.b))-min(c.r,min(c.g,c.b));}
 void main(){
  vec2 point=vec2(uv.x*size.x,(1.-uv.y)*size.y);
@@ -39,7 +45,7 @@ void main(){
   else field=texture2D(map3,mapUV).rgb;
   vec2 bend=(field.rg*255.-128.)/127.*info.y*refraction;
   vec2 samplePoint=point+bend;
-  vec3 color=source(samplePoint)*clamp(1.+1.5*128./255.-1.5*field.b,0.,1.);
+  vec3 color=transmitted(samplePoint,softness[i])*clamp(1.+1.5*128./255.-1.5*field.b,0.,1.);
   float inside=max(0.,-distance);
   if(inside<10.){
    // The same vertical source column supplies hue AND rim height.
@@ -72,8 +78,11 @@ export class GlassVideoRenderer {
   private rectData = new Float32Array(16);
   private mapData = new Float32Array(16);
   private radiusData = new Float32Array(4);
+  private blurData = new Float32Array(4);
+  private imageSource = "";
   private locations = new Map<string, WebGLUniformLocation | null>();
   private geometry = "";
+  private loading: Promise<HTMLImageElement[]> | null = null;
   private revision = 0;
   private disposed = false;
   private width = 1;
@@ -170,7 +179,10 @@ export class GlassVideoRenderer {
   async setLenses(lenses: VideoGlassLens[]) {
     const next = lenses.slice(0, 4),
       key = JSON.stringify(next);
-    if (key === this.geometry) return;
+    if (key === this.geometry) {
+      await this.loading;
+      return;
+    }
     this.geometry = key;
     this.lenses = next;
     const revision = ++this.revision;
@@ -187,12 +199,14 @@ export class GlassVideoRenderer {
     this.rectData.fill(0);
     this.mapData.fill(0);
     this.radiusData.fill(0);
+    this.blurData.fill(0);
     next.forEach((lens, i) => {
       this.rectData.set([lens.x, lens.y, lens.width, lens.height], i * 4);
       this.mapData.set(this.metrics.slice(i * 4, i * 4 + 4), i * 4);
       this.radiusData[i] = lens.radius;
+      this.blurData[i] = resolveControlLens(lens.parameters).blur;
     });
-    const images = await Promise.all(
+    const images = await (this.loading = Promise.all(
       next.map(async (lens) => {
         const p = resolveControlLens(lens.parameters),
           image = new Image();
@@ -205,7 +219,7 @@ export class GlassVideoRenderer {
         await image.decode();
         return image;
       }),
-    );
+    ));
     if (this.disposed || revision !== this.revision) return;
     const gl = this.gl;
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -225,30 +239,57 @@ export class GlassVideoRenderer {
   }
   draw(source: HTMLVideoElement, refraction = true) {
     if (this.disposed || source.readyState < 2 || !source.videoWidth) return;
+    this.imageSource = "";
+    this.paint(source, source.videoWidth, source.videoHeight, refraction);
+  }
+  /** Static images use the very same shader, with a small aligned source window.
+   * Their texture is uploaded on image change, never continuously while idle. */
+  drawImage(
+    source: HTMLImageElement,
+    window: { x: number; y: number; width: number; height: number },
+    refraction = true,
+  ) {
+    if (this.disposed || !source.complete || !source.naturalWidth) return;
+    this.paint(source, source.naturalWidth, source.naturalHeight, refraction, window);
+  }
+  private paint(
+    source: HTMLVideoElement | HTMLImageElement,
+    sourceWidth: number,
+    sourceHeight: number,
+    refraction: boolean,
+    window = { x: 0, y: 0, width: this.width, height: this.height },
+  ) {
     const gl = this.gl,
       p = this.program;
     gl.useProgram(p);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.video);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    const imageKey = source instanceof HTMLImageElement ? source.currentSrc || source.src : "";
+    if (!imageKey || imageKey !== this.imageSource) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+      this.imageSource = imageKey;
+    }
     this.mapTextures.forEach((texture, i) => {
       gl.activeTexture(gl.TEXTURE0 + i + 1);
       gl.bindTexture(gl.TEXTURE_2D, texture);
     });
     const scale = Math.max(
-      this.width / source.videoWidth,
-      this.height / source.videoHeight,
+      window.width / sourceWidth,
+      window.height / sourceHeight,
     );
     gl.uniform2f(this.uniform("size"), this.width, this.height);
+    gl.uniform2f(this.uniform("sourceSize"), window.width, window.height);
+    gl.uniform2f(this.uniform("sourceOffset"), window.x, window.y);
     gl.uniform2f(
       this.uniform("crop"),
-      this.width / (source.videoWidth * scale),
-      this.height / (source.videoHeight * scale),
+      window.width / (sourceWidth * scale),
+      window.height / (sourceHeight * scale),
     );
     gl.uniform4fv(this.uniform("rects[0]"), this.rectData);
     gl.uniform4fv(this.uniform("maps[0]"), this.mapData);
     gl.uniform1fv(this.uniform("radii[0]"), this.radiusData);
+    gl.uniform1fv(this.uniform("softness[0]"), this.blurData);
     gl.uniform1i(this.uniform("count"), this.lenses.length);
     gl.uniform1f(this.uniform("refraction"), refraction ? 1 : 0);
     gl.drawArrays(gl.TRIANGLES, 0, 6);

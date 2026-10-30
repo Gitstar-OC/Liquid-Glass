@@ -186,6 +186,8 @@ const TITLES = {
 const DESCRIPTIONS = {
   "glass-lens-button":
     "A native button with the shared cached control lens, sharp labels, and an optional aligned visual source.",
+  "glass-image-lens":
+    "The video-control optical shader over a bounded window of a displayed image, with event-driven rendering and no duplicate image DOM.",
   "glass-target-lens":
     "A cached moving SVG lens over original interactive DOM, with an optional explicit visual target for small controls. Position changes reuse the map; dormant lenses release their filter and budget slot.",
   "glass-preferences":
@@ -553,11 +555,14 @@ const UTILITIES_CSS = {
     background: "var(--glass-lens-plane,var(--background))",
   },
   ".glass-options-source::after": {
-    content: '""', position: "absolute", inset: "2px 0", "z-index": "-1",
+    content: '""', position: "absolute", inset: "-1px -3px", "z-index": "-1",
     "border-radius": "999px",
     background: "var(--glass-selection-track,var(--muted))",
+    border: "1px solid color-mix(in srgb,var(--foreground) 8%,transparent)",
   },
   ".glass-options-source .glass-options-source-item": { color: "var(--control-ink, var(--foreground))" },
+  '.glass-options-source:not([data-orientation="vertical"]) .glass-options-source-item': { height: "calc(100% - 4px)" },
+  '.glass-options-source[data-orientation="vertical"]::after': { inset: "-3px -1px" },
   ".glass-options-source .glass-options-source-item svg": { color: "var(--glass-option-color, var(--glass-action))", opacity: "1" },
   ".glass-options-source-item[data-disabled]": { opacity: ".4" },
   ".glass-selection-source > [data-glass-target-root]": {

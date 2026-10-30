@@ -106,6 +106,7 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
       scale,
       xChannelSelector: "R",
       yChannelSelector: "G",
+      "data-depth-ratio": config.depth ? scale / config.depth : 1,
       result,
     });
   if (config.chroma > 0) {
@@ -398,6 +399,16 @@ export class GlassFilterManager {
       this.key = key;
     }
     this.refresh();
+  }
+  /** A resized control can replace its field without rebuilding the SVG graph. */
+  replaceMap(map: string, depth: number) {
+    const image = this.template?.querySelector('[result="encodedMap"]');
+    if (image) {
+      image.setAttribute("href", map);
+      image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", map);
+    }
+    for (const node of this.template?.querySelectorAll<SVGElement>("[data-depth-ratio]") ?? [])
+      node.setAttribute("scale", String(depth * Number(node.dataset.depthRatio)));
   }
   /** Position updates never rebuild the map or filter graph. */
   moveMap(x: number, y: number, width?: number, height?: number) {

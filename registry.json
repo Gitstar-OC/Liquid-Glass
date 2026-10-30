@@ -279,6 +279,7 @@
         "http://localhost:3000/r/glass-form.json",
         "http://localhost:3000/r/glass-hover-card.json",
         "http://localhost:3000/r/glass-icons.json",
+        "http://localhost:3000/r/glass-image-lens.json",
         "http://localhost:3000/r/glass-input.json",
         "http://localhost:3000/r/glass-lens-button.json",
         "http://localhost:3000/r/glass-lens.json",
@@ -547,6 +548,23 @@
       ]
     },
     {
+      "name": "glass-image-lens",
+      "type": "registry:ui",
+      "title": "glass-image-lens",
+      "description": "The video-control optical shader over a bounded window of a displayed image, with event-driven rendering and no duplicate image DOM.",
+      "docs": "http://localhost:3000/docs/glass-image-lens",
+      "registryDependencies": [
+        "http://localhost:3000/r/glass-lens.json"
+      ],
+      "files": [
+        {
+          "path": "components/glass/glass-image-lens.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-image-lens.tsx"
+        }
+      ]
+    },
+    {
       "name": "glass-input",
       "type": "registry:ui",
       "title": "Glass Input",
@@ -645,6 +663,7 @@
       "docs": "http://localhost:3000/docs/glass-lens-button",
       "registryDependencies": [
         "button",
+        "http://localhost:3000/r/glass-image-lens.json",
         "http://localhost:3000/r/glass-lens.json",
         "http://localhost:3000/r/glass-target-lens.json",
         "http://localhost:3000/r/glass-utilities.json"
@@ -1579,13 +1598,20 @@
         ".glass-options-source::after": {
           "content": "\"\"",
           "position": "absolute",
-          "inset": "2px 0",
+          "inset": "-1px -3px",
           "z-index": "-1",
           "border-radius": "999px",
-          "background": "var(--glass-selection-track,var(--muted))"
+          "background": "var(--glass-selection-track,var(--muted))",
+          "border": "1px solid color-mix(in srgb,var(--foreground) 8%,transparent)"
         },
         ".glass-options-source .glass-options-source-item": {
           "color": "var(--control-ink, var(--foreground))"
+        },
+        ".glass-options-source:not([data-orientation=\"vertical\"]) .glass-options-source-item": {
+          "height": "calc(100% - 4px)"
+        },
+        ".glass-options-source[data-orientation=\"vertical\"]::after": {
+          "inset": "-3px -1px"
         },
         ".glass-options-source .glass-options-source-item svg": {
           "color": "var(--glass-option-color, var(--glass-action))",
@@ -2144,13 +2170,20 @@
         ".glass-options-source::after": {
           "content": "\"\"",
           "position": "absolute",
-          "inset": "2px 0",
+          "inset": "-1px -3px",
           "z-index": "-1",
           "border-radius": "999px",
-          "background": "var(--glass-selection-track,var(--muted))"
+          "background": "var(--glass-selection-track,var(--muted))",
+          "border": "1px solid color-mix(in srgb,var(--foreground) 8%,transparent)"
         },
         ".glass-options-source .glass-options-source-item": {
           "color": "var(--control-ink, var(--foreground))"
+        },
+        ".glass-options-source:not([data-orientation=\"vertical\"]) .glass-options-source-item": {
+          "height": "calc(100% - 4px)"
+        },
+        ".glass-options-source[data-orientation=\"vertical\"]::after": {
+          "inset": "-3px -1px"
         },
         ".glass-options-source .glass-options-source-item svg": {
           "color": "var(--glass-option-color, var(--glass-action))",
@@ -2565,6 +2598,11 @@
           "path": "components/glass/glass-icons.tsx",
           "type": "registry:ui",
           "target": "@components/glass/glass-icons.tsx"
+        },
+        {
+          "path": "components/glass/glass-image-lens.tsx",
+          "type": "registry:ui",
+          "target": "@components/glass/glass-image-lens.tsx"
         },
         {
           "path": "components/glass/glass-input.tsx",

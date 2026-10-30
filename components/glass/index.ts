@@ -334,3 +334,4 @@ export {
 export type { GlassShape } from "@/lib/glass";
 
 export { GlassLensButton, type GlassLensButtonProps } from "@/components/glass/glass-lens-button";
+export { GlassImageLens, type GlassImageLensProps } from "@/components/glass/glass-image-lens";

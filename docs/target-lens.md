@@ -72,11 +72,12 @@ represent the active state.
   travel; the state stays clamped. Release springs the cap back before contraction.
   Click and keyboard activation remain native Radix actions.
 - Single-selection tabs/groups keep the selected indicator glass after travel.
-  An explicit target reserves 20% uniform expansion and uses a 500ms spring
-  that preserves momentum when interrupted. It grows with actual spring distance
-  and returns to the item's normal dimensions while staying glass. Source
-  counter-scaling keeps the highlighted labels at their original size. Keyboard
-  and reduced-motion changes use normal dimensions immediately.
+  Explicit highlighted options use a 650ms spring with retained momentum.
+  Movement opens the lens by up to 4px width / 24px height, followed by a gentle
+  contraction to the selected item's normal size. Its actual contour and map
+  change together on a half-pixel grid; it does not stretch an oversized image.
+  Source labels retain their native size. Pure translation reuses the map and
+  graph. Keyboard and reduced-motion changes use normal dimensions immediately.
 - `opticalIdle` on a slider/switch pins the active material for an inspector.
   It defaults to false and consumes an optical budget slot while enabled.
 - `lensParameters` on either control adjusts the same shared optical model.
@@ -158,8 +159,9 @@ pass, used by the completed slider. Its 1.1px mask projects original source RGB
 around the lens, including neutral pixels. It does not estimate a brand hue or
 replace gray with black. `rim="none"` skips this optional completion treatment.
 
-The photo popover uses a small aligned visual target inside the native menu,
-with 1.12× source magnification and 12px blur. The lens and labels enter together
+The photo popover uses `GlassImageLens` over the displayed image, with the video
+control shader, 1.12× source magnification and slight 1.25px softening. Its
+source-colored rim and highlights come from that shader. The lens and labels enter together
 from Radix's trigger origin and close toward that origin. Foreground labels stay
 sharp, including its email-visibility and notification checkbox controls.
 Native menu scale never changes the map geometry. The video keeps its
@@ -181,25 +183,29 @@ edge, and angle rotates its neutral glints. No preset creates an emissive glow.
 
 ### Lens buttons
 
-`GlassLensButton` uses this same field, native button semantics and sharp labels.
-The entire control scales on press. Its optional source alignment is geometry
-only; it never captures or clones the provided element:
+`GlassLensButton imageRef` uses the video-control shader over a displayed image.
+It retains native button semantics and sharp labels; the entire control scales
+on press. It needs one image ref, without duplicate background markup:
 
 ```tsx
-<div ref={source}>
-  <Backdrop />
-  <GlassLensButton sourceRef={source} refractionTarget={<Backdrop />} onClick={save}>
+<div>
+  <img ref={image} src="/photo.webp" className="size-full object-cover" alt="Landscape" />
+  <GlassLensButton imageRef={image} onClick={save}>
     Save changes
   </GlassLensButton>
 </div>
 ```
 
-Keep that source bounded. The default button uses its own local fill when no
-explicit target is provided. Each ready button counts against the shared budget.
-The image preset uses 1.06× magnification, 0.35px blur and restrained neutral
-edge glints. It never introduces a white plane into the image. An image-backed
+Use a centered `object-cover` image. The image preset uses 1.12× magnification
+and zero blur, matching the play control. Its actual source pixels supply the
+colored rim. It never introduces a white plane into the image. An image-backed
 button awaiting admission uses a transparent 1.5px backdrop blur; reduced
 transparency still uses the accessible solid fallback.
+Each ready image lens occupies one budget slot and a lens-sized WebGL canvas.
+Images upload on source change, with redraws on load, resize, scroll and settled
+transforms. No idle loop runs. `sourceRef` / `refractionTarget` remain available
+for SVG-backed explicit DOM targets. Without either source, the button uses a
+local fill. The profile menu uses the same image path with sharp native rows.
 The homepage mounts only the selected example, including the new two-button scene.
 
 Legacy `strength`, `blur`, `chroma`, `curvature`, `splay`, `feather` and

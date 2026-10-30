@@ -7,19 +7,18 @@ import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { SceneBackdrop } from "@/components/site/scene-backdrop";
 
 export function LensButtonExample() {
-  const source = useRef<HTMLDivElement>(null);
+  const source = useRef<HTMLImageElement>(null);
   const [status, setStatus] = useState("");
   const { resolvedMode } = useGlassTheme();
-  const backdrop = <SceneBackdrop photo={resolvedMode === "dark" ? "ocean" : "dunes"} />;
   return (
     <div className="home-lens-buttons-wrap">
-      <div ref={source} className="home-lens-buttons-scene">
-        {backdrop}
+      <div className="home-lens-buttons-scene">
+        <SceneBackdrop ref={source} photo={resolvedMode === "dark" ? "ocean" : "dunes"} />
         <div className="home-lens-buttons-actions">
-          <GlassLensButton sourceRef={source} refractionTarget={backdrop} onClick={() => setStatus("Continued.")}>
+          <GlassLensButton imageRef={source} onClick={() => setStatus("Continued.")}>
             Continue <GlassIcon name="arrow" data-icon="inline-end" />
           </GlassLensButton>
-          <GlassLensButton sourceRef={source} refractionTarget={backdrop} onClick={() => setStatus("Changes saved.")}>
+          <GlassLensButton imageRef={source} onClick={() => setStatus("Changes saved.")}>
             <GlassIcon name="check" data-icon="inline-start" /> Save changes
           </GlassLensButton>
         </div>

@@ -223,12 +223,14 @@ a second opacity transition. There is no compact black shade texture/layer.
 Maps decode
 before reveal and are reused through the press. Pointer switch travel uses a
 400ms spring and a matching 400ms settling window; keyboard travel is zero. Tabs/groups
-keep one selected glass pill and use a 500ms spring with retained velocity when
-retargeted. A uniform 20% scale envelope shares that travel frame and follows
-actual distance to the destination, rather than elapsed timeout. It grows during movement
-and returns to the item's normal dimensions, staying glass. The source is
-counter-scaled to retain label size. No per-frame map regeneration, extra frame
-loop, hold/settle timer or material release is introduced.
+keep one selected glass pill. Explicit highlighted options use a 650ms spring
+with retained velocity. Travel opens the lens by up to 4px width / 24px height;
+a 115ms decay softens contraction after positional arrival. Its real shape is
+computed on a half-pixel geometry grid with the existing quadrant generator.
+Only shape changes request maps; translation reuses the field and SVG graph.
+Decoded map, rounded contour and reflection are accepted together, never stretched.
+The highlighted DOM retains native dimensions. One bounded travel callback ends
+on arrival, hidden-document changes, cancellation or unmount; no idle loop runs.
 Their persistent lens remains admitted until hidden/unmounted or deselected.
 Slider dragging follows its native value immediately. Elastic endpoint release
 returns over 180ms; endpoint offsets
@@ -299,10 +301,10 @@ without an idle polling loop. Menus keep content scrolling in a separate viewpor
 optical sampling margins never belong in that scrolling container.
 
 The homepage's on-demand profile menu portals into its own small scene host.
-The profile's visual DOM stays bounded to 380 × 264px. The menu filters an explicit
-aligned copy of that visual source in its own lens-sized viewport with 1.12× zoom
-and 12px blur. The source function is shared with the visible profile; it performs
-no scene capture. Sharp native menu rows render above it. Material and rows share
+The image stays bounded to 380 × 240px, with identity below it. The menu uses
+`GlassImageLens` and the actual video-control WebGL shader over that displayed
+image, with 1.12× zoom and slight 1.25px softening. It duplicates no image DOM and
+performs no scene capture. Sharp native menu rows render above it. Material and rows share
 one trigger-origin CSS entrance/exit transform; no displacement map is regenerated
 for opening scale. Native Radix wrapper positioning supplies source coordinates,
 with resize/position/scroll observers and no idle polling. Opacity crossfades the
@@ -310,14 +312,17 @@ ready lens while the readable fallback softens behind it. Reduced transparency
 uses the solid fallback; reduced motion removes travel and fades.
 The Surface playground preset retains its supplied 0.5px blur; the menu has a
 separate preset. Its two native checkbox controls add no independent lenses.
-Zero menu chroma avoids a second displacement pass while blur increases.
+The shader's softening samples five nearby image pixels, leaving its source-colored
+rim and neutral highlight sharp. The full source texture uploads only when the
+displayed image changes; position-only redraws reuse it. Each lens has its own
+bounded WebGL canvas, covered by the same admission budget and teardown rules.
 
-`GlassLensButton` likewise aligns an explicit target using source geometry only.
+`GlassLensButton imageRef` uses that same shader and a displayed-image ref.
 Its ResizeObserver is event driven; the complete button scales through CSS and
 keeps cached maps. The two-button example requests two lenses, so the homepage
 with its intro/dock requests four at most; admission still caps this at five/fine
 or three/coarse. The menu example has the same upper request count with its
 lens button trigger and open menu. No document-wide filter or capture is added.
 Image-backed fallback buttons use transparent 1.5px blur, never an 80% solid
-plane. The active photo material uses 1.06× zoom and restrained edge glints;
+plane. The active photo material uses 1.12× zoom with zero blur and the video rim;
 it has no white body fill. Reduced transparency retains the opaque fallback.

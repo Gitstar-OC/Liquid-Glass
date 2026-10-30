@@ -301,8 +301,9 @@ const API: Record<string, Prop[]> = {
     ["opticalIdle", "boolean", "Deprecated", "Selected liquid groups now stay glass at rest, so this inspector flag is no longer needed."],
   ],
   "glass-lens-button": [
+    ["imageRef", "RefObject<HTMLImageElement | null>", "—", "Use the displayed, centered object-cover image with the video player's WebGL refraction, source-colored rim and highlights. No duplicate image DOM. Static images redraw on load, resize, scroll or settled transforms."],
     ["refractionTarget / sourceRef", "ReactNode / RefObject<HTMLElement | null>", "Local fill", "Optional visual source and alignment element. No DOM capture: render the same small backdrop in the source and target. Text stays sharp above the lens."],
-    ["lensParameters", "ControlLensInput", "Button preset", "Uses the shared curved field with 1.06× source zoom, 0.35px blur and restrained neutral glints. Image-backed fallbacks stay transparent. Geometry comes from the native button; press scale reuses its cached map."],
+    ["lensParameters", "ControlLensInput", "Video-control preset", "Clear 1.12× source zoom with no blur. Image-backed buttons use the video-control shader; explicit DOM targets keep SVG refraction. Geometry comes from the native button, and the complete control scales on press."],
     ["Native button props", "Button props", "size=lg", "Click, keyboard activation, disabled, type, ref and accessible labels remain native. The complete button including its lens scales on press."],
   ],
   "glass-slider": [

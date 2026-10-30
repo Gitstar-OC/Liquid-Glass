@@ -360,13 +360,20 @@
     ".glass-options-source::after": {
       "content": "\"\"",
       "position": "absolute",
-      "inset": "2px 0",
+      "inset": "-1px -3px",
       "z-index": "-1",
       "border-radius": "999px",
-      "background": "var(--glass-selection-track,var(--muted))"
+      "background": "var(--glass-selection-track,var(--muted))",
+      "border": "1px solid color-mix(in srgb,var(--foreground) 8%,transparent)"
     },
     ".glass-options-source .glass-options-source-item": {
       "color": "var(--control-ink, var(--foreground))"
+    },
+    ".glass-options-source:not([data-orientation=\"vertical\"]) .glass-options-source-item": {
+      "height": "calc(100% - 4px)"
+    },
+    ".glass-options-source[data-orientation=\"vertical\"]::after": {
+      "inset": "-3px -1px"
     },
     ".glass-options-source .glass-options-source-item svg": {
       "color": "var(--glass-option-color, var(--glass-action))",

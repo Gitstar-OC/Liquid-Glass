@@ -741,14 +741,19 @@ summary {
 .glass-options-source::after {
   content: "";
   position: absolute;
-  inset: 2px 0;
+  inset: -1px -3px;
   z-index: -1;
   border-radius: 999px;
   background: var(--glass-selection-track, var(--muted));
+  border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
 }
 .glass-options-source .glass-options-source-item {
   color: var(--control-ink, var(--foreground));
 }
+.glass-options-source:not([data-orientation="vertical"]) .glass-options-source-item {
+  height: calc(100% - 4px);
+}
+.glass-options-source[data-orientation="vertical"]::after { inset: -3px -1px; }
 .glass-options-source .glass-options-source-item svg {
   color: var(--glass-option-color, var(--glass-action));
   opacity: 1;
@@ -914,6 +919,11 @@ summary {
   padding: 48px 48px 24px;
   flex: 1;
 }
+@media (min-width: 1000px) {
+  .home-layout:has([data-example="navigation"]) {
+    grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
+  }
+}
 .home-intro {
   min-width: 0;
 }
@@ -989,6 +999,7 @@ summary {
     max-width: 520px;
     justify-self: end;
   }
+  .home-showcase:has([data-example="navigation"]) { max-width: 584px; }
 }
 @media (max-width: 900px) {
   .home-layout {
@@ -1096,24 +1107,25 @@ summary {
   border-radius: 25px;
 }
 .home-navigation-plate {
-  max-width: 444px;
+  max-width: 584px;
   height: 100px;
   padding: 27px 20px;
   border-radius: 25px;
 }
 .home-navigation-scroll {
-  width: calc(100% + 12px);
+  width: calc(100% + 24px);
   overflow-x: auto;
-  padding: 20px 6px;
-  margin: -20px -6px;
+  padding: 20px 12px;
+  margin: -20px -12px;
   scrollbar-width: none;
 }
 .home-navigation {
   --glass-selection-track: var(--control-track);
-  min-width: max(360px, 100%);
+  min-width: max-content;
   width: max-content;
   height: 46px;
-  padding: 3px;
+  padding: 2px;
+  border: 1px solid color-mix(in srgb, var(--control-ink) 8%, transparent);
   border-radius: 999px;
   background: var(--control-track);
 }
@@ -1125,15 +1137,16 @@ summary {
   justify-content: center;
   gap: 6px;
   height: 40px;
-  padding: 0 12px;
+  padding: 0 13px;
   border-radius: 999px;
   font-size: 14px;
   font-weight: 400;
-  color: var(--control-ink);
+  color: color-mix(in srgb, var(--control-ink) 55%, transparent);
 }
+.home-navigation-item[data-state="on"] { color: var(--control-ink); }
 .home-navigation-item svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   opacity: 0.5;
 }
@@ -1227,50 +1240,32 @@ summary {
   max-width: 380px;
 }
 .home-profile-scene {
-  height: 264px;
+  height: 240px;
   border-radius: 28px;
 }
-.home-profile-backdrop {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: 28px;
-  background: var(--control-plane);
+.home-profile-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   color: var(--control-ink);
 }
-.home-profile-optical-plane {
-  position: absolute;
-  inset: -128px;
-  background: var(--control-plane);
-}
-.home-profile-photo {
-  position: absolute;
-  top: 28px;
-  right: 40px;
-  width: 176px;
-  height: 176px;
-  overflow: hidden;
-  border-radius: 50%;
-}
-.home-profile-identity {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 24px;
-}
-.home-profile-identity h2 {
+.home-profile-caption h2 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 22px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: -.04em;
 }
-.home-profile-identity p {
-  margin-top: 4px;
-  font-size: 13px;
+.home-profile-caption > div { min-width: 0; flex: 1; }
+.home-profile-caption p {
+  margin-top: 2px;
+  font-size: 11px;
   opacity: .55;
 }
+.home-profile-caption a { flex-shrink: 0; font-size: 10px; opacity: .6; }
+.home-control-stage:is([data-example="popover"], [data-example="navigation"]) { padding: 20px; }
 .glass-menu-panel .home-profile-menu-item {
   min-height: 44px;
   gap: 12px;
@@ -1305,8 +1300,8 @@ summary {
   position: relative;
   isolation: isolate;
   border-radius: 22px;
-  background: color-mix(in srgb, var(--control-plane) 8%, transparent);
-  backdrop-filter: blur(12px);
+  background: transparent;
+  backdrop-filter: blur(1.25px);
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
   transition: background-color 180ms, backdrop-filter 180ms;
   color: var(--control-ink);
@@ -1316,6 +1311,7 @@ summary {
   backdrop-filter: none;
 }
 .home-profile-menu [data-glass-target-lens] { transition: opacity 160ms var(--ease-out); }
+.home-profile-menu [data-glass-image-lens] { z-index: 1; }
 .home-profile-menu [role="group"],
 .home-profile-menu [data-slot="dropdown-menu-separator"] {
   position: relative;

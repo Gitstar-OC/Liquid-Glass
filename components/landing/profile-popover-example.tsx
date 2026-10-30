@@ -20,7 +20,7 @@ import {
   GlassDialogContent,
 } from "@/components/glass/glass-dialog";
 import { GlassIcon } from "@/components/glass/glass-icons";
-import { GlassLens } from "@/components/glass/glass-target-lens";
+import { GlassImageLens } from "@/components/glass/glass-image-lens";
 import { GlassLensButton } from "@/components/glass/glass-lens-button";
 import { GlassInput } from "@/components/glass/glass-input";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
@@ -41,10 +41,10 @@ export function ProfilePopoverExample() {
   const [notifications, setNotifications] = useState(false);
   const [menu, setMenu] = useState<HTMLDivElement | null>(null);
   const [lens, setLens] = useState({
-    width: 232, height: 116, left: 0, top: 0, sourceWidth: 380, sourceHeight: 264,
+    left: 0, top: 0,
     owner: null as HTMLDivElement | null,
   });
-  const profile = useRef<HTMLDivElement>(null);
+  const profile = useRef<HTMLImageElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const inputId = useId();
   const dark = resolvedMode === "dark";
@@ -63,11 +63,8 @@ export function ProfilePopoverExample() {
       const left = b.left - a.left,
         top = b.top - a.top;
       setLens((old) =>
-        old.owner === menu && old.width === width && old.height === height &&
-        Math.abs(old.left - left) < 0.1 && Math.abs(old.top - top) < 0.1 &&
-        old.sourceWidth === a.width && old.sourceHeight === a.height
-          ? old : { width, height, left, top,
-            sourceWidth: a.width, sourceHeight: a.height, owner: menu },
+        old.owner === menu && Math.abs(old.left - left) < 0.1 && Math.abs(old.top - top) < 0.1
+          ? old : { left, top, owner: menu },
       );
     };
     const schedule = () => {
@@ -108,7 +105,8 @@ export function ProfilePopoverExample() {
   };
 
   return (
-    <div ref={setContainer} id="profile-preview" className="home-profile-wrap">
+    <div id="profile-preview" className="home-profile-wrap">
+      <div ref={setContainer} className="relative">
       <GlassSettingsProvider
         optics={{ colorBleed: 0.65 }}
         config={{ tint: dark ? 0.12 : 0.08, blur: 8 }}
@@ -117,9 +115,7 @@ export function ProfilePopoverExample() {
           className="home-profile-scene"
           appearance={resolvedMode}
           content={
-            <div ref={profile} className="size-full">
-              <ProfileBackdrop name={name} showEmail={showEmail} />
-            </div>
+            <SceneBackdrop ref={profile} photo="ocean" />
           }
         >
           <DropdownMenu modal={false}>
@@ -128,8 +124,7 @@ export function ProfilePopoverExample() {
                 <GlassLensButton
                   ref={trigger}
                   size="icon-lg"
-                  sourceRef={profile}
-                  refractionTarget={<ProfileBackdrop name={name} showEmail={showEmail} />}
+                  imageRef={profile}
                   aria-label="Profile actions"
                 >
                   <GlassIcon name="more" />
@@ -149,23 +144,12 @@ export function ProfilePopoverExample() {
                 if (editing) event.preventDefault();
               }}
             >
-              <GlassLens
-                lens={{ lensW: lens.width, lensH: lens.height, borderRadius: 22 }}
+              <GlassImageLens
+                imageRef={profile}
+                radius={22}
                 active={Boolean(menu && lens.owner === menu)}
                 parameters={CONTROL_LENS_PRESETS.popover}
-                style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-                refractionTarget={
-                  <div style={{
-                    position: "absolute",
-                    left: -lens.left,
-                    top: -lens.top,
-                    width: lens.sourceWidth,
-                    height: lens.sourceHeight,
-                  }}>
-                    <div className="home-profile-optical-plane" />
-                    <ProfileBackdrop name={name} showEmail={showEmail} />
-                  </div>
-                }
+                sourcePosition={{ x: lens.left, y: lens.top }}
               />
               <DropdownMenuGroup>
                 <DropdownMenuItem
@@ -271,27 +255,17 @@ export function ProfilePopoverExample() {
           </Dialog>
         </GlassScene>
       </GlassSettingsProvider>
-      <a
-        href={DEMO_PHOTOS.ocean.href}
-        target="_blank"
-        rel="noreferrer"
-        className="self-end text-[10px] text-muted-foreground hover:text-foreground"
-      >
-        Photo: {DEMO_PHOTOS.ocean.credit} ↗
-      </a>
-    </div>
-  );
-}
-
-/** One visual source for the profile and its small, inert menu target. */
-function ProfileBackdrop({ name, showEmail }: { name: string; showEmail: boolean }) {
-  return (
-    <div className="home-profile-backdrop">
-      <div className="home-profile-photo"><SceneBackdrop photo="ocean" /></div>
-      <div className="home-profile-identity">
-        <h2>{name}</h2>
-        <p style={{ visibility: showEmail ? "visible" : "hidden" }}>alex@example.com</p>
+      </div>
+      <div className="home-profile-caption">
+        <div>
+          <h2>{name}</h2>
+          <p style={{ visibility: showEmail ? "visible" : "hidden" }}>alex@example.com</p>
+        </div>
+        <a href={DEMO_PHOTOS.ocean.href} target="_blank" rel="noreferrer">
+          Photo: {DEMO_PHOTOS.ocean.credit} ↗
+        </a>
       </div>
     </div>
   );
 }
+

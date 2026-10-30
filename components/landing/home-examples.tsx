@@ -79,6 +79,7 @@ const SECTIONS = ([
   { value: "spokes", label: "Spokes", color: "#9896ff" },
   { value: "reserves", label: "Reserves", color: "#00827b" },
   { value: "assets", label: "Assets", color: "#f45d35" },
+  { value: "chains", label: "Chains", color: "#ffb400" },
 ] as const).map(({ value, label, color }) => ({
   value,
   label,
