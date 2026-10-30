@@ -210,7 +210,8 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   of the slider also rest solid. Active screenshots must not become idle styling.
   Holding allows direct horizontal dragging; release commits the side beyond
   halfway once. Cancellation restores the checked state. Account for rendered
-  presentation scale when converting pointer distance to travel.
+  presentation scale when converting pointer distance to travel. Allow up to
+  8px resistant optical travel beyond either end without changing the state.
 - Shared `GlassLens engaged` uses the same 220ms scale/material transition in
   both directions. Keep the cap visible until contraction completes, then hand
   back to the native thumb without another fade. Readiness gates the reveal.
@@ -314,3 +315,17 @@ Overlay portals outside a bounded source use real CSS backdrop blur and release
 their scene mirror. Do not stretch a tiny dock source across a page or describe
 this fallback as DOM refraction. Keep menu rows and their scrolling viewport
 separate from the optical layer.
+
+## Shared lens presets and buttons
+
+Slider, switch, selection, surface and magnification are presets of the same
+curved field. Keep their source composition and tuning separate; do not fork the
+map generator. Slider edge refinements preserve its neutral center and value.
+The surface preset uses the supplied .041 scale / 17 depth / 47 curvature /
+1 splay / .27 chroma / .5 blur / 1 rim light / .46 edge / 53° settings.
+The playground explains each parameter; Glow remains a compatibility alias only.
+
+Lens buttons use `GlassLensButton` and an optional aligned visual target. Keep
+labels outside the filter and scale the whole native action on press. Source refs
+supply coordinates, never arbitrary DOM capture. Native menus animate their
+lens and rows together from the trigger origin, using a fixed cached map.

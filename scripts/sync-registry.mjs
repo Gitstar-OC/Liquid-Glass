@@ -103,7 +103,7 @@ function depsOf(path) {
 
   // CSS-level materials: every glass control is poured into one of these.
   if (
-    /glass-(chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
+    /glass-(lens-action|chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
       src,
     )
   )
@@ -153,6 +153,7 @@ const TITLES = {
   "glass-sidebar": "Glass Sidebar",
   "glass-badge": "Glass Badge",
   "glass-button": "Glass Button",
+  "glass-lens-button": "Glass Lens Button",
   "glass-elastic-button": "Elastic Glass Button",
   "glass-card": "Glass Card",
   "glass-input": "Glass Input",
@@ -183,6 +184,8 @@ const TITLES = {
 };
 
 const DESCRIPTIONS = {
+  "glass-lens-button":
+    "A native button with the shared cached control lens, sharp labels, and an optional aligned visual source.",
   "glass-target-lens":
     "A cached moving SVG lens over original interactive DOM, with an optional explicit visual target for small controls. Position changes reuse the map; dormant lenses release their filter and budget slot.",
   "glass-preferences":
@@ -470,6 +473,30 @@ const UTILITIES_CSS = {
   '.glass-hold-button[data-liquid-held="true"]': {
     transform: "scale(1.045)",
   },
+  ".glass-lens-action": {
+    position: "relative", isolation: "isolate", display: "inline-grid", "flex-shrink": "0",
+    "border-radius": "999px", transition: "scale 180ms var(--ease-out)",
+  },
+  ".glass-lens-action::before": {
+    content: '\"\"', position: "absolute", inset: "0", "border-radius": "inherit",
+    background: "color-mix(in srgb,var(--glass-lens-plane,var(--background)) 80%,transparent)", "pointer-events": "none",
+  },
+  '.glass-lens-action:has([data-target-lens-ready="true"])::before': { opacity: "0" },
+  ".glass-lens-action [data-glass-target-lens]": { transition: "opacity 140ms var(--ease-out)" },
+  ".glass-lens-action > .glass-lens-action-label": {
+    position: "relative", "z-index": "2", "border-radius": "inherit",
+    background: "transparent", color: "inherit", cursor: "pointer",
+  },
+  ".glass-lens-action > .glass-lens-action-label:disabled": { opacity: "1" },
+  ".glass-lens-action:has(button:active:not(:disabled))": { scale: ".97" },
+  ".glass-lens-action[data-disabled]": { opacity: ".45", cursor: "not-allowed" },
+  ".glass-lens-action-source": {
+    position: "absolute", inset: "-128px", background: "var(--glass-lens-plane,var(--background))",
+  },
+  ".glass-lens-action-source::after": {
+    content: '\"\"', position: "absolute", inset: "134px 136px", "border-radius": "999px",
+    background: "color-mix(in srgb,var(--glass-action) 12%,var(--glass-lens-plane,var(--background)))",
+  },
   ".glass-slider-thumb": {
     background: "var(--slider-thumb-fill,var(--foreground))",
   },
@@ -525,7 +552,7 @@ const UTILITIES_CSS = {
     background: "var(--glass-lens-plane,var(--background))",
   },
   ".glass-options-source::after": {
-    content: '""', position: "absolute", inset: "0", "z-index": "-1",
+    content: '""', position: "absolute", inset: "2px 0", "z-index": "-1",
     "border-radius": "999px",
     background: "var(--glass-selection-track,var(--muted))",
   },
@@ -617,6 +644,8 @@ const UTILITIES_CSS = {
     "box-shadow": "none !important",
   },
   "@media (prefers-reduced-motion: reduce)": {
+    ".glass-lens-action": { scale: "1 !important", transition: "none" },
+    ".glass-lens-action [data-glass-target-lens]": { transition: "none" },
     ".glass-slider-thumb::before": {
       transition: "none",
     },
@@ -660,6 +689,7 @@ const UTILITIES_CSS = {
     ".glass-video-controls": { gap: "16px" },
   },
   "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
+    ".glass-lens-action::before": { background: "var(--glass-lens-plane,var(--background))" },
     '[data-liquid-pressed="true"] .glass-slider-thumb': {
       background: "var(--foreground)",
       "backdrop-filter": "none",
@@ -743,7 +773,7 @@ items.push({
 function makeItem({ name, type, title, description, files, extraDeps = [] }) {
   const roll = rollUp(files.map((f) => f.path));
   const needsUtilities = files.some((f) =>
-    /glass-(chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
+    /glass-(lens-action|chip|field|inset|accent|control-icon|action|outline|state-swap|tooltip-motion|elastic-button|selection|atlas-finish|material|player-details|toast-host|video-player)/.test(
       read(f.path),
     ),
   );

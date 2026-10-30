@@ -50,3 +50,19 @@ unreachable from all app routes and registry source roots were removed.
 This is an independently implemented model based on public reference behavior.
 Local visual comparison and physical-device timing remain unmeasured because
 browser access to the development URL was denied. No tests were written or run.
+
+## Follow-up: supplied surface tuning
+
+Surface and Magnify are now exposed as presets of the shared map generator.
+Surface uses the supplied 70 × 60px / 22px radius geometry and .041 / 17 / 47 /
+1 / .27 / .5 / 1 / .46 / 53° controls. Its 1.12× interior zoom and the gentler
+1.25× Magnify preset can be explored over the original image/text source.
+Every playground field includes a description. Switch geometry/optics remain
+unchanged; only an 8px resistant endpoint offset was added. Slider depth changes
+from 4.5 to 5.5 solely to bring its existing 17px source into the top/bottom
+shoulder. The neutral center, visible rail and native value travel stay the same.
+
+The menu uses an aligned explicit profile target so that lens and native rows
+can share the trigger-origin entrance/exit transform. This replaces filtering
+the profile in place beneath independently appearing menu labels. New lens
+buttons use that same explicit-source model over the existing image assets.

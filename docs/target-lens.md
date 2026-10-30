@@ -66,7 +66,9 @@ represent the active state.
   from displacement, with no separate color-estimation filter.
   Hold and drag horizontally to change sides. Drag motion is direct; release
   commits the side beyond halfway once, then settles. A cancelled drag restores
-  the checked state. Click and keyboard activation remain native Radix actions.
+  the checked state. Dragging past either end adds up to 8px of resistant lens
+  travel; the state stays clamped. Release springs the cap back before contraction.
+  Click and keyboard activation remain native Radix actions.
 - Single-selection tabs/groups keep the selected indicator glass after travel.
   An explicit target uses a pill 8px wider and 28px taller than its item and a
   500ms spring that preserves momentum when interrupted. It grows during travel
@@ -154,9 +156,44 @@ pass, used by the completed slider. Its 1.1px mask projects original source RGB
 around the lens, including neutral pixels. It does not estimate a brand hue or
 replace gray with black. `rim="none"` skips this optional completion treatment.
 
-The photo popover uses this same shared field with 1.18× source magnification
-and 2px blur. Its foreground menu labels stay outside the filtered DOM. The
-video keeps its shader, source, controls and map response.
+The photo popover uses a small aligned visual target inside the native menu,
+with 1.12× source magnification and 0.5px blur. The lens and labels enter together
+from Radix's trigger origin and close toward that origin. Foreground labels stay
+sharp. Native menu scale never changes the map geometry. The video keeps its
+shader, source, controls and map response.
+
+### Presets and optical controls
+
+The playground offers Slider, Switch, Surface and Magnify presets with a short
+explanation under every control. Surface starts at 70 × 60px, radius 22, with the
+provided scale .041, depth 17, curvature 47, splay 1, chroma .27, blur .5, rim
+light 1, edge highlight .46 and angle 53. This is a local tuning preset, not a
+claim that identical parameter units reproduce a private implementation.
+
+Magnify enlarges the original source by 1.25× with a gentler shoulder. Surface
+uses 1.12× zoom; track presets enlarge their explicit fill instead. They all use
+one map generator. Scale/depth/curvature/splay shape the bend, chroma separates
+channels, blur softens source pixels, rim light and edge highlight finish the
+edge, and angle rotates its neutral glints. No preset creates an emissive glow.
+
+### Lens buttons
+
+`GlassLensButton` uses this same field, native button semantics and sharp labels.
+The entire control scales on press. Its optional source alignment is geometry
+only; it never captures or clones the provided element:
+
+```tsx
+<div ref={source}>
+  <Backdrop />
+  <GlassLensButton sourceRef={source} refractionTarget={<Backdrop />} onClick={save}>
+    Save changes
+  </GlassLensButton>
+</div>
+```
+
+Keep that source bounded. The default button uses its own local fill when no
+explicit target is provided. Each ready button counts against the shared budget.
+The homepage mounts only the selected example, including the new two-button scene.
 
 Legacy `strength`, `blur`, `chroma`, `curvature`, `splay`, `feather` and
 `optics.lightAngle` inputs remain mapped for compatibility; prefer `parameters`.

@@ -8,6 +8,10 @@ import { GlassToggleGroup } from "@/components/glass/glass-toggle";
 import { GlassIcon } from "@/components/glass/glass-icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const LensButtons = dynamic(
+  () => import("@/components/lens-button-example").then(module => module.LensButtonExample),
+  { loading: () => <Skeleton className="h-64 w-full rounded-[24px]" /> },
+);
 const VideoPlayer = dynamic(
   () =>
     import("@/components/glass/glass-video-player").then(
@@ -57,6 +61,12 @@ export const HOME_EXAMPLES = [
     hint: "Play, seek or skip through the flowers.",
   },
   {
+    id: "buttons",
+    name: "Buttons",
+    doc: "glass-lens-button",
+    hint: "Two actions over the same background.",
+  },
+  {
     id: "popover",
     name: "Popover",
     doc: "glass-dropdown",
@@ -69,7 +79,6 @@ const SECTIONS = ([
   { value: "spokes", label: "Spokes", color: "#9896ff" },
   { value: "reserves", label: "Reserves", color: "#00827b" },
   { value: "assets", label: "Assets", color: "#f45d35" },
-  { value: "chains", label: "Chains", color: "#d7a400" },
 ] as const).map(({ value, label, color }) => ({
   value,
   label,
@@ -131,6 +140,7 @@ export function HomeExample({
       </div>
     );
   if (id === "popover") return <ProfilePopover />;
+  if (id === "buttons") return <LensButtons />;
   return (
     <nav
       aria-label="Glass navigation example"

@@ -332,3 +332,5 @@ export {
   type GlassVideoPlayerProps,
 } from "@/components/glass/glass-video-player";
 export type { GlassShape } from "@/lib/glass";
+
+export { GlassLensButton, type GlassLensButtonProps } from "@/components/glass/glass-lens-button";

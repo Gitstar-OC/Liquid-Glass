@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { NavigationExample } from "@/components/gallery/navigation-example";
+import { LensButtonExample } from "@/components/lens-button-example";
 import { ButtonExamples } from "@/components/gallery/button-examples";
 import * as G from "@/components/glass";
 import { ComponentExample } from "@/components/landing/component-workbench";
@@ -96,6 +97,8 @@ export function GalleryExample({
     case "glass-state-button":
     case "glass-button":
       return <ButtonExamples />;
+    case "glass-lens-button":
+      return <LensButtonExample />;
     case "glass-switch":
       return (
         <Panel title="A little less noise.">

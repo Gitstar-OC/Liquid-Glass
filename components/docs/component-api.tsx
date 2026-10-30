@@ -300,6 +300,11 @@ const API: Record<string, Prop[]> = {
     ["children / refractionTarget", "ReactNode", "—", "Existing composition remains available. An explicit target overrides the options-generated source."],
     ["opticalIdle", "boolean", "Deprecated", "Selected liquid groups now stay glass at rest, so this inspector flag is no longer needed."],
   ],
+  "glass-lens-button": [
+    ["refractionTarget / sourceRef", "ReactNode / RefObject<HTMLElement | null>", "Local fill", "Optional visual source and alignment element. No DOM capture: render the same small backdrop in the source and target. Text stays sharp above the lens."],
+    ["lensParameters", "ControlLensInput", "Button preset", "Uses the shared curved field with 1.12× source zoom and 0.5px blur. Geometry comes from the native button, with cached maps reused through press scale."],
+    ["Native button props", "Button props", "size=lg", "Click, keyboard activation, disabled, type, ref and accessible labels remain native. The complete button including its lens scales on press."],
+  ],
   "glass-slider": [
     [
       "appearance",

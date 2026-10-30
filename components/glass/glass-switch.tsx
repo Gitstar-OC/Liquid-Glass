@@ -38,6 +38,7 @@ export function GlassSwitch({
   const [pointer, setPointer] = React.useState(false),
     [pressed, setPressed] = React.useState(false);
   const [dragPosition, setDragPosition] = React.useState<number | null>(null);
+  const [pull, setPull] = React.useState(0);
   const gesture = React.useRef<{
     id: number;
     x: number;
@@ -53,6 +54,7 @@ export function GlassSwitch({
     timer.current = null;
     gesture.current = null;
     setDragPosition(null);
+    setPull(0);
     setPressed(false);
   }, []);
   React.useEffect(() => {
@@ -153,7 +155,10 @@ export function GlassSwitch({
         if (!drag.moved && Math.abs(distance) < 3) return;
         drag.moved = true;
         suppressClick.current = true;
-        drag.position = Math.max(0, Math.min(1, drag.start + distance / drag.travel));
+        const raw = drag.start + distance / drag.travel;
+        drag.position = Math.max(0, Math.min(1, raw));
+        const excess = (raw - drag.position) * (width - 6 - thumbWidth);
+        setPull(8 * Math.tanh(excess / 24));
         setDragPosition(drag.position);
       }}
       onPointerUp={(event) => {
@@ -168,6 +173,7 @@ export function GlassSwitch({
           }
           gesture.current = null;
           setDragPosition(null);
+          setPull(0);
         }
         release();
         onPointerUp?.(event);
@@ -210,6 +216,7 @@ export function GlassSwitch({
           borderRadius: lensHeight / 2,
         }}
         x={position}
+        offsetX={pull}
         active={!props.disabled}
         engaged={idle || pressed}
         restScale={{ x: thumbWidth / lensWidth, y: thumbHeight / lensHeight }}

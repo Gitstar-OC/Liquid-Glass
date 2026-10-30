@@ -19,13 +19,15 @@ import {
 } from "@/components/glass/glass-dialog";
 import { GlassIcon } from "@/components/glass/glass-icons";
 import { GlassLens } from "@/components/glass/glass-target-lens";
+import { GlassLensButton } from "@/components/glass/glass-lens-button";
 import { GlassInput } from "@/components/glass/glass-input";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { SceneBackdrop } from "@/components/site/scene-backdrop";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { DEMO_PHOTOS } from "@/lib/demo-assets";
+import { CONTROL_LENS_PRESETS } from "@/lib/glass-lens-optics";
 
-/** The menu lens bends the original profile DOM; its action labels stay sharp. */
+/** One aligned profile target moves and appears with the native menu. */
 export function ProfilePopoverExample() {
   const { resolvedMode } = useGlassTheme();
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -35,7 +37,7 @@ export function ProfilePopoverExample() {
   const [status, setStatus] = useState("");
   const [menu, setMenu] = useState<HTMLDivElement | null>(null);
   const [lens, setLens] = useState({
-    width: 232, height: 116, x: 0, y: 0.46,
+    width: 232, height: 116, left: 0, top: 0, sourceWidth: 380, sourceHeight: 264,
     owner: null as HTMLDivElement | null,
   });
   const profile = useRef<HTMLDivElement>(null);
@@ -54,12 +56,14 @@ export function ProfilePopoverExample() {
       const width = menu.offsetWidth,
         height = menu.offsetHeight;
       if (!width || !height || b.bottom < a.top || b.top > a.bottom) return;
-      const x = Math.max(0, Math.min(1, (b.left - a.left) / Math.max(1, a.width - width))),
-        y = Math.max(0, Math.min(1, (b.top - a.top) / Math.max(1, a.height - height)));
+      const left = b.left - a.left,
+        top = b.top - a.top;
       setLens((old) =>
         old.owner === menu && old.width === width && old.height === height &&
-        Math.abs(old.x - x) < 0.0001 && Math.abs(old.y - y) < 0.0001
-          ? old : { width, height, x, y, owner: menu },
+        Math.abs(old.left - left) < 0.1 && Math.abs(old.top - top) < 0.1 &&
+        old.sourceWidth === a.width && old.sourceHeight === a.height
+          ? old : { width, height, left, top,
+            sourceWidth: a.width, sourceHeight: a.height, owner: menu },
       );
     };
     const schedule = () => {
@@ -109,44 +113,25 @@ export function ProfilePopoverExample() {
           className="home-profile-scene"
           appearance={resolvedMode}
           content={
-            <GlassLens
-              lens={{ lensW: lens.width, lensH: lens.height, borderRadius: 18 }}
-              x={lens.x}
-              y={lens.y}
-              active={Boolean(menu && lens.owner === menu)}
-              parameters={{
-                depth: 8,
-                blur: 2,
-                chroma: 0,
-                rimStrength: 0.42,
-                magnification: 1.18,
-              }}
-              className="size-full"
-            >
-              <div ref={profile} className="home-profile-backdrop">
-                <div className="home-profile-photo">
-                  <SceneBackdrop photo="ocean" />
-                </div>
-                <div className="home-profile-identity">
-                  <h2>{name}</h2>
-                  <p>alex@example.com</p>
-                </div>
-              </div>
-            </GlassLens>
+            <div ref={profile} className="size-full">
+              <ProfileBackdrop name={name} />
+            </div>
           }
         >
           <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <GlassButton
+            <div className="absolute top-5 left-5">
+              <DropdownMenuTrigger asChild>
+                <GlassLensButton
                 ref={trigger}
-                shape="circle"
-                composite={false}
+                size="icon-lg"
+                sourceRef={profile}
+                refractionTarget={<ProfileBackdrop name={name} />}
                 aria-label="Profile actions"
-                className="absolute top-5 left-5 size-10"
               >
-                <GlassIcon name="more" className="size-5" />
-              </GlassButton>
-            </DropdownMenuTrigger>
+                  <GlassIcon name="more" />
+                </GlassLensButton>
+              </DropdownMenuTrigger>
+            </div>
             <GlassDropdownMenuContent
               ref={setMenu}
               container={container}
@@ -160,6 +145,23 @@ export function ProfilePopoverExample() {
                 if (editing) event.preventDefault();
               }}
             >
+              <GlassLens
+                lens={{ lensW: lens.width, lensH: lens.height, borderRadius: 22 }}
+                active={Boolean(menu && lens.owner === menu)}
+                parameters={CONTROL_LENS_PRESETS.popover}
+                style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+                refractionTarget={
+                  <div style={{
+                    position: "absolute",
+                    left: -lens.left,
+                    top: -lens.top,
+                    width: lens.sourceWidth,
+                    height: lens.sourceHeight,
+                  }}>
+                    <ProfileBackdrop name={name} />
+                  </div>
+                }
+              />
               <DropdownMenuGroup>
                 <DropdownMenuItem
                   className="home-profile-menu-item"
@@ -253,6 +255,19 @@ export function ProfilePopoverExample() {
       >
         Photo: {DEMO_PHOTOS.ocean.credit} ↗
       </a>
+    </div>
+  );
+}
+
+/** One visual source for the profile and its small, inert menu target. */
+function ProfileBackdrop({ name }: { name: string }) {
+  return (
+    <div className="home-profile-backdrop">
+      <div className="home-profile-photo"><SceneBackdrop photo="ocean" /></div>
+      <div className="home-profile-identity">
+        <h2>{name}</h2>
+        <p>alex@example.com</p>
+      </div>
     </div>
   );
 }

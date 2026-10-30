@@ -12,6 +12,7 @@ import { GlassLens } from "@/components/glass/glass-target-lens";
 import { GlassSlider } from "@/components/glass/glass-slider";
 import { GlassVideoPlayer } from "@/components/glass/glass-video-player";
 import { GlassToggleGroup } from "@/components/glass/glass-toggle";
+import { LensButtonExample } from "@/components/lens-button-example";
 import { useState } from "react";
 
 function TargetLensDemo() {
@@ -51,6 +52,7 @@ function TargetLensDemo() {
 
 /** The docs and catalogue render the same maintained, interactive examples. */
 export function ItemDemo({ name }: { name: string }) {
+  if (name === "glass-lens-button") return <LensButtonExample />;
   if (name === "glass-toggle")
     return (
       <DemoFrame label="Persistent glass selection" backdrop="plain">

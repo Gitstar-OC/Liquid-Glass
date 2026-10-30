@@ -6,7 +6,9 @@ import { GlassSliderSource } from "@/components/glass/glass-slider";
 import { ParameterSlider } from "@/components/site/preview-controls";
 import { PreviewToolbar } from "@/components/site/preview-toolbar";
 import { Button } from "@/components/ui/button";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Field, FieldGroup, FieldDescription } from "@/components/ui/field";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { SceneBackdrop } from "@/components/site/scene-backdrop";
 import {
   CONTROL_LENS_PRESETS,
   buildControlLensTextures,
@@ -37,9 +39,26 @@ const DIALS = [
     step: 1,
   },
 ] as const;
-const INITIAL = { width: 96, height: 57, radius: 28 };
+const INITIAL = { width: 64, height: 32, radius: 16 };
+const HELP: Record<string, string> = {
+  width: "Width of the lens in CSS pixels.",
+  height: "Height of the lens in CSS pixels.",
+  radius: "Corner radius, limited by the shorter side.",
+  magnification: "Enlarges the track fill, or the whole source in Surface and Magnify.",
+  scale: "Overall displacement strength. Lower values make a gentler bend.",
+  depth: "Lens thickness: increases the bend near the curved edge.",
+  curvature: "Changes how steeply the edge curves.",
+  splay: "Redistributes the bend across the shoulder.",
+  chroma: "Separates color channels slightly near the edge.",
+  blur: "Softens source pixels. Control labels can stay sharp above them.",
+  rimStrength: "Strength of the edge reflection. This does not paint white glow.",
+  edgeHighlight: "Contrast of the thin optical edge.",
+  specularAngle: "Direction of the two neutral edge glints, in degrees.",
+};
+type Preset = "slider" | "switch" | "popover" | "magnifier";
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
 export function ControlLensPlayground() {
+  const [preset, setPreset] = useState<Preset>("slider");
   const [parameters, setParameters] = useState<ControlLensParameters>(
     CONTROL_LENS_PRESETS.slider,
   );
@@ -59,7 +78,8 @@ export function ControlLensPlayground() {
     });
   // The slider magnifies its explicit track along the short axis. Keep the
   // displacement map neutral in the center, just like the installed control.
-  const opticalParameters = { ...parameters, magnification: 1 };
+  const trackSource = preset === "slider" || preset === "switch";
+  const opticalParameters = { ...parameters, magnification: trackSource ? 1 : parameters.magnification };
   const parameterKey = JSON.stringify(opticalParameters);
   useEffect(() => {
     const texture = buildControlLensTextures(
@@ -71,8 +91,13 @@ export function ControlLensPlayground() {
     if (map.current) map.current.src = texture.displacement;
   }, [geometry.width, geometry.height, geometry.radius, parameterKey]);
   const reset = () => {
-    setGeometry(INITIAL);
-    setParameters(CONTROL_LENS_PRESETS.slider);
+    choosePreset(preset);
+  };
+  const choosePreset = (next: Preset) => {
+    setPreset(next);
+    setGeometry(next === "popover" ? { width: 70, height: 60, radius: 22 } :
+      next === "magnifier" ? { width: 96, height: 72, radius: 28 } : INITIAL);
+    setParameters(CONTROL_LENS_PRESETS[next]);
     setPosition({ x: 0.5, y: 0.5 });
   };
   return (
@@ -83,7 +108,7 @@ export function ControlLensPlayground() {
             <div
               ref={source}
               className="control-lens-source relative h-64 overflow-hidden rounded-[24px] bg-card"
-              style={{ "--glass-lens-plane": "var(--card)" } as CSSProperties}
+              style={{ "--glass-lens-plane": "var(--card)", "--glass-action": "#9896ff" } as CSSProperties}
             >
               <GlassLens
                 lens={{
@@ -96,7 +121,11 @@ export function ControlLensPlayground() {
                 y={position.y}
                 className="size-full"
                 rim="column"
-                refractionTarget={
+                refractionTarget={preset === "switch" ? (
+                  <div className="absolute inset-0 bg-card">
+                    <div className="absolute left-1/2 top-1/2 -translate-1/2 rounded-full bg-(--glass-action)" style={{ width: 74 * .95, height: 21 }} />
+                  </div>
+                ) : trackSource ? (
                   <GlassSliderSource
                     inset={24}
                     thickness={6}
@@ -107,13 +136,14 @@ export function ControlLensPlayground() {
                       Selectable source text
                     </span>
                   </GlassSliderSource>
-                }
+                ) : undefined}
               >
                 <div className="absolute inset-0 bg-card">
-                  <div className="absolute inset-x-6 top-1/2 h-[6px] -translate-y-1/2 overflow-hidden rounded-full bg-foreground/18">
+                  {!trackSource && <SceneBackdrop photo="ocean" />}
+                  {preset === "switch" ? <div className="absolute left-1/2 top-1/2 -translate-1/2 rounded-full bg-(--glass-action)" style={{ width: 74, height: 28 }} /> : trackSource && <div className="absolute inset-x-6 top-1/2 h-[6px] -translate-y-1/2 overflow-hidden rounded-full bg-foreground/18">
                     <div className="h-full w-1/2 rounded-full bg-(--glass-action)" />
-                  </div>
-                  <span className="absolute inset-x-6 bottom-8 text-center text-sm text-muted-foreground">
+                  </div>}
+                  <span className="absolute inset-x-6 bottom-8 text-center text-sm text-muted-foreground" style={!trackSource ? { color: "#fff" } : undefined}>
                     Selectable source text
                   </span>
                 </div>
@@ -195,7 +225,7 @@ export function ControlLensPlayground() {
               />
             </div>
             <figcaption className="text-xs text-muted-foreground" id={hintId}>
-              Drag the lens. Arrow keys move it too. Track optics match the slider.
+              Drag the lens or use arrow keys. {trackSource ? "Track optics match the controls." : "This lens bends the original image and text."}
             </figcaption>
           </figure>
           <figure className="flex min-w-0 flex-col gap-3">
@@ -221,10 +251,15 @@ export function ControlLensPlayground() {
           }
           blurControl={null}
           label="Control lens"
-          backgroundControls={
-            <Button variant="ghost" size="sm" onClick={reset}>
-              Reset lens
-            </Button>
+            backgroundControls={
+              <div className="flex flex-wrap items-center gap-2">
+                <ToggleGroup type="single" value={preset} onValueChange={next => next && choosePreset(next as Preset)} aria-label="Lens preset" spacing={0}>
+                  {([ ["slider", "Slider"], ["switch", "Switch"], ["popover", "Surface"], ["magnifier", "Magnify"] ] as const).map(([value, label]) => (
+                    <ToggleGroupItem key={value} value={value} className="h-8 rounded-full px-3 text-xs">{label}</ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <Button variant="ghost" size="sm" onClick={reset}>Reset lens</Button>
+              </div>
           }
           href="/docs/glass-target-lens"
         />
@@ -252,6 +287,7 @@ export function ControlLensPlayground() {
               unit="px"
               onValueChange={(value) => changeGeometry(dial.key, value)}
             />
+            <FieldDescription>{HELP[dial.key]}</FieldDescription>
           </Field>
         ))}
         {DIALS.map((dial) => (
@@ -266,6 +302,7 @@ export function ControlLensPlayground() {
                 setParameters((current) => ({ ...current, [dial.key]: value }))
               }
             />
+            <FieldDescription>{HELP[dial.key]}</FieldDescription>
           </Field>
         ))}
       </FieldGroup>

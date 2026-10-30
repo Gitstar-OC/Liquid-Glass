@@ -1031,3 +1031,39 @@ times, not rendering timings. Browser policy still prevents local visual/frame
 inspection, so pixel accuracy, interaction feel and physical-device performance
 remain unverified. No claim of a perfect visual copy is made.
 
+
+## 2026-10-30 — surface presets, menu entrance and lens buttons
+
+The backup (`c1e340c`) and cleanup (`4d05ef1`) were pushed before this follow-up.
+
+- Switch optics and dimensions are unchanged. Captured input adds a saturating
+  `8 * tanh(excess / 24)` CSS-pixel offset, with the native state clamped. Release
+  reuses the existing spring and retained cap. No new timer or frame loop.
+- The slider's 6px visible / 17px optical source and neutral center stay unchanged.
+  Depth 5.5 raises only the curved shoulder response so source color reaches its
+  upper/lower rim. Its padded map is now 100 × 68px, 27,200 storage pixels at 2×,
+  rather than the preceding 96 × 64px allocation. No color-projection pass is
+  added for these arcs.
+- Selection/surface/button/magnification use presets of one map implementation.
+  The supplied surface tuning is documented in aave-reference.md and exposed
+  with parameter descriptions. Navigation keeps zero chroma and sharp labels.
+- The menu moves its own lens-sized explicit target and foreground rows together
+  through CSS transforms. Original profile DOM is no longer filtered during its
+  opening. Radix layout bounds exclude visual animation scale. Map generation
+  depends on final geometry, not every animation frame.
+- Each lens button observes its own/source bounds and uses native input events.
+  Press scale includes both labels and optical layer. The photo target is aligned
+  presentational DOM, not a screenshot or arbitrary DOM clone. Image data is reused
+  by the browser. Two buttons plus intro/dock request four lenses; the same is
+  true for trigger/menu plus intro/dock. Admission remains five/fine or three/coarse.
+- The selected homepage example is still the only mounted example. The approved
+  video renderer, shader and source parameters remain unchanged.
+
+No tests, lint, typecheck, production build or benchmark were run. Registry
+packaging is recorded below after regeneration. Local visual parity and frame
+rate remain unverified because development-URL browser access is blocked.
+
+Packaging completed with 56 registry entries and 67 shared source files. The
+read-only dependency inventory covered 148 source files with no unreachable
+files or unresolved local imports. This does not establish runtime behavior,
+pixel parity, or a frame-rate result.

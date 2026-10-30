@@ -246,7 +246,9 @@ Switch dragging uses a captured pointer and the rendered track scale. Movement
 is direct while held; release commits the side beyond halfway exactly once,
 suppressing the following pointer click. Cancellation clears the gesture and
 restores the checked side. Pointer travel then retains its ordinary spring and
-contraction. Keyboard and native form semantics stay with Radix.
+contraction. A bounded 8px elastic offset at either end uses the same translated
+frame; drag state and source color stay clamped. Keyboard and native form
+semantics stay with Radix.
 `opticalIdle` is an explicit inspector override, false in normal controls.
 The homepage exposes this as Inspect active state. No idle frame loop remains.
 
@@ -296,15 +298,19 @@ without an idle polling loop. Menus keep content scrolling in a separate viewpor
 optical sampling margins never belong in that scrolling container.
 
 The homepage's on-demand profile menu portals into its own small scene host.
-Its image and profile DOM stay bounded to 380 × 264px at most. The compact
-`GlassLens` filters that original DOM under the native menu using the shared
-curved field, explicit 1.18× source magnification and 2px blur;
-action labels stay sharp. `material="external"` avoids another menu surface.
-A readable solid fallback remains until the lens is admitted/decoded. Native
-Radix positioning drives event-based rectangle updates; entrance animation scale
-is excluded from geometry, so it cannot regenerate the map each frame.
-The lens also waits for the current menu node's measured position before reveal;
-external menu labels use a fade rather than an independently scaled silhouette.
-Edit profile replaces the menu with a native Radix dialog. No page-wide capture
-or idle loop is added. Copy link uses the preview URL, whose fragment selects
-this example on arrival.
+The profile's visual DOM stays bounded to 380 × 264px. The menu filters an explicit
+aligned copy of that visual source in its own lens-sized viewport with 1.12× zoom
+and 0.5px blur. The source function is shared with the visible profile; it performs
+no scene capture. Sharp native menu rows render above it. Material and rows share
+one trigger-origin CSS entrance/exit transform; no displacement map is regenerated
+for opening scale. Native Radix wrapper positioning supplies source coordinates,
+with resize/position/scroll observers and no idle polling. Opacity crossfades the
+ready lens while the readable fallback softens behind it. Reduced transparency
+uses the solid fallback; reduced motion removes travel and fades.
+
+`GlassLensButton` likewise aligns an explicit target using source geometry only.
+Its ResizeObserver is event driven; the complete button scales through CSS and
+keeps cached maps. The two-button example requests two lenses, so the homepage
+with its intro/dock requests four at most; admission still caps this at five/fine
+or three/coarse. The menu example has the same upper request count with its
+lens button trigger and open menu. No document-wide filter or capture is added.

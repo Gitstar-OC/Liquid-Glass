@@ -27,22 +27,27 @@ export const CONTROL_LENS_DEFAULTS: ControlLensParameters = {
   specularAngle: 45,
   magnification: 1,
 };
+const SURFACE_LENS: ControlLensParameters = {
+  ...CONTROL_LENS_DEFAULTS,
+  scale: 0.041, depth: 17, curvature: 47, splay: 1,
+  chroma: 0.27, blur: 0.5, rimStrength: 1,
+  edgeHighlight: 0.46, specularAngle: 53, magnification: 1.12,
+};
 export const CONTROL_LENS_PRESETS = {
   slider: {
     ...CONTROL_LENS_DEFAULTS,
-    depth: 4.5,
-    curvature: 58,
-    chroma: 0,
-    blur: 0.15,
-    magnification: 17 / 6,
+    // The center is neutral. This adjustment only brings the fill into the
+    // top/bottom shoulder, preserving the 6px rail and its value position.
+    depth: 5.5, curvature: 58, chroma: 0, blur: 0.15, magnification: 17 / 6,
   },
   switch: { ...CONTROL_LENS_DEFAULTS, chroma: 0.22, blur: 0.45 },
-  selection: {
+  selection: { ...SURFACE_LENS, chroma: 0, blur: 0, magnification: 1 },
+  popover: SURFACE_LENS,
+  button: { ...SURFACE_LENS, chroma: 0 },
+  magnifier: {
     ...CONTROL_LENS_DEFAULTS,
-    depth: 12,
-    chroma: 0,
-    blur: 0,
-    rimStrength: 0.42,
+    scale: 0.025, depth: 8, curvature: 47, splay: 1,
+    chroma: 0, blur: 0, magnification: 1.25,
   },
 } satisfies Record<string, ControlLensParameters>;
 const finite = (

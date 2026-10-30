@@ -53,6 +53,12 @@ export const COMPONENT_CATALOGUE: {
     description: "Circular, pill and rectangular actions. One optical surface.",
   },
   {
+    id: "glass-lens-button",
+    title: "Lens button",
+    group: "Controls",
+    description: "A native action using the shared control lens and an optional aligned visual source.",
+  },
+  {
     id: "glass-button-group",
     title: "Button group",
     group: "Controls",
