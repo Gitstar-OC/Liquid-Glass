@@ -22,7 +22,7 @@ export function GalleryPreview({
   const panel = {
     "glass-tooltip": "tooltip", "glass-hover-card": "hover-card",
     "glass-popover": "popover", "glass-dropdown": "dropdown",
-    "glass-drawer": "drawer", "glass-card": "card",
+    "glass-drawer": "drawer", "glass-card": "card", "glass-toaster": "toast",
   } as const;
   if (name in panel) return <PanelShowcase key={name} compact initialExample={panel[name as keyof typeof panel]} />;
   return (

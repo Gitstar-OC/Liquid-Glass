@@ -2,7 +2,7 @@
 
 import {
   useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore,
-  type CSSProperties, type HTMLAttributes, type ReactNode, type Ref,
+  type CSSProperties, type HTMLAttributes, type ReactNode, type Ref, type RefObject,
 } from "react";
 import { Slot } from "radix-ui";
 import { useGlassScene, useGlassSettings } from "@/components/glass-scene";
@@ -18,7 +18,7 @@ import { GLASS_PRIORITY, registerGlassLens } from "@/lib/glass-performance";
 import { subscribeReducedGlass as subscribe, prefersReducedGlass as reduced, serverGlassPreference as server } from "@/lib/glass-preferences";
 import { cn } from "@/lib/utils";
 
-type PanelKind = "tooltip" | "hover-card" | "popover" | "dropdown" | "drawer" | "dialog" | "card" | "button" | "dock";
+type PanelKind = "tooltip" | "hover-card" | "popover" | "dropdown" | "drawer" | "dialog" | "card" | "button" | "dock" | "toast";
 export interface GlassPanelProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
   kind?: PanelKind;
@@ -27,12 +27,14 @@ export interface GlassPanelProps extends HTMLAttributes<HTMLElement> {
   /** A continuous, softly joined pointer. Its side follows Radix placement. */
   beak?: boolean;
   lensParameters?: ControlLensInput;
+  /** A complete bounded source, including when this panel is rendered in a portal. */
+  sceneRef?: RefObject<HTMLElement | null>;
   ink?: "auto" | "light" | "dark";
   contrastProtection?: boolean;
   asChild?: boolean;
   ref?: Ref<HTMLElement>;
 }
-const BLUR: Record<PanelKind, number> = { tooltip: 0.35, "hover-card": 4, popover: 6, dropdown: 6, drawer: 8, dialog: 6, card: 4, button: 0.5, dock: 6 };
+const BLUR: Record<PanelKind, number> = { tooltip: 0.35, "hover-card": 4, popover: 6, dropdown: 6, drawer: 8, dialog: 6, card: 4, button: 0.5, dock: 6, toast: 8 };
 // A wide stationary dock needs a shallow lens, not a magnified control thumb.
 const DOCK_LENS = { ...CONTROL_LENS_PRESETS.surface, blur: 6, scale: 0.03, depth: 12,
   curvature: 47, splay: 1, magnification: 1.05, rimStrength: 0.9, edgeHighlight: 0.46 };
@@ -42,7 +44,7 @@ const OPPOSITE = { top: "bottom", bottom: "top", left: "right", right: "left" } 
  * supported. Foreground text stays sharp; no whole-page source is captured. */
 export function GlassPanel({
   children, kind = "card", radius = 20, shape = "squircle", beak = false,
-  lensParameters, ink = "auto", contrastProtection = true, asChild = false, ref, className, style, ...props
+  lensParameters, sceneRef, ink = "auto", contrastProtection = true, asChild = false, ref, className, style, ...props
 }: GlassPanelProps) {
   const root = useRef<HTMLElement | null>(null), housing = useRef<SVGSVGElement>(null);
   const layer = useRef<HTMLDivElement>(null), host = useRef<HTMLDivElement>(null);
@@ -75,7 +77,7 @@ export function GlassPanel({
   const safeRadius = Number.isFinite(radius) ? Math.max(0, Math.min(radius,
     size.width ? size.width / 2 : Infinity, size.height ? size.height / 2 : Infinity)) : 20;
   const small = kind === "tooltip";
-  const geometry = { shape, rimWidth: small ? 1.1 : 1.6, bevel: small ? 0 : 1.25, columnRim: !small, resolution: small ? 2 : 1.5,
+  const geometry = { shape, rimWidth: small ? 1.1 : 1.6, bevel: small ? 0 : 1.25, columnRim: true, resolution: small ? 2 : 1.5,
     ...(beak ? { beak: { side: size.side, offset: size.offset } } : {}) };
   const metrics = controlLensMetrics(size.width, size.height, optical, geometry);
   const key = JSON.stringify([size.width, size.height, safeRadius, parameterKey, geometry]);
@@ -85,7 +87,7 @@ export function GlassPanel({
     bundle.parameters === parameterKey && bundle.pad === metrics.pad ? bundle.textures : null;
   const bounded = size.width >= 2 && size.height >= 2 && size.width <= 1024 && size.height <= 1024;
   const fullWidth = size.width + metrics.pad * 2, fullHeight = size.height + metrics.pad * 2;
-  const source = scene?.source;
+  const source = sceneRef ?? scene?.source;
   const portable = Boolean(source && size.covered);
   const available = portable || nativeBackdrop;
   const reveal = !inherited && kind !== "tooltip" && kind !== "button" && kind !== "dock";
@@ -130,8 +132,13 @@ export function GlassPanel({
     if (source?.current) resize.observe(source.current);
     const position = new MutationObserver(schedule);
     // Observe only the native positioning wrappers, never the optical subtree.
-    for (let parent = node.parentElement, count = 0; parent && count < 2; parent = parent.parentElement, count++)
-      position.observe(parent, { attributes: true, attributeFilter: ["style", "data-side"] });
+    const wrappers: HTMLElement[] = [];
+    for (let parent = node.parentElement, count = 0; parent && count < 2; parent = parent.parentElement, count++) {
+      wrappers.push(parent);
+      position.observe(parent, { attributes: true, attributeFilter: ["style", "data-side", "data-state", "data-mounted"] });
+      parent.addEventListener("transitionend", schedule);
+      parent.addEventListener("animationend", schedule);
+    }
     const arrow = node.parentElement?.querySelector("[data-glass-beak-anchor]")?.parentElement;
     if (arrow) position.observe(arrow, { attributes: true, attributeFilter: ["style"] });
     node.addEventListener("transitionend", schedule);
@@ -141,6 +148,10 @@ export function GlassPanel({
     measure();
     return () => {
       cancelAnimationFrame(frame); resize.disconnect(); position.disconnect();
+      for (const wrapper of wrappers) {
+        wrapper.removeEventListener("transitionend", schedule);
+        wrapper.removeEventListener("animationend", schedule);
+      }
       node.removeEventListener("transitionend", schedule); node.removeEventListener("animationend", schedule);
       window.removeEventListener("resize", schedule); window.removeEventListener("scroll", schedule, true);
     };
@@ -184,9 +195,9 @@ export function GlassPanel({
       map: textures.displacement, width: fullWidth, height: fullHeight,
       depth: settings.refraction === false ? 0 : metrics.displacementScale,
       chroma: 0, blur: optical.blur, opticalTransmission: settings.refraction !== false,
-      rim: textures.rim, rimScale: small ? 0 : textures.rimScale,
-      colorBleed: small ? 0.3 : kind === "dock" ? 0.6 : 0.45, glint: 1,
-      colorSaturation: 1, colorGain: 1, colorSpread: small ? 8 : Math.min(32, size.height / 4),
+      rim: textures.rim, rimScale: textures.rimScale, rimSource: "displaced",
+      colorBleed: small ? 0.55 : 0.8, glint: 1,
+      colorSaturation: 1, colorGain: 1, colorSpread: Math.min(24, size.height / 6),
     });
     if (!portable) {
       setReady(true);

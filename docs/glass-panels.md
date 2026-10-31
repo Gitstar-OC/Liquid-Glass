@@ -1,6 +1,6 @@
 # Compact glass panels
 
-Tooltips, hover cards, popovers, dropdowns, drawers and cards use `GlassPanel`.
+Tooltips, hover cards, popovers, dropdowns, drawers, dialogs, toasts and cards use `GlassPanel`.
 It shares the slider's curved displacement field and `GlassFilterManager`.
 Foreground labels, inputs and actions remain normal DOM outside the filter.
 
@@ -36,10 +36,13 @@ has a fixed 1.6px local-color band, 24px rounded corners, 6px blur and a shallow
 1.05× lens. A 1.25px directional tonal bevel preserves the silhouette on light
 paper and in the fallback. This is part of the cached contour maps.
 
-The colored shoulder samples the interior of each background column instead
-of sampling only pixels at the perimeter. It reuses the existing rim texture
+The colored shoulder samples each magnified, unblurred interior column instead
+of the unmagnified source or only pixels at the perimeter. Tooltips use this
+same projection at their smaller scale. It reuses the existing rim texture
 and filter's column projection, without a CPU color histogram. Neighboring
-columns stay separate and source saturation/RGB gain remain unchanged.
+columns stay separate and source saturation/RGB gain remain unchanged. Color
+coverage is 55% for tooltips and 80% for panels, within the same fixed-width
+band. A plain source produces neutral light, not a fabricated accent outline.
 
 Put a small, complete background in `GlassScene` for portable DOM refraction,
 and keep portals within that source's bounds. Backgrounds must paint their
@@ -65,7 +68,8 @@ their parent's surface. Primary and secondary actions remain plain controls.
 The homepage uses interaction tabs and three lower sections: Profile, Overlays
 and Details. Each section mounts one example at a time and releases it outside
 the viewport. Frames use the dimensions that suit the component. The profile
-lens refracts a centered circular avatar over its paper plane, with two actions.
+lens opens below its portrait-attached trigger, over the centered circular
+avatar, with two icon-and-label actions, 1.12× source zoom and 4px softening.
 Docs retain radius/shape and refraction controls. Normal-glass comparisons are
 deferred; these examples focus on the actual lens.
 
@@ -88,3 +92,15 @@ documentation inspector can still pin them for shape and refraction editing.
 Popover and hover-card foreground viewports scroll within the available local
 space while their optical contours stay intact. Initial readiness fades the
 completed finish in once; resizing keeps foreground labels visible.
+Native positioning wrappers also trigger a final bounds/source measurement
+after their animation or transition ends. Dropdowns scroll their foreground
+viewport without clipping the lens's optical margins at the outer container.
+
+`GlassToast` now uses the same panel material, with a 24px squircle contour,
+8px softening, application label and optional image/action. `glassToast()`
+retains Sonner's notification lifecycle. Mount `GlassToaster` inside a bounded
+scene, or pass `options.sceneRef` when the notification root lives elsewhere.
+The complete notification must fit inside that source. The global/native path
+does not capture the document. Outside native SVG-backdrop support it keeps a
+blur/glint fallback. The homepage's Toast tab demonstrates a single, local
+notification and reuses its ID on repeated clicks.

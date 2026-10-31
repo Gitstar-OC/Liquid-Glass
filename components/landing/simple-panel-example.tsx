@@ -1,8 +1,9 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { BookOpen, ChevronDown, Copy, Eye, MoreHorizontal, X } from "lucide-react";
+import { Bell, BookOpen, ChevronDown, Copy, Eye, MoreHorizontal, SlidersHorizontal, X } from "lucide-react";
+import { toast } from "sonner";
 import { GlassScene } from "@/components/glass-scene";
 import { GlassButton } from "@/components/glass/glass-button";
 import { GlassCheckbox } from "@/components/glass/glass-checkbox";
@@ -10,7 +11,8 @@ import { GlassCard, CardHeader, CardTitle, CardDescription, CardContent, CardFoo
 import { Tooltip, TooltipProvider, TooltipTrigger, GlassTooltipContent } from "@/components/glass/glass-tooltip";
 import { HoverCard, HoverCardTrigger, GlassHoverCardContent } from "@/components/glass/glass-hover-card";
 import { Popover, PopoverTrigger, PopoverHeader, PopoverTitle, GlassPopoverContent } from "@/components/glass/glass-popover";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuItem, GlassDropdownMenuContent } from "@/components/glass/glass-dropdown";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, GlassDropdownMenuContent } from "@/components/glass/glass-dropdown";
+import { GlassToaster, glassToast } from "@/components/glass/glass-toaster";
 import { Drawer, DrawerTrigger, DrawerClose, DrawerHeader, DrawerTitle, DrawerDescription, GlassDrawerContent } from "@/components/glass/glass-drawer";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -20,7 +22,7 @@ import type { WorkspaceExample } from "@/components/landing/workspace-panel-exam
 
 /** A quiet homepage illustration. The richer workspace remains in the docs. */
 export function SimplePanelExample({ example, appearance, container, radius, shape, beak }: {
-  example: WorkspaceExample;
+  example: WorkspaceExample | "toast";
   appearance: "light" | "dark";
   container: HTMLDivElement;
   radius: number;
@@ -34,6 +36,8 @@ export function SimplePanelExample({ example, appearance, container, radius, sha
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [status, setStatus] = useState("");
   const id = useId();
+  const sceneSource = useRef<HTMLDivElement>(null);
+  useEffect(() => () => { toast.dismiss(`${id}-notice`); }, [id]);
   const geometry = { radius, shape };
   const placement = { container, collisionBoundary: container, collisionPadding: 16 };
   let content: ReactNode;
@@ -41,12 +45,13 @@ export function SimplePanelExample({ example, appearance, container, radius, sha
   if (example === "popover") {
     content = <Popover>
       <PopoverTrigger asChild><GlassButton variant="secondary">View<ChevronDown data-icon="inline-end" /></GlassButton></PopoverTrigger>
-      <GlassPopoverContent {...placement} {...geometry} beak={beak} side="bottom" sideOffset={10} className="w-60">
+      <GlassPopoverContent {...placement} {...geometry} beak={beak} side="bottom" sideOffset={10} className="w-64">
         <PopoverHeader><PopoverTitle>View options</PopoverTitle></PopoverHeader>
-        <FieldGroup>
-          <Field><ToggleGroup type="single" value={layout} onValueChange={value => value && setLayout(value)} spacing={0} variant="outline" aria-label="View layout" className="w-full">
-            <ToggleGroupItem value="grid" className="flex-1">Grid</ToggleGroupItem><ToggleGroupItem value="list" className="flex-1">List</ToggleGroupItem>
+        <FieldGroup className="gap-3">
+          <Field><ToggleGroup type="single" value={layout} onValueChange={value => value && setLayout(value)} spacing={0} aria-label="View layout" className="w-full rounded-full bg-foreground/5 p-1">
+            <ToggleGroupItem value="grid" className="h-9 flex-1 rounded-full">Grid</ToggleGroupItem><ToggleGroupItem value="list" className="h-9 flex-1 rounded-full">List</ToggleGroupItem>
           </ToggleGroup></Field>
+          <Separator />
           <Field orientation="horizontal"><GlassCheckbox id={`${id}-details`} checked={details} onCheckedChange={value => setDetails(value === true)} /><FieldLabel htmlFor={`${id}-details`}>Show details</FieldLabel></Field>
         </FieldGroup>
       </GlassPopoverContent>
@@ -57,10 +62,13 @@ export function SimplePanelExample({ example, appearance, container, radius, sha
       <GlassDropdownMenuContent {...placement} {...geometry} align="center" sideOffset={10} className="w-56">
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={() => {
+            if (!navigator.clipboard) { setStatus("Copy the page address to share this page."); return; }
             void navigator.clipboard.writeText(location.href).then(() => setStatus("Page link copied."), () => setStatus("The browser could not copy this link."));
           }}><Copy data-icon="inline-start" />Copy page link</DropdownMenuItem>
           <DropdownMenuItem asChild><Link href="/docs"><BookOpen data-icon="inline-start" />Documentation</Link></DropdownMenuItem>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup><DropdownMenuItem asChild><Link href="/playground"><SlidersHorizontal data-icon="inline-start" />Open playground</Link></DropdownMenuItem></DropdownMenuGroup>
       </GlassDropdownMenuContent>
     </DropdownMenu>;
   } else if (example === "drawer") {
@@ -78,6 +86,12 @@ export function SimplePanelExample({ example, appearance, container, radius, sha
         <DrawerClose asChild><GlassButton variant="secondary">Done</GlassButton></DrawerClose>
       </GlassDrawerContent>
     </Drawer>;
+  } else if (example === "toast") {
+    content = <GlassButton variant="secondary" onClick={() => glassToast("Changes saved", {
+      id: `${id}-notice`, toasterId: id, sceneRef: sceneSource, label: "Workspace",
+      description: "Your preferences are up to date.",
+      action: { label: "Undo", onClick: () => setStatus("Changes undone.") },
+    })}><Bell data-icon="inline-start" />Show notification</GlassButton>;
   } else if (example === "tooltip") {
     content = <TooltipProvider delayDuration={250} skipDelayDuration={200}><Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
       <TooltipTrigger asChild><GlassButton variant="secondary" aria-label="Preview" onClick={() => setTooltipOpen(value => !value)}><Eye data-icon="inline-start" />Preview</GlassButton></TooltipTrigger>
@@ -101,8 +115,9 @@ export function SimplePanelExample({ example, appearance, container, radius, sha
       <CardFooter className="border-0 bg-transparent text-xs text-muted-foreground">Updated today</CardFooter>
     </GlassCard>;
   }
-  return <GlassScene appearance={appearance} className="simple-preview-scene size-full" content={<div className="simple-preview-plane" />}>
+  return <GlassScene sourceRef={sceneSource} appearance={appearance} className="simple-preview-scene size-full" content={<div className="simple-preview-plane" />}>
     <div className="simple-preview-center">{content}</div>
+    {example === "toast" && <GlassToaster id={id} position="top-center" toastOptions={{ duration: 5000 }} />}
     <p role="status" className="sr-only">{status}</p>
   </GlassScene>;
 }

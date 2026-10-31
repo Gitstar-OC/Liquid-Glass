@@ -1220,7 +1220,8 @@
       "description": "Sonner toaster styled with the glass materials.",
       "docs": "http://localhost:3000/docs/glass-toaster",
       "registryDependencies": [
-        "http://localhost:3000/r/glass-surface.json",
+        "http://localhost:3000/r/glass-button.json",
+        "http://localhost:3000/r/glass-panel.json",
         "http://localhost:3000/r/glass-theme-provider.json",
         "http://localhost:3000/r/glass-utilities.json"
       ],

@@ -1412,3 +1412,43 @@ packaging completed with 58 entries and 70 shared source files.
   benchmarks were run. Registry packaging completed with 58 items and 71 shared
   files. Device confirmation remains pending.
 
+## 2026-10-31 — shared panel color, notifications and a quieter playground
+
+- Compact panels now read the already-displaced, unblurred interior for their
+  source-color shoulder. This changes the input of the existing Gaussian blur;
+  non-tooltip panels keep their primitive count. Tooltip column projection adds
+  two existing graph primitives at the small tooltip filter size. No source capture, histogram, pixel
+  readback, new texture channel or continuous sampling was added. RGB gain and
+  saturation remain 1. Tooltip color coverage is 0.55, other panels 0.8, using
+  the same 1.1px / 1.6px contour bands. Tooltips also project interior columns.
+  Local color diffusion is height/6 capped at 24px, previously height/4 capped
+  at 32px for panels. Neutral planes do not invent an accent hue.
+- Slider/switch, selection and video parameters and map geometry are unchanged.
+  Legacy scene callers keep their original rim input. The document limit remains
+  five fine / three coarse, with unchanged admission priorities.
+- Panel geometry now remeasures when native positioning wrappers finish moving,
+  fixing source alignment after entrance. State/placement mutations and end
+  events share one coalesced RAF; there is no entrance polling loop. Dropdown
+  optical margins are outside the scrolling foreground viewport, with one
+  shared entrance animation instead of competing animation utilities.
+- Toast moved from the older scene surface to the shared compact panel: 24px
+  squircle, 8px blur, one optical layer and sharp application/title/body/actions.
+  Sonner still handles timing, announcements, gestures and focus. One local
+  notification ID is reused in the homepage/docs example, and it is dismissed
+  on unmount. Explicit scene refs retain the source-size/coverage checks.
+  Global notifications enter at the upper-right, clear of the dock.
+- The profile menu now opens below its portrait-attached trigger, with 1.12×
+  source zoom, 4px blur and two native icon/label actions. No new image context,
+  WebGL surface or observer was introduced for this composition.
+- Playground defaults to one 320px preview with six basic controls. The map is
+  unmounted and not generated until requested; seven advanced dials are closed
+  initially. Copy/reset remain in the shared toolbar. The lazy Scene tab no
+  longer renders a second independent lens behind its minimize action; that
+  action moved into the toolbar. Motion remains opt-in.
+- Evidence is source review and passive development-server compilation logs
+  (successful updates reported at 56–295ms; these are compilation durations,
+  not frame timings). Registry packaging completed with 58 items / 71 shared
+  files. No tests, lint, typecheck, production build, registry verification or
+  performance benchmark were run, as requested. Browser preview access remains
+  unavailable, so visual parity and physical-device behavior are unverified.
+

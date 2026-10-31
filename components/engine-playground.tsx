@@ -44,8 +44,6 @@ import {
   Play,
   RotateCcw,
   SlidersHorizontal,
-  X,
-  Ellipsis,
 } from "lucide-react";
 
 const INITIAL = GLASS_DEFAULT_PARAMS;
@@ -85,12 +83,10 @@ const DIALS = [
 
 function LiveScene({
   moving,
-  revision,
   photo,
   label,
 }: {
   moving: boolean;
-  revision: number;
   photo: keyof typeof DEMO_PHOTOS;
   label: string;
 }) {
@@ -185,7 +181,7 @@ function LiveScene({
           ))}
         </div>
         <span className="text-[11px] opacity-60">
-          {revision ? `Revision ${revision}` : "Text · Image · Live content"}
+          Text · Image · Live content
         </span>
       </div>
     </div>
@@ -206,7 +202,6 @@ export function EnginePlayground() {
   const [moving, setMoving] = useState(false);
   const [inside, setInside] = useState(true);
   const [mini, setMini] = useState(false);
-  const [revision, setRevision] = useState(0);
   const [copied, setCopied] = useState(false);
   const [foregroundClicks, setForegroundClicks] = useState(0);
   const [enabled, setEnabled] = useState(true);
@@ -387,7 +382,6 @@ export function EnginePlayground() {
               content={
                 <LiveScene
                   moving={moving}
-                  revision={revision}
                   photo={photo}
                   label={sceneLabel}
                 />
@@ -577,28 +571,6 @@ export function EnginePlayground() {
                   </GlassContent>
                 )}
               </LiquidGlass>
-              {!mini && (
-                <LiquidGlass
-                  config={params}
-                  optics={optics}
-                  radius={30}
-                  className="pointer-events-none absolute bottom-5 left-1/2 size-[60px] -translate-x-1/2"
-                />
-              )}
-              <GlassButton
-                rendering="shared"
-                variant="ghost"
-                className="absolute bottom-5 left-1/2 z-5 grid size-[60px] -translate-x-1/2 place-items-center rounded-full bg-transparent hover:bg-transparent"
-                type="button"
-                onClick={toggle}
-                aria-label={mini ? "Expand lens" : "Minimize lens"}
-              >
-                {mini ? (
-                  <Ellipsis className="size-5" />
-                ) : (
-                  <X className="size-4" />
-                )}
-              </GlassButton>
             </GlassScene>
           </div>
         </div>
@@ -624,6 +596,7 @@ export function EnginePlayground() {
               <div className="flex items-center gap-2">
                 <GlassButton
                   rendering="shared"
+                  variant="secondary"
                   className="grid size-10 place-items-center"
                   aria-label={moving ? "Pause motion" : "Resume motion"}
                   title={moving ? "Pause motion" : "Resume motion"}
@@ -637,6 +610,7 @@ export function EnginePlayground() {
                 </GlassButton>
                 <GlassButton
                   rendering="shared"
+                  variant="secondary"
                   className="h-10 px-3"
                   onClick={() => setInside(!inside)}
                   aria-pressed={inside}
@@ -645,6 +619,7 @@ export function EnginePlayground() {
                 </GlassButton>
                 <GlassButton
                   rendering="shared"
+                  variant="secondary"
                   className="grid size-10 place-items-center"
                   aria-label="Reset lens"
                   title="Reset lens"
@@ -654,12 +629,10 @@ export function EnginePlayground() {
                 </GlassButton>
               </div>
               <GlassButton
-                rendering="shared"
-                className="h-10 px-3"
-                onClick={() => setRevision((value) => value + 1)}
+                rendering="shared" variant="secondary"
+                className="h-10 px-3" onClick={toggle} aria-pressed={mini}
               >
-                Refresh scene
-                <RotateCcw className="size-3.5" data-icon="inline-end" />
+                {mini ? "Expand lens" : "Minimize lens"}
               </GlassButton>
             </div>
           }

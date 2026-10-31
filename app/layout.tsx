@@ -37,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             performance={{ maxActiveSurfaces: 5, frameRate: 30 }}
           >
             {children}
-            <GlassToaster position="bottom-right" />
+            <GlassToaster position="top-right" />
           </GlassSettingsProvider>
         </GlassThemeProvider>
       </body>

@@ -6,7 +6,7 @@ import { PreviewToolbar } from "@/components/site/preview-toolbar";
 import { PanelShowcase, SHOWCASE_EXAMPLES, type ShowcaseExample } from "@/components/landing/panel-showcase";
 
 const INTERACTIONS: ShowcaseExample[] = ["slider", "switch", "navigation", "buttons", "video"];
-const OVERLAYS: ShowcaseExample[] = ["popover", "dropdown", "drawer"];
+const OVERLAYS: ShowcaseExample[] = ["popover", "dropdown", "drawer", "toast"];
 const DETAILS: ShowcaseExample[] = ["tooltip", "hover-card", "card"];
 
 /** One mounted example per section. Clear navigation replaces a carousel of

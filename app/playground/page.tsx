@@ -13,7 +13,7 @@ export default function PlaygroundPage() {
       <section className="mx-auto w-full max-w-5xl pt-10 pb-10 sm:pt-12">
         <PageHeader
           title="Playground"
-          description="Tune the control lens or work with a live scene."
+          description="Choose a lens, then adjust its shape and material."
           className="pt-0"
         />
         <div>

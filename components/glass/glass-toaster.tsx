@@ -11,16 +11,19 @@ import {
   XIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { GlassSurface } from "@/components/glass/glass-surface";
+import { GlassPanel } from "@/components/glass/glass-panel";
+import { GlassButton } from "@/components/glass/glass-button";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 
-/** Scene-aware glass notifications, with a lightweight finish outside a scene. */
+/** Sonner owns notification timing, announcements, gestures and stacking. */
 export function GlassToaster({ ...props }: ToasterProps) {
   const { resolvedMode } = useGlassTheme();
 
   return (
     <Sonner
       theme={resolvedMode}
+      visibleToasts={1}
+      position="top-right"
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,
@@ -56,6 +59,8 @@ export interface GlassToastOptions {
   duration?: number;
   sceneRef?: React.RefObject<HTMLElement | null>;
   action?: { label: string; onClick: () => void };
+  /** Short application or activity label above the message. */
+  label?: string;
 }
 
 export function glassToast(message: string, options: GlassToastOptions = {}) {
@@ -83,17 +88,16 @@ export function GlassToast({
   image,
   sceneRef,
   action,
+  label = "Liquid Glass",
   onDismiss,
 }: { message: string; onDismiss?: () => void } & GlassToastOptions) {
-  const { resolvedMode } = useGlassTheme();
   return (
-    <GlassSurface
+    <GlassPanel
       kind="toast"
       shape="squircle"
-      radius={28}
-      mode={resolvedMode}
+      radius={24}
       sceneRef={sceneRef}
-      className="flex w-[var(--width,356px)] max-w-[calc(100vw-2rem)] items-center gap-3 p-4"
+      className="glass-notification flex w-[var(--width,356px)] max-w-[calc(100vw-2rem)] items-start gap-3 p-4"
     >
       {image ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -105,25 +109,27 @@ export function GlassToast({
           className="size-11 shrink-0 rounded-xl object-cover"
         />
       ) : (
-        <InfoIcon className="size-5 shrink-0 opacity-70" />
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-foreground/5"><InfoIcon className="size-5 opacity-70" /></span>
       )}
-      <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-semibold">{message}</p>
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <p className="text-[10px] font-medium text-muted-foreground">{label}</p>
+        <p className="text-[13px] leading-[18px] font-semibold">{message}</p>
         {description && (
-          <p className="mt-1 text-xs leading-[18px] text-foreground/75">
+          <p className="text-xs leading-[18px] text-muted-foreground">
             {description}
           </p>
         )}
         {action && (
-          <button
-            className="mt-2 text-xs font-medium underline underline-offset-4"
+          <GlassButton
+            type="button" variant="ghost" size="sm"
+            className="mt-1 h-8 w-fit px-2 text-xs"
             onClick={() => {
               action.onClick();
               onDismiss?.();
             }}
           >
             {action.label}
-          </button>
+          </GlassButton>
         )}
       </div>
       {onDismiss && (
@@ -136,6 +142,6 @@ export function GlassToast({
           <XIcon className="size-3" />
         </button>
       )}
-    </GlassSurface>
+    </GlassPanel>
   );
 }

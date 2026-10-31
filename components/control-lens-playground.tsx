@@ -41,16 +41,10 @@ const DIALS = [
 ] as const;
 const INITIAL = { width: 64, height: 32, radius: 16 };
 const HELP: Record<string, string> = {
-  width: "Width of the lens in CSS pixels.",
-  height: "Height of the lens in CSS pixels.",
-  radius: "Corner radius, limited by the shorter side.",
-  magnification: "Enlarges the track fill, or the whole source in Surface and Magnify.",
-  scale: "Overall displacement strength. Lower values make a gentler bend.",
   depth: "Lens thickness: increases the bend near the curved edge.",
   curvature: "Changes how steeply the edge curves.",
   splay: "Redistributes the bend across the shoulder.",
   chroma: "Separates color channels slightly near the edge.",
-  blur: "Softens source pixels. Control labels can stay sharp above them.",
   rimStrength: "Strength of the edge reflection. This does not paint white glow.",
   edgeHighlight: "Contrast of the thin optical edge.",
   specularAngle: "Direction of the two neutral edge glints, in degrees.",
@@ -59,6 +53,8 @@ type Preset = "slider" | "switch" | "surface" | "magnifier";
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
 export function ControlLensPlayground() {
   const [preset, setPreset] = useState<Preset>("slider");
+  const [showMap, setShowMap] = useState(false);
+  const [copied, setCopied] = useState("");
   const [parameters, setParameters] = useState<ControlLensParameters>(
     CONTROL_LENS_PRESETS.slider,
   );
@@ -81,7 +77,9 @@ export function ControlLensPlayground() {
   const trackSource = preset === "slider" || preset === "switch";
   const opticalParameters = { ...parameters, magnification: trackSource ? 1 : parameters.magnification };
   const parameterKey = JSON.stringify(opticalParameters);
+  const settingsText = JSON.stringify({ lens: { lensW: geometry.width, lensH: geometry.height, borderRadius: geometry.radius }, parameters, x: position.x, y: position.y }, null, 2);
   useEffect(() => {
+    if (!showMap) return;
     const texture = buildControlLensTextures(
       geometry.width,
       geometry.height,
@@ -89,7 +87,7 @@ export function ControlLensPlayground() {
       JSON.parse(parameterKey),
     );
     if (map.current) map.current.src = texture.displacement;
-  }, [geometry.width, geometry.height, geometry.radius, parameterKey]);
+  }, [geometry.width, geometry.height, geometry.radius, parameterKey, showMap]);
   const reset = () => {
     choosePreset(preset);
   };
@@ -99,15 +97,16 @@ export function ControlLensPlayground() {
       next === "magnifier" ? { width: 96, height: 72, radius: 28 } : INITIAL);
     setParameters(CONTROL_LENS_PRESETS[next]);
     setPosition({ x: 0.5, y: 0.5 });
+    setCopied("");
   };
   return (
-    <div className="flex flex-col gap-7" data-testid="control-lens-workbench">
+    <div className="flex flex-col gap-8" data-testid="control-lens-workbench">
       <div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className={showMap ? "grid gap-4 md:grid-cols-2" : "grid"}>
           <figure className="flex min-w-0 flex-col gap-3">
             <div
               ref={source}
-              className="control-lens-source relative h-64 overflow-hidden rounded-[24px] bg-card"
+              className="control-lens-source relative h-80 overflow-hidden rounded-[24px] bg-muted/35"
               style={{ "--glass-lens-plane": "var(--card)", "--glass-action": "#9896ff" } as CSSProperties}
             >
               <GlassLens
@@ -225,11 +224,11 @@ export function ControlLensPlayground() {
               />
             </div>
             <figcaption className="text-xs text-muted-foreground" id={hintId}>
-              Drag the lens or use arrow keys. {trackSource ? "Track optics match the controls." : "This lens bends the original image and text."}
+              Drag to move. Use arrow keys for smaller adjustments.
             </figcaption>
           </figure>
-          <figure className="flex min-w-0 flex-col gap-3">
-            <div className="flex h-64 items-center justify-center rounded-[24px] bg-muted/35 p-6">
+          {showMap && <figure className="flex min-w-0 flex-col gap-3">
+            <div className="flex h-80 items-center justify-center rounded-[24px] bg-muted/35 p-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 ref={map}
@@ -240,15 +239,9 @@ export function ControlLensPlayground() {
             <figcaption className="text-xs text-muted-foreground">
               Displacement map
             </figcaption>
-          </figure>
+          </figure>}
         </div>
         <PreviewToolbar
-          photo="dunes"
-          onPhotoChange={() => {}}
-          blur={parameters.blur}
-          onBlurChange={(blur) =>
-            setParameters((current) => ({ ...current, blur }))
-          }
           blurControl={null}
           label="Control lens"
             backgroundControls={
@@ -258,7 +251,14 @@ export function ControlLensPlayground() {
                     <ToggleGroupItem key={value} value={value} className="h-8 rounded-full px-3 text-xs">{label}</ToggleGroupItem>
                   ))}
                 </ToggleGroup>
-                <Button variant="ghost" size="sm" onClick={reset}>Reset lens</Button>
+                <Button variant="ghost" size="sm" aria-pressed={showMap} onClick={() => setShowMap(value => !value)}>{showMap ? "Hide map" : "Show map"}</Button>
+                <Button variant="ghost" size="sm" onClick={reset}>Reset</Button>
+                <Button variant="secondary" size="sm" onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(settingsText);
+                    setCopied(settingsText);
+                  } catch { setCopied(""); }
+                }}>{copied === settingsText ? "Copied" : "Copy settings"}</Button>
               </div>
           }
           href="/docs/glass-target-lens"
@@ -287,10 +287,9 @@ export function ControlLensPlayground() {
               unit="px"
               onValueChange={(value) => changeGeometry(dial.key, value)}
             />
-            <FieldDescription>{HELP[dial.key]}</FieldDescription>
           </Field>
         ))}
-        {DIALS.map((dial) => (
+        {DIALS.filter(dial => ["magnification", "scale", "blur"].includes(dial.key)).map((dial) => (
           <Field key={dial.key}>
             <ParameterSlider
               label={dial.label}
@@ -302,10 +301,19 @@ export function ControlLensPlayground() {
                 setParameters((current) => ({ ...current, [dial.key]: value }))
               }
             />
-            <FieldDescription>{HELP[dial.key]}</FieldDescription>
           </Field>
         ))}
       </FieldGroup>
+      <details className="site-inspector rounded-2xl bg-muted/25 p-5">
+        <summary className="text-sm font-medium">Advanced optics</summary>
+        <FieldGroup className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+          {DIALS.filter(dial => !["magnification", "scale", "blur"].includes(dial.key)).map(dial => <Field key={dial.key}>
+            <ParameterSlider label={dial.label} value={parameters[dial.key] ?? 1} min={dial.min} max={dial.max} step={dial.step}
+              onValueChange={value => setParameters(current => ({ ...current, [dial.key]: value }))} />
+            <FieldDescription>{HELP[dial.key]}</FieldDescription>
+          </Field>)}
+        </FieldGroup>
+      </details>
     </div>
   );
 }

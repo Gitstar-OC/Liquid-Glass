@@ -10,6 +10,7 @@ import { GlassInput } from "@/components/glass/glass-input";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Pencil, Share2 } from "lucide-react";
 
 /** The actual portrait and its complete paper plane are the refraction source.
  * One lens bends them together; there is no copied photo or custom alignment. */
@@ -48,14 +49,14 @@ export function ProfilePopoverExample() {
             <PopoverTrigger asChild><GlassButton ref={trigger} variant="glass" shape="circle" aria-label="Profile actions"><GlassIcon name="more" /></GlassButton></PopoverTrigger>
           </div>
           <GlassPopoverContent container={container} collisionBoundary={container ?? undefined} collisionPadding={20}
-            side="left" align="center" sideOffset={12} radius={24} shape="squircle"
+            side="bottom" align="end" sideOffset={10} radius={22} shape="squircle"
             aria-label="Profile actions" className="profile-illustration-menu"
-            lensParameters={{ scale: 0.025, depth: 10, magnification: 1.08, blur: 5, rimStrength: 0.9, edgeHighlight: 0.46 }}
+            lensParameters={{ scale: 0.032, depth: 12, magnification: 1.12, blur: 4, rimStrength: 0.9, edgeHighlight: 0.46 }}
             onOpenAutoFocus={event => event.preventDefault()}
             onCloseAutoFocus={event => { if (editing) event.preventDefault(); }}>
             <div className="flex flex-col gap-1">
-              <GlassButton variant="ghost" className="justify-start" onClick={() => { setDraft(name); setOpen(false); setEditing(true); }}>Edit profile</GlassButton>
-              <GlassButton variant="ghost" className="justify-start" onClick={() => void copyLink()}>Share profile</GlassButton>
+              <GlassButton variant="ghost" className="justify-start" onClick={() => { setDraft(name); setOpen(false); setEditing(true); }}><Pencil data-icon="inline-start" />Edit profile</GlassButton>
+              <GlassButton variant="ghost" className="justify-start" onClick={() => void copyLink()}><Share2 data-icon="inline-start" />Share profile</GlassButton>
             </div>
           </GlassPopoverContent>
         </Popover>

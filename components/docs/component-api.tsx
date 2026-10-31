@@ -194,6 +194,18 @@ const API: Record<string, Prop[]> = {
       "—",
       "Optional 44px image preview. Supply an accessible description.",
     ],
+    [
+      "glassToast options.sceneRef",
+      "RefObject<HTMLElement | null>",
+      "Scene context",
+      "A complete bounded source for a notification rendered outside its scene. The toast must fit within the source bounds. Otherwise it uses native backdrop filtering where available.",
+    ],
+    [
+      "glassToast options.label",
+      "string",
+      '"Liquid Glass"',
+      "Short application or activity label above the notification title.",
+    ],
   ],
   "glass-elastic-button": [
     [

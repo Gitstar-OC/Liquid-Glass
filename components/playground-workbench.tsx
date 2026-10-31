@@ -15,8 +15,8 @@ export function PlaygroundWorkbench() {
   return (
     <Tabs value={view} onValueChange={setView} className="gap-8">
       <TabsList aria-label="Playground renderer">
-        <TabsTrigger value="lens">Control lens</TabsTrigger>
-        <TabsTrigger value="scene">Scene glass</TabsTrigger>
+        <TabsTrigger value="lens">Lens</TabsTrigger>
+        <TabsTrigger value="scene">Scene</TabsTrigger>
       </TabsList>
       <TabsContent value="lens">
         {view === "lens" && <ControlLensPlayground />}

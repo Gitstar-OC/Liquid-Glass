@@ -160,16 +160,44 @@ with no source brightness boost. Its thin source-color band reuses the existing
 cached rim PNG and bounded SourceGraphic through the existing colorBleed graph.
 The narrow horizontal kernel preserves neighboring columns. The rim map's red
 coordinate stays neutral while green projects its interior column to the rim.
-Vertical diffusion is one quarter of the lens height, capped at 32px. This
+Vertical diffusion is one sixth of the lens height, capped at 24px. This
 enables the existing two-primitive coordinate/projection branch over the same
 bounded SourceGraphic. Saturation and RGB gain remain at 1. Panels use a 1.6px
-source-color band and 1.25px tonal bevel; tooltips keep their previous 1.1px
-shoulder and local diffusion. Legacy surface callers keep their defaults. No
+source-color band and 1.25px tonal bevel; tooltips retain their 1.1px shoulder
+and also use interior column projection. Legacy surface callers keep their defaults. No
 new map, source capture, CPU readback, whole-page mirror or idle animation is
 added. Slider/switch and video maps omit the new geometry options.
 Background softening stays inside the SVG transmission pass, before the colored
 edge is composed; no outer blur softens the rim.
+Compact panels choose `rimSource="displaced"`: their existing color graph reads
+the already magnified, unblurred transmission rather than the unbent source.
+This changes one existing primitive's input. Other panels keep their primitive
+count; tooltips add the same two coordinate/projection primitives at their small
+filter size. The thin
+band uses 55% source coverage on tooltips and 80% on other panels. No dominant
+hue is guessed, and a neutral plane remains neutral. Slider/switch, selection,
+video and legacy scene renderers retain their previous inputs and parameters.
 The optional non-refracting component family is deferred.
+
+Toast uses this same compact panel field, with 8px blur and a 24px squircle.
+Sonner retains timing, gestures, announcements and focus handling. The local
+preview mounts one notification ID on demand, inherits its bounded scene and
+dismisses it on unmount. Global notifications may pass an explicit scene ref;
+the source bounds check remains mandatory. Native backdrop support and the
+lightweight fallback remain distinct. All notification lenses use overlay
+priority within the existing document cap.
+
+Positioning-wrapper state changes and completed animations/transitions schedule
+one coalesced geometry measurement. This fixes stale source coordinates after
+popover/menu/notification entrance without a motion-polling loop. Dropdown
+foreground viewports scroll independently; the outer lens is not clipped by a
+second scroll container.
+
+The default playground hides its map preview and advanced dials. The map image
+is generated only while requested. Its main lens retains the same cache; moving
+it does not regenerate geometry. The Scene tab loads on demand and has one
+main lens, removing the independent minimize-button lens. The scene starts
+paused and retains document/viewport suspension.
 
 ## Nested controls and deliberate presses
 
@@ -388,14 +416,14 @@ optical sampling margins never belong in that scrolling container.
 The profile example now portals a native popover into its 640 × 400px bounded
 scene (380px high on phones). A local 720px transparent WebP illustration is
 displayed in a 168px circular avatar (160px on phones) over an opaque paper plane.
-One compact DOM lens refracts that composition at 1.08× magnification and 5px
+One compact DOM lens refracts that composition at 1.12× magnification and 4px
 blur; foreground actions
 remain sharp. No separate WebGL context, custom image-coordinate observer or
 whole-document capture is needed. The two actions edit the name or copy a link.
 The menu starts closed and prevents autofocus on opening. Closing, scrolling out or unmounting releases
 its source/filter work under the same document budget.
 The Surface playground preset retains its supplied 0.5px blur; the menu has a
-local 5px override. The former checkbox rows and per-image alignment observer
+local 4px override. The former checkbox rows and per-image alignment observer
 were removed from the profile demonstration.
 
 `GlassLensButton imageRef` retains the video's shader and a displayed-image ref.

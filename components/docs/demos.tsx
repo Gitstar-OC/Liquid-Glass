@@ -56,7 +56,7 @@ export function ItemDemo({ name }: { name: string }) {
   const panel = {
     "glass-tooltip": "tooltip", "glass-hover-card": "hover-card",
     "glass-popover": "popover", "glass-dropdown": "dropdown",
-    "glass-drawer": "drawer", "glass-card": "card", "glass-panel": "card",
+    "glass-drawer": "drawer", "glass-card": "card", "glass-panel": "card", "glass-toaster": "toast",
   } as const;
   if (name in panel) return <PanelShowcase key={name} compact initialExample={panel[name as keyof typeof panel]} />;
   if (name === "glass-lens-button") return <LensButtonExample />;

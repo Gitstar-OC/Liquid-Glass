@@ -27,6 +27,7 @@ export const SHOWCASE_EXAMPLES = [
   { id: "dropdown", name: "Dropdown", doc: "glass-dropdown" },
   { id: "drawer", name: "Drawer", doc: "glass-drawer" },
   { id: "card", name: "Card", doc: "glass-card" },
+  { id: "toast", name: "Toast", doc: "glass-toaster" },
   { id: "profile", name: "Profile menu", doc: "glass-dropdown" },
 ] as const;
 export type ShowcaseExample = typeof SHOWCASE_EXAMPLES[number]["id"];
@@ -65,28 +66,29 @@ export function PanelShowcase({ initialExample = "slider", compact = false, mini
   const mounted = visible && enabled;
   const selected = SHOWCASE_EXAMPLES.find(item => item.id === example)!;
   const control = ["slider", "switch", "navigation", "buttons", "video", "profile"].includes(example);
+  const fixedGeometry = control || example === "toast";
   const thumb = example === "slider" || example === "switch";
   const hint = example === "slider" ? "Hold and drag to reveal glass." : example === "switch" ? "Press or drag left and right to switch."
     : example === "navigation" ? "Choose a section." : example === "video" ? "Play, seek or skip through the flowers."
     : example === "buttons" ? "Two actions over the same background." : example === "profile" ? "Open the profile actions."
     : example === "tooltip" ? "Hover or focus the copy-link action." : example === "hover-card" ? "Hover or focus Maya’s name."
     : example === "card" ? "Click the collection to open it." : example === "drawer" ? "Choose a filename to view its details."
-    : example === "dropdown" ? "Open a file’s action menu." : "Change the asset layout with View.";
+    : example === "dropdown" ? "Open a file’s action menu." : example === "toast" ? "Show a notification, then dismiss it or undo." : "Change the asset layout with View.";
   return (
     <section ref={section} className={cn("panel-showcase", compact && "panel-showcase-compact", minimal && "panel-showcase-minimal", resolvedMode === "dark" ? "showcase-dark" : "showcase-light")} aria-label={`${selected.name} example`}>
       <div ref={setContainer} className="panel-preview-stage" data-panel-example={example} data-preview={minimal && !control ? "simple" : undefined}>
         <GlassSettingsProvider refraction={refraction}>
           {control ? <div className="home-control-stage size-full" data-example={example === "profile" ? "popover" : example}>
             {mounted && <HomeExample key={example} id={(example === "profile" ? "popover" : example) as HomeExampleId} previewActive={pinned} />}
-          </div> : mounted && container ? minimal ? <SimplePanelExample key={example}
-            example={example as WorkspaceExample} appearance={resolvedMode} container={container}
+          </div> : mounted && container ? minimal || example === "toast" ? <SimplePanelExample key={example}
+            example={example as WorkspaceExample | "toast"} appearance={resolvedMode} container={container}
             radius={radius} shape={shape} beak={beak} /> : <WorkspacePanelExample key={example}
             example={example as WorkspaceExample}
             appearance={resolvedMode} container={container} radius={radius} shape={shape}
             beak={beak} pinned={pinned} onUnpin={() => setPinned(false)} /> : null}
         </GlassSettingsProvider>
       </div>
-      {!minimal && <><PreviewToolbar label={selected.name} href={`/docs/${selected.doc}`} backgroundControls={control ? <span className="text-muted-foreground">{hint}</span> :
+      {!minimal && <><PreviewToolbar label={selected.name} href={`/docs/${selected.doc}`} backgroundControls={fixedGeometry ? <span className="text-muted-foreground">{hint}</span> :
         <div className="flex flex-wrap items-center gap-3">
           {(example === "tooltip" || example === "hover-card" || example === "popover") && <ToggleGroup type="single" value={beak ? "beak" : "plain"} onValueChange={value => value && setBeak(value === "beak")} spacing={0} aria-label="Bubble pointer">
             <ToggleGroupItem value="plain">No beak</ToggleGroupItem><ToggleGroupItem value="beak">Joined beak</ToggleGroupItem>
@@ -101,7 +103,7 @@ export function PanelShowcase({ initialExample = "slider", compact = false, mini
         </div>
       } blurControl={null} />
       <div className="mt-3 flex min-h-10 flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-        <span>{control ? "" : hint}</span>
+        <span>{fixedGeometry ? "" : hint}</span>
         <div className="flex items-center gap-4">
           {(thumb || example === "tooltip" || example === "hover-card") && <button type="button" aria-pressed={pinned} onClick={() => setPinned(value => !value)} className="min-h-10 hover:text-foreground">{thumb ? pinned ? "Return to resting" : "Inspect active state" : pinned ? "Unpin preview" : "Pin preview"}</button>}
           <button type="button" aria-pressed={refraction} onClick={() => setRefraction(value => !value)} className="min-h-10 hover:text-foreground">Refraction {refraction ? "on" : "off"}</button>

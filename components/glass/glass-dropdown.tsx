@@ -8,7 +8,7 @@ import type { GlassSurface as GlassSurfaceKind } from "@/lib/glass-theme";
 import type { LensParams } from "@/lib/glass";
 
 const CONTENT_BASE =
-  "z-50 overflow-clip max-h-(--radix-dropdown-menu-content-available-height) max-w-(--radix-dropdown-menu-content-available-width) min-w-40 origin-(--radix-dropdown-menu-content-transform-origin) outline-none duration-150 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0 motion-reduce:animate-none";
+  "z-50 max-w-(--radix-dropdown-menu-content-available-width) min-w-40 origin-(--radix-dropdown-menu-content-transform-origin) outline-none";
 
 export function GlassDropdownMenuContent({
   className,
@@ -35,7 +35,7 @@ export function GlassDropdownMenuContent({
   const viewport = (
     <div
       data-glass-menu-viewport=""
-      className="max-h-(--radix-dropdown-menu-content-available-height) overflow-x-hidden overflow-y-auto overscroll-contain p-1.5"
+      className="max-h-[max(48px,calc(var(--radix-dropdown-menu-content-available-height,100dvh)_-_16px))] overflow-x-hidden overflow-y-auto overscroll-contain p-1.5"
     >
       {children}
     </div>
@@ -100,7 +100,7 @@ export function GlassDropdownMenuSubContent({
         >
           <div
             data-glass-menu-viewport=""
-            className="max-h-(--radix-dropdown-menu-content-available-height) overflow-x-hidden overflow-y-auto overscroll-contain p-1.5"
+            className="max-h-[max(48px,calc(var(--radix-dropdown-menu-content-available-height,100dvh)_-_16px))] overflow-x-hidden overflow-y-auto overscroll-contain p-1.5"
           >
             {children}
           </div>

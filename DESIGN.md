@@ -204,7 +204,18 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   overrides remain available. Pending image lenses keep the actual backdrop
   with a faint neutral reflection; do not flash an almost-white opaque panel.
   Image buttons use the video's actual WebGL finish over a displayed image.
-  The profile menu uses its bounded DOM lens with 5px softening.
+  Compact-panel rim light reads the displaced, unblurred interior columns,
+  including tooltips, so it reflects the same magnified content as the body.
+  Keep source RGB unchanged, with 55% tooltip / 80% panel color coverage inside
+  the existing 1.1px / 1.6px contour band. Plain sources remain neutral; never
+  invent an accent-colored edge where that color is absent.
+  The profile menu uses its bounded DOM lens with 4px softening and 1.12× zoom.
+  Anchor its trigger at the portrait's upper-right and open below it, over the
+  portrait. Keep two icon-and-label actions and the native edit dialog.
+  Notifications use `GlassPanel kind="toast"`, 24px squircle corners and 8px
+  softening. Use Sonner for announcements, timing and gestures; keep the icon,
+  app label, title, body and optional action sharp. Reuse IDs for updates. The
+  homepage's notification preview stays inside its own source and starts closed.
   Keep the image's own pixels and source-colored rim, without a white body fill.
   Its native actions and controls share one optical layer. Profile
   identity stays outside the image so it is not replaced with sampled text.
@@ -213,6 +224,14 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   inspector keeps that slot while pinned. Navigation's selected glass pill
   retains one slot at rest and releases optical work when hidden or unmounted.
   Sources stay separately bounded; the same five/fine, three/coarse cap applies.
+
+- The playground starts with one 320px-high control-lens preview and six useful
+  shape/material controls. Hide the displacement map until requested, and put
+  the seven remaining optical dials in a closed Advanced optics section. Do
+  not generate a second map preview while hidden. Keep copy/reset alongside the
+  shared detached toolbar. The Scene tab loads on demand and uses one main lens;
+  its minimize action belongs in the toolbar rather than another glass button
+  inside the source.
 
 ## State changes and scroll
 

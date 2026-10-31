@@ -19,6 +19,8 @@ export interface GlassFilterConfig {
   colorSaturation?: number;
   colorGain?: number;
   colorSpread?: number;
+  /** Compact panels reflect the same magnified pixels visible inside the lens. */
+  rimSource?: "source" | "displaced";
   glint?: number;
   /** A small moving map in a larger, original DOM source. Outside stays neutral. */
   mapRegion?: { x: number; y: number; width: number; height: number };
@@ -281,7 +283,7 @@ export function buildDisplacementFilter(config: GlassFilterConfig) {
     // taller vertical kernel carries the local column toward the upper/lower rim.
     filter.append(
       element("feGaussianBlur", {
-        in: "SourceGraphic",
+        in: config.rimSource === "displaced" ? "displaced" : "SourceGraphic",
         stdDeviation: `1 ${Math.max(0, Math.min(32, config.colorSpread ?? 24))}`,
         edgeMode: "duplicate",
         result: "ambient",
