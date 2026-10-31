@@ -3,17 +3,10 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type RefObject } from "react";
 import { useGlassSettings } from "@/components/glass-scene";
 import { CONTROL_LENS_PRESETS, type ControlLensInput } from "@/lib/glass-lens-optics";
-import { registerGlassLens } from "@/lib/glass-performance";
+import { GLASS_PRIORITY, registerGlassLens } from "@/lib/glass-performance";
+import { subscribeReducedGlass as subscribe, prefersReducedGlass as reduced, serverGlassPreference as server } from "@/lib/glass-preferences";
 import { GlassVideoRenderer } from "@/lib/glass-video";
 
-const PREFERENCE = "(prefers-reduced-transparency: reduce), (prefers-contrast: more)";
-const subscribe = (callback: () => void) => {
-  const media = matchMedia(PREFERENCE);
-  media.addEventListener("change", callback);
-  return () => media.removeEventListener("change", callback);
-};
-const reduced = () => matchMedia(PREFERENCE).matches;
-const server = () => false;
 
 export interface GlassImageLensProps {
   /** The actual displayed image. No duplicate image DOM or screenshot is made. */
@@ -47,7 +40,7 @@ export function GlassImageLens({
   useEffect(() => {
     if (!active || solid || !root.current) return;
     return registerGlassLens(root.current, setAdmitted, {
-      priority: 5, limit: settings.performance?.maxActiveSurfaces,
+      priority: GLASS_PRIORITY.media, limit: settings.performance?.maxActiveSurfaces,
     });
   }, [active, solid, settings.performance?.maxActiveSurfaces]);
 
@@ -144,6 +137,7 @@ export function GlassImageLens({
       data-glass-image-lens=""
       data-target-lens-ready={visible}
       data-glass-rendering={visible ? "active" : "lightweight"}
+      data-glass-fallback={visible ? undefined : solid ? "accessibility-preference" : !active ? "inactive" : !admitted ? "budget" : "image-or-webgl-pending"}
       data-refraction={visible ? "image-webgl" : "disabled"}
       style={{ position: "absolute", inset: 0, pointerEvents: "none", ...style }}
     >

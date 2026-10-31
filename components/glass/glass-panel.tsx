@@ -14,7 +14,8 @@ import { CONTROL_LENS_PRESETS, buildControlLensTextures, controlLensMetrics, res
 import type { GlassBeak } from "@/lib/glass-lens-shape";
 import { GlassFilterManager } from "@/lib/glass-filter";
 import { attachSceneMirror, type SceneMirror } from "@/lib/glass-scene";
-import { registerGlassLens } from "@/lib/glass-performance";
+import { GLASS_PRIORITY, registerGlassLens } from "@/lib/glass-performance";
+import { subscribeReducedGlass as subscribe, prefersReducedGlass as reduced, serverGlassPreference as server } from "@/lib/glass-preferences";
 import { cn } from "@/lib/utils";
 
 type PanelKind = "tooltip" | "hover-card" | "popover" | "dropdown" | "drawer" | "dialog" | "card" | "button" | "dock";
@@ -31,14 +32,6 @@ export interface GlassPanelProps extends HTMLAttributes<HTMLElement> {
   asChild?: boolean;
   ref?: Ref<HTMLElement>;
 }
-const PREFERENCE = "(prefers-reduced-transparency: reduce), (prefers-contrast: more)";
-const subscribe = (listener: () => void) => {
-  const media = matchMedia(PREFERENCE);
-  media.addEventListener("change", listener);
-  return () => media.removeEventListener("change", listener);
-};
-const reduced = () => matchMedia(PREFERENCE).matches;
-const server = () => false;
 const BLUR: Record<PanelKind, number> = { tooltip: 0.35, "hover-card": 4, popover: 6, dropdown: 6, drawer: 8, dialog: 6, card: 4, button: 0.5, dock: 6 };
 // A wide stationary dock needs a shallow lens, not a magnified control thumb.
 const DOCK_LENS = { ...CONTROL_LENS_PRESETS.surface, blur: 6, scale: 0.03, depth: 12,
@@ -156,7 +149,8 @@ export function GlassPanel({
   useEffect(() => {
     if (inherited || solid || !available || !bounded || !root.current) return;
     const release = registerGlassLens(root.current, value => { setAdmitted(value); setBudgetResolved(true); }, {
-      priority: kind === "card" ? 0 : kind === "button" || kind === "dock" ? 5 : 10, limit: settings.performance?.maxActiveSurfaces,
+      priority: kind === "card" ? GLASS_PRIORITY.background : kind === "button" ? GLASS_PRIORITY.button : kind === "dock" ? GLASS_PRIORITY.dock : GLASS_PRIORITY.overlay,
+      limit: settings.performance?.maxActiveSurfaces,
     });
     return () => { release(); setAdmitted(false); setBudgetResolved(false); };
   }, [inherited, solid, available, bounded, kind, settings.performance?.maxActiveSurfaces]);
@@ -222,6 +216,7 @@ export function GlassPanel({
     <GlassContent ink={dark ? "light" : "dark"}>
       <Tag {...props} ref={setRoot} data-liquid-glass="" data-glass={kind}
         data-glass-rendering={active ? "active" : inherited ? "shared" : "lightweight"}
+        data-glass-fallback={active || inherited ? undefined : solid ? "accessibility-preference" : !bounded ? "measuring-or-bounds" : !available ? "native-backdrop-unavailable" : !budgetResolved ? "budget-pending" : !admitted ? "budget" : "textures-pending"}
         data-refraction={active ? portable ? "scene-compact-svg" : "backdrop-compact-svg" : inherited ? "inherited" : "css"}
         data-glass-shape={shape}
         data-glass-blur-px={optical.blur}
@@ -230,7 +225,7 @@ export function GlassPanel({
         className={cn("relative isolate", className)}
         style={{ "--foreground": dark ? "#fff" : "#171719", "--background": dark ? "#111113" : "#fff",
           "--muted-foreground": dark ? "#b8b8bd" : "#626268",
-          borderRadius: safeRadius, color: dark ? "#fff" : "#171719",
+          borderRadius: safeRadius, color: dark ? "#fff" : "#171719", colorScheme: dark ? "only dark" : "only light",
           opacity: kind === "tooltip" && !solid && !mapFailed &&
             (!textures || (available && (!budgetResolved || (admitted && !ready)))) ? 0
             : reveal && !solid && !mapFailed ? presented ? 1 : 0 : undefined, ...style } as CSSProperties}>
@@ -247,7 +242,7 @@ export function GlassPanel({
                 <div ref={host} data-glass-mirror-host="" inert style={{ position: "absolute" }} />
               </div>
             </div>
-            {active && kind !== "dock" && contrastProtection && (!small || dark) && <div style={{ position: "absolute", inset: 0, background: small ? "color-mix(in srgb,var(--foreground) 3%,transparent)" : "color-mix(in srgb,var(--background) 10%,transparent)" }} />}
+            {active && kind !== "dock" && contrastProtection && (!small || dark) && <div style={{ position: "absolute", inset: 0, background: small ? "color-mix(in srgb,var(--foreground) 3%,transparent)" : "color-mix(in srgb,var(--background) var(--glass-contrast-coverage,10%),transparent)" }} />}
             {textures && !solid && <div style={{ position: "absolute", inset: 0, backgroundImage: `url("${textures.reflection}")`, backgroundSize: "100% 100%" }} />}
           </div>
         </>}

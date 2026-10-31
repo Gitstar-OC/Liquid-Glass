@@ -41,6 +41,7 @@ const INTERNAL = {
   "@/components/glass-atlas": "glass-lens",
   "@/lib/glass-scene": "glass-lens",
   "@/lib/glass-performance": "glass-lens",
+  "@/lib/glass-preferences": "glass-lens",
   "@/lib/glass-filter": "glass-lens",
   "@/lib/glass-lens-optics": "glass-lens",
   "@/lib/glass-lens-shape": "glass-lens",
@@ -725,7 +726,10 @@ const UTILITIES_CSS = {
     ".glass-video-player": { "aspect-ratio": "4 / 3" },
     ".glass-video-controls": { gap: "16px" },
   },
-  "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
+  "@media (prefers-contrast: more)": {
+    '[data-liquid-glass]': { "--glass-contrast-coverage": "24%" },
+  },
+  "@media (prefers-reduced-transparency: reduce), (forced-colors: active)": {
     ".glass-lens-action::before, .glass-lens-action[data-has-source]::before": {
       background: "var(--glass-lens-plane,var(--background))", "backdrop-filter": "none",
     },
@@ -770,6 +774,7 @@ const LENS = [
   file("components/liquid-glass.tsx", "registry:ui"),
   file("lib/glass-scene.ts", "registry:lib"),
   file("lib/glass-performance.ts", "registry:lib"),
+  file("lib/glass-preferences.ts", "registry:lib"),
   file("lib/glass-filter.ts", "registry:lib"),
   file("lib/glass-lens-optics.ts", "registry:lib"),
   file("lib/glass-lens-shape.ts", "registry:lib"),

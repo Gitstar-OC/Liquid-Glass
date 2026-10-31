@@ -20,7 +20,8 @@ import {
   type LensTextures,
 } from "@/lib/glass";
 import { GlassFilterManager } from "@/lib/glass-filter";
-import { registerGlassLens } from "@/lib/glass-performance";
+import { GLASS_PRIORITY, registerGlassLens } from "@/lib/glass-performance";
+import { REDUCED_GLASS_QUERY } from "@/lib/glass-preferences";
 import { useGlassSettings } from "@/components/glass-scene";
 import {
   buildControlLensTextures,
@@ -66,8 +67,7 @@ export interface GlassLensProps extends Omit<
   rim?: "none" | "column" | "dominant";
   motion?: "ease" | "spring" | "smooth";
 }
-const MEDIA =
-  "(prefers-reduced-transparency: reduce), (prefers-contrast: more)";
+const MEDIA = REDUCED_GLASS_QUERY;
 const MOTION = "(prefers-reduced-motion: reduce)";
 function subscribe(query: string, listener: () => void) {
   if (typeof matchMedia !== "function") return () => {};
@@ -314,7 +314,7 @@ export function GlassLens({
     if (!requested || reduced || !withinBounds || !viewport.current) return;
     const release = registerGlassLens(viewport.current, setAdmitted, {
       limit: settings.performance?.maxActiveSurfaces,
-      priority: 5,
+      priority: GLASS_PRIORITY.control,
     });
     return () => {
       release();
@@ -622,6 +622,7 @@ export function GlassLens({
       data-lens-rim={rim}
       data-target-lens-ready={ready}
       data-lens-visible={visible}
+      data-glass-fallback={ready ? undefined : reduced ? "accessibility-preference" : !requested ? "resting" : !withinBounds ? "source-bounds" : !admitted ? "budget" : "textures-pending"}
       data-lens-state={
         !ready
           ? "idle"

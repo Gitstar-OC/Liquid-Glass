@@ -129,6 +129,17 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   slide; pointer changes retain the gentle slide. Entire collection/image tiles
   open previews, including their glass caption. Keep content through dialog exit.
 - Motion is brief and purposeful. Respect reduced motion/transparency and higher contrast.
+- Higher contrast strengthens readability while keeping refraction. Only explicit
+  reduced transparency or a forced-color palette selects the solid renderer.
+  Keep this policy in `lib/glass-preferences.ts`, shared by every backend.
+- The mobile three-lens cap prioritizes active controls (8) and media (7) ahead
+  of the dock (2) and static glass buttons (1). Overlays remain priority 10;
+  background cards use 0. Header chrome must not starve the selected example.
+- New visits follow the system theme; preserve explicit Light/Dark choices.
+  Declare authored schemes with `only light` / `only dark` so browser Auto Dark
+  does not recolor DOM sources separately from optical maps or canvas output.
+  Apply the same selection before paint and after hydration. Keep System in
+  the appearance menu. ARIA and inert optical layers retain their semantics.
 
 ## Change checklist
 

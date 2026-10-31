@@ -593,7 +593,12 @@
         "gap": "16px"
       }
     },
-    "@media (prefers-reduced-transparency: reduce), (prefers-contrast: more)": {
+    "@media (prefers-contrast: more)": {
+      "[data-liquid-glass]": {
+        "--glass-contrast-coverage": "24%"
+      }
+    },
+    "@media (prefers-reduced-transparency: reduce), (forced-colors: active)": {
       ".glass-lens-action::before, .glass-lens-action[data-has-source]::before": {
         "background": "var(--glass-lens-plane,var(--background))",
         "backdrop-filter": "none"

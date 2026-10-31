@@ -8,6 +8,16 @@ interface LensEntry {
   onChange: (active: boolean) => void;
 }
 
+/** Active examples get the phone's limited slots before passive page chrome. */
+export const GLASS_PRIORITY = {
+  background: 0,
+  button: 1,
+  dock: 2,
+  media: 7,
+  control: 8,
+  overlay: 10,
+} as const;
+
 const entries = new Set<LensEntry>();
 let observer: IntersectionObserver | null = null;
 let listening = false;

@@ -1379,3 +1379,36 @@ packaging completed with 58 entries and 70 shared source files.
   blocked; reference parity, GPU timings and native mobile behavior remain
   unverified. Registry packaging completed with 58 items and 70 shared files.
 
+## 2026-10-31 — mobile admission and dark-mode eligibility
+
+- Found two source-level causes of plain mobile controls. Every renderer combined
+  `prefers-contrast: more` with reduced transparency and disabled its optical
+  backend. Separately, intro buttons, dock and selected examples all used priority
+  5. On a three-slot phone, the two intro links and dock could occupy every slot
+  before a slider press, selected navigation or media lens registered.
+- All seven backends now share `glass-preferences.ts`. Explicit reduced
+  transparency and forced-color palettes select solid UI. Higher contrast keeps
+  refraction and strengthens compact-panel readability coverage to 24%. CSS thumb
+  and image-button solid overrides follow that same preference distinction.
+  ARIA and inert optical layers were retained.
+- The hard five/fine, three/coarse cap is unchanged. Control/selection priority 8
+  and media priority 7 outrank dock 2 and passive glass buttons 1. Overlays remain
+  10 and background cards 0. Reconciliation still runs only on admission,
+  visibility and removal; there is no new timer, extra surface or budget bypass.
+- New visits follow System; stored explicit themes are preserved. Root, site and
+  surface schemes use `only light` / `only dark` so Chrome Auto Dark cannot
+  recolor authored DOM separately from optical inputs. The pre-paint script
+  handles blocked localStorage, and hydration does not briefly overwrite the
+  device palette with the server snapshot. The dock includes System explicitly.
+- `data-glass-fallback` distinguishes accessibility, resting controls, budget,
+  bounds and pending render resources on the actual renderer roots. Metadata
+  adds no observer or polling loop. DOM/explicit-target SVG and WebGL remain
+  independent of the native SVG-backdrop browser check. Optical maps, shader
+  equations and interaction geometry were not changed in this update.
+- Evidence is source inspection and passive development-server compilation.
+  The reporting phone and exact Extra Dark setting have not been inspected, so
+  these are confirmed code defects rather than a verified device-specific root
+  cause. No tests, lint, typecheck, production build, registry verification or
+  benchmarks were run. Registry packaging completed with 58 items and 71 shared
+  files. Device confirmation remains pending.
+

@@ -214,7 +214,7 @@ export function GlassSurface({
     "--sidebar-accent-foreground": foreground,
     "--sidebar-border": tone ? "#ffffff30" : "#00000020",
     "--sidebar-ring": foreground,
-    colorScheme: tone ? "dark" : "light",
+    colorScheme: tone ? "only dark" : "only light",
   };
   const protection =
     (ink === "auto" || settings.themeBehavior === "duotheme") &&

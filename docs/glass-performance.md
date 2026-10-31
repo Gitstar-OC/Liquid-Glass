@@ -11,7 +11,10 @@ pointers** and **3 on coarse pointers**. A provider can request a lower limit:
 </GlassSettingsProvider>
 ```
 
-The device cap still wins. Modal/overlay lenses have priority 10 over ordinary panels. The homepage's compact links and dock use priority 5; the elastic example uses 5 while held. Offscreen and document-hidden lenses release their mirrored DOM/filter
+The device cap still wins. Modal/overlay lenses have priority 10, control/selection
+lenses 8, and media/image controls 7. The dock uses 2, static glass buttons 1 and
+background cards 0. This prevents the two intro links and dock from filling all
+three phone slots ahead of the selected example. Offscreen and document-hidden lenses release their mirrored DOM/filter
 work. Excess surfaces keep a lightweight translucent CSS finish and remain
 interactive. No component disappears because it exceeded the optical budget.
 
@@ -88,7 +91,9 @@ or a claim about Apple's private renderer.
   hundreds of nodes under a small control without measuring the cost.
 - Do not blanket-apply `will-change`, GPU transforms, blur, or backdrop filters
   to layout wrappers. Visibility, caching, and bounded sources come first.
-- Reduced-transparency/high-contrast preferences keep the opaque accessible fallback.
+- Explicit reduced transparency and forced-color palettes select the opaque
+  accessible fallback. Higher contrast keeps glass and strengthens readability.
+  All backends share this distinction through `glass-preferences.ts`.
 
 ## Repeatable measurement
 
@@ -340,6 +345,34 @@ device behavior still require separate platform review before broad claims.
 The Target lens and Original DOM renderers in `/lab` reports map revisions during 120 frames of
 motion; a settled run should report zero map revisions. This revision has not
 been benchmarked in the local browser; no tests were written or run.
+
+## Mobile eligibility and automatic darkening
+
+Dark mode and `prefers-contrast: more` are not renderer kill switches. All seven
+backends share `(prefers-reduced-transparency: reduce), (forced-colors: active)`
+for the solid fallback. The ordinary higher-contrast query changes readability
+coverage without destroying maps, disabling refraction or rebuilding renderers.
+The phone cap remains three; active examples outrank static navigation chrome.
+
+The theme provider defaults new visits to System and retains stored choices.
+Its pre-paint script works even when localStorage is unavailable. Hydration
+does not replace the device's initial palette with the server's light snapshot.
+Authored `only light` / `only dark` schemes prevent Chrome Auto Dark from
+recoloring DOM input separately from PNG displacement fields or WebGL output.
+This preserves the app's own dark theme rather than adding an inversion pass.
+
+`data-glass-fallback` records the selected fallback path on compact controls,
+selection, panels and media. It differentiates resting controls, accessibility
+preferences, admission, bounds and pending render resources. These attributes
+are diagnostic metadata and add no timer or visible implementation UI. ARIA
+labels/hidden optical layers are unchanged. The native SVG backdrop check is
+independent of DOM SVG and WebGL; its browser restriction cannot gate top-level
+slider/switch/selection/video examples.
+
+Sources: [contrast preference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-contrast),
+[transparency preference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-transparency),
+[authored color schemes](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme),
+[Aave's DOM/WebGL paths](https://aave.com/design/building-glass-for-the-web).
 
 ## Portals and source coverage
 

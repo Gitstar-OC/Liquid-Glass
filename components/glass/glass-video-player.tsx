@@ -5,19 +5,11 @@ import { Button } from "@/components/ui/button";
 import { GlassIcon } from "@/components/glass/glass-icons";
 import { GlassStateSwap } from "@/components/glass/glass-state-swap";
 import { useGlassSettings } from "@/components/glass-scene";
-import { registerGlassLens } from "@/lib/glass-performance";
+import { GLASS_PRIORITY, registerGlassLens } from "@/lib/glass-performance";
+import { subscribeReducedGlass as subscribe, prefersReducedGlass as reduced, serverGlassPreference as server } from "@/lib/glass-preferences";
 import { GlassVideoRenderer } from "@/lib/glass-video";
 import { cn } from "@/lib/utils";
 
-const PREFERENCE =
-  "(prefers-reduced-transparency: reduce), (prefers-contrast: more)";
-const subscribe = (callback: () => void) => {
-  const media = matchMedia(PREFERENCE);
-  media.addEventListener("change", callback);
-  return () => media.removeEventListener("change", callback);
-};
-const reduced = () => matchMedia(PREFERENCE).matches;
-const server = () => false;
 const timeLabel = (time: number) =>
   `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`;
 
@@ -85,7 +77,7 @@ export function GlassVideoPlayer({
   useEffect(() => {
     if (solid || !canvas.current) return;
     return registerGlassLens(canvas.current, setAdmitted, {
-      priority: 5,
+      priority: GLASS_PRIORITY.media,
       limit: settings.performance?.maxActiveSurfaces,
     });
   }, [solid, settings.performance?.maxActiveSurfaces]);
@@ -251,6 +243,7 @@ export function GlassVideoPlayer({
       className={cn("glass-video-player", className)}
       data-glass-video=""
       data-optical={optical && admitted && !solid}
+      data-glass-fallback={optical && admitted && !solid ? undefined : solid ? "accessibility-preference" : !admitted ? "budget" : error ? "media-error" : "video-or-webgl-pending"}
       data-refraction={
         optical && admitted && !solid ? "video-webgl" : "native-video"
       }

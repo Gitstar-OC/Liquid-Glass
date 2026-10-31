@@ -50,6 +50,13 @@ pixel readback or idle animation is introduced. Reduced transparency uses an
 opaque fallback. Native focus, Escape, outside dismissal and disabled states
 remain provided by Radix/shadcn and Vaul.
 
+Higher contrast does not disable the lens. It increases neutral contrast
+protection; explicit Reduce Transparency and forced-color palettes use solid UI.
+The renderer exposes `data-glass-fallback` to distinguish an accessibility
+preference, budget admission, source bounds, pending textures or unsupported
+native backdrop filtering. A missing native SVG backdrop path does not disable
+the bounded DOM or explicit-target path used by the main control examples.
+
 `GlassDock material="backdrop"` uses that local backdrop path for floating docks.
 The existing `scene` and explicit-target `lens` modes remain available.
 `GlassButton variant="glass"` uses the compact material; nested actions share

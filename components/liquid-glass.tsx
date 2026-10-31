@@ -39,6 +39,7 @@ import { useBackdropPlane } from "@/components/glass-backdrop";
 import { cn } from "@/lib/utils";
 import { Slot } from "radix-ui";
 import { registerGlassLens } from "@/lib/glass-performance";
+import { subscribeReducedGlass, prefersReducedGlass as reducedGlassSnapshot } from "@/lib/glass-preferences";
 
 export interface LiquidGlassProps extends HTMLAttributes<HTMLElement> {
   preset?: GlassPreset;
@@ -73,17 +74,6 @@ export interface LiquidGlassProps extends HTMLAttributes<HTMLElement> {
   priority?: number;
 }
 const subscribeNoop = () => () => {};
-const REDUCE_GLASS =
-  "(prefers-reduced-transparency: reduce), (prefers-contrast: more)";
-const reducedGlassSnapshot = () =>
-  typeof window.matchMedia === "function" &&
-  window.matchMedia(REDUCE_GLASS).matches;
-function subscribeReducedGlass(listener: () => void) {
-  if (typeof window.matchMedia !== "function") return () => {};
-  const media = window.matchMedia(REDUCE_GLASS);
-  media.addEventListener("change", listener);
-  return () => media.removeEventListener("change", listener);
-}
 export function useGlassSupport(): boolean {
   return useSyncExternalStore(
     subscribeNoop,

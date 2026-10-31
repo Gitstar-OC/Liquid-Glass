@@ -12,9 +12,12 @@ import type { GlassKind, GlassMode, GlassSurface } from "@/lib/glass-theme";
 
 export type GlassModeSetting = GlassMode | "system";
 
-const DEFAULT_MODE: GlassModeSetting = "light";
+const DEFAULT_MODE: GlassModeSetting = "system";
 const MODE_KEY = "liquid-glass-mode";
 const SURFACES_KEY = "liquid-glass-surfaces";
+const subscribeHydration = () => () => {};
+const clientHydrated = () => true;
+const serverHydrated = () => false;
 
 type SurfaceOverrides = Partial<Record<GlassKind, GlassSurface>>;
 
@@ -97,6 +100,7 @@ interface GlassThemeContextValue {
 const GlassThemeContext = createContext<GlassThemeContextValue | null>(null);
 
 export function GlassThemeProvider({ children }: { children: ReactNode }) {
+  const hydrated = useSyncExternalStore(subscribeHydration, clientHydrated, serverHydrated);
   const mode = useSyncExternalStore(
     subscribe,
     () => getState().mode,
@@ -110,7 +114,7 @@ export function GlassThemeProvider({ children }: { children: ReactNode }) {
   const systemLight = useSyncExternalStore(
     subscribePrefersLight,
     prefersLight,
-    () => false,
+    () => true,
   );
 
   const resolvedMode: GlassMode =
@@ -118,10 +122,13 @@ export function GlassThemeProvider({ children }: { children: ReactNode }) {
 
   // Sync the external system (documentElement) — no React state writes here.
   useEffect(() => {
+    // The pre-paint script already applied the real device preference. Do not
+    // replace it with the server's light snapshot during hydration.
+    if (!hydrated) return;
     const dark = resolvedMode === "dark";
     document.documentElement.classList.toggle("dark", dark);
-    document.documentElement.style.colorScheme = dark ? "dark" : "light";
-  }, [resolvedMode]);
+    document.documentElement.style.colorScheme = dark ? "only dark" : "only light";
+  }, [resolvedMode, hydrated]);
 
   const value = useMemo<GlassThemeContextValue>(
     () => ({

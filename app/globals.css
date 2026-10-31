@@ -6,7 +6,7 @@
 
 :root {
   --glass-action: #006de5;
-  color-scheme: light;
+  color-scheme: only light;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -87,7 +87,7 @@
 }
 
 .dark {
-  color-scheme: dark;
+  color-scheme: only dark;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -191,7 +191,7 @@ summary {
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #a1a1aa;
-  color-scheme: light;
+  color-scheme: only light;
 }
 .dark .site-shell {
   --background: #111214;
@@ -211,7 +211,7 @@ summary {
   --border: #32343b;
   --input: #32343b;
   --ring: #a2a2ab;
-  color-scheme: dark;
+  color-scheme: only dark;
   background-color: var(--background);
   color: var(--foreground);
 }
@@ -229,7 +229,7 @@ summary {
   --border: #ffffff26;
   --input: #ffffff26;
   --ring: #ffffff70;
-  color-scheme: dark;
+  color-scheme: only dark;
 }
 @layer components {
   .glass-chip {
@@ -294,6 +294,7 @@ summary {
 }
 
 @media (prefers-contrast: more) {
+  [data-liquid-glass] { --glass-contrast-coverage: 24%; }
   .glass-chip,
   .glass-field {
     border-color: color-mix(in oklab, var(--foreground) 38%, transparent);
@@ -636,7 +637,7 @@ summary {
   .glass-lens-action { scale: 1 !important; transition: none; }
   .glass-lens-action [data-glass-target-lens] { transition: none; }
 }
-@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
   .glass-lens-action::before,
   .glass-lens-action[data-has-source]::before {
     background: var(--glass-lens-plane, var(--background));
@@ -884,7 +885,7 @@ summary {
     transform: none;
   }
 }
-@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
   [data-liquid-pressed="true"] .glass-slider-thumb {
     background: var(--foreground);
     backdrop-filter: none;
@@ -930,7 +931,7 @@ summary {
     transition: none;
   }
 }
-@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
   .glass-switch-thumb::before {
     opacity: 1 !important;
   }

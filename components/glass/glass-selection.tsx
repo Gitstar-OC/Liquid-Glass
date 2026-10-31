@@ -6,7 +6,8 @@ import { useGlassSettings } from "@/components/glass-scene";
 import { CONTROL_LENS_PRESETS, buildControlLensTextures, controlLensMetrics, sampleControlLensSpring } from "@/lib/glass-lens-optics";
 import { decodeLensTextures } from "@/lib/glass";
 import { GlassFilterManager } from "@/lib/glass-filter";
-import { registerGlassLens } from "@/lib/glass-performance";
+import { GLASS_PRIORITY, registerGlassLens } from "@/lib/glass-performance";
+import { subscribeReducedGlass as subscribe, prefersReducedGlass as reduced, serverGlassPreference as server } from "@/lib/glass-preferences";
 
 const EMPTY = {
   left: 0,
@@ -153,20 +154,12 @@ export function GlassSelection({
   );
 }
 
-const PREFERENCE = "(prefers-reduced-transparency: reduce), (prefers-contrast: more)";
-const subscribe = (callback: () => void) => {
-  const media = matchMedia(PREFERENCE);
-  media.addEventListener("change", callback);
-  return () => media.removeEventListener("change", callback);
-};
-const reduced = () => matchMedia(PREFERENCE).matches;
 const subscribeMotion = (callback: () => void) => {
   const media = matchMedia("(prefers-reduced-motion: reduce)");
   media.addEventListener("change", callback);
   return () => media.removeEventListener("change", callback);
 };
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
-const server = () => false;
 const PADDING = 64;
 const OPTICS = CONTROL_LENS_PRESETS.selection;
 // Selection has its own pacing; the approved slider/switch springs stay intact.
@@ -196,7 +189,7 @@ function SelectionLens({ selection, owner, children }: {
     fullWidth <= 4096 && fullHeight <= 4096 && fullWidth * fullHeight <= 1_500_000;
   useEffect(() => {
     if (!selection.visible || !bounded || solid || !owner.current) return;
-    return registerGlassLens(owner.current, setAdmitted, { priority: 5, limit: settings.performance?.maxActiveSurfaces });
+    return registerGlassLens(owner.current, setAdmitted, { priority: GLASS_PRIORITY.control, limit: settings.performance?.maxActiveSurfaces });
   }, [selection.visible, bounded, solid, owner, settings.performance?.maxActiveSurfaces]);
 
   useLayoutEffect(() => {
@@ -311,6 +304,7 @@ function SelectionLens({ selection, owner, children }: {
     <div ref={root} aria-hidden="true" inert data-glass-ignore="" data-glass-target-lens="" data-lens-visible={visible}
       data-glass-rendering={visible ? "active" : "lightweight"}
       data-refraction={visible ? "target-svg" : "disabled"}
+      data-glass-fallback={visible ? undefined : solid ? "accessibility-preference" : !selection.visible ? "unselected" : !bounded ? "source-bounds" : !admitted ? "budget" : "textures-pending"}
       style={{ position: "absolute", inset: "-20px -8px", overflow: "clip", zIndex: 2, pointerEvents: "none", opacity: visible ? 1 : 0 }}>
       <div style={{ position: "absolute", left: 8 - PADDING, top: 20 - PADDING, width: fullWidth, height: fullHeight }}>
         <svg ref={housing} width="0" height="0" style={{ position: "absolute" }} />

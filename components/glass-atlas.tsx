@@ -28,6 +28,7 @@ import { attachSceneMirror } from "@/lib/glass-scene";
 import { GlassFilterManager } from "@/lib/glass-filter";
 import { registerGlassLens } from "@/lib/glass-performance";
 import type { GlassShape } from "@/lib/glass";
+import { subscribeReducedGlass as subscribeReduced, prefersReducedGlass as reducedSnapshot, serverGlassPreference as serverSnapshot } from "@/lib/glass-preferences";
 
 interface AtlasContextValue {
   register: (
@@ -40,16 +41,6 @@ interface AtlasContextValue {
   enabled: boolean;
 }
 const AtlasContext = createContext<AtlasContextValue | null>(null);
-const REDUCE =
-  "(prefers-reduced-transparency: reduce), (prefers-contrast: more)";
-const reducedSnapshot = () =>
-  typeof matchMedia === "function" && matchMedia(REDUCE).matches;
-const serverSnapshot = () => false;
-function subscribeReduced(listener: () => void) {
-  const media = matchMedia(REDUCE);
-  media.addEventListener("change", listener);
-  return () => media.removeEventListener("change", listener);
-}
 
 /** Opt-in batching for non-overlapping sibling surfaces sharing one optical configuration. */
 export function GlassAtlas({

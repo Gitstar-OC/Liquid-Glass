@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 // Applies the persisted glass theme before first paint to avoid a flash.
-const themeInitScript = `(function(){try{var m=localStorage.getItem("liquid-glass-mode")||"light";var d=m==="dark"||(m==="system"&&!window.matchMedia("(prefers-color-scheme: light)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";}catch(e){}})();`;
+const themeInitScript = `(function(){var m="system";try{var v=localStorage.getItem("liquid-glass-mode");if(v==="light"||v==="dark"||v==="system")m=v;}catch(e){}var d=m==="dark"||(m==="system"&&!window.matchMedia("(prefers-color-scheme: light)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"only dark":"only light";})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
