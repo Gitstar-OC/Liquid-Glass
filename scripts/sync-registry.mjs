@@ -614,6 +614,7 @@ const UTILITIES_CSS = {
   },
   ".glass-bubble-motion": { "--bubble-offset": "3px", "--bubble-scale": ".97" },
   '.glass-panel-backdrop[data-panel-source="backdrop"]': { "backdrop-filter": "blur(var(--panel-blur))", "-webkit-backdrop-filter": "blur(var(--panel-blur))" },
+  '[data-glass-reveal]': { transition: "opacity 140ms var(--ease-out)" },
   '.glass-bubble-motion[data-side="bottom"]': { "--bubble-offset": "-3px" },
   '.glass-bubble-motion[data-state="open"]': { animation: "glass-bubble-in 240ms var(--ease-out) both" },
   '.glass-bubble-motion[data-state="closed"]': { animation: "glass-bubble-out 160ms ease-out both" },
@@ -677,6 +678,7 @@ const UTILITIES_CSS = {
     "box-shadow": "none !important",
   },
   "@media (prefers-reduced-motion: reduce)": {
+    '[data-glass-reveal]': { transition: "none" },
     ".glass-dialog-motion": { "animation-duration": "100ms !important", transform: "none !important" },
     ".glass-bubble-motion": { "--bubble-offset": "0px", "--bubble-scale": "1", "animation-duration": "100ms !important" },
     ".glass-lens-action": { scale: "1 !important", transition: "none" },

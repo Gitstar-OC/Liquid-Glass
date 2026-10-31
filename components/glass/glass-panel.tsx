@@ -39,10 +39,10 @@ const subscribe = (listener: () => void) => {
 };
 const reduced = () => matchMedia(PREFERENCE).matches;
 const server = () => false;
-const BLUR: Record<PanelKind, number> = { tooltip: 0.35, "hover-card": 1, popover: 1.25, dropdown: 1.25, drawer: 2, dialog: 2.5, card: 0.7, button: 0.25, dock: 10 };
+const BLUR: Record<PanelKind, number> = { tooltip: 0.35, "hover-card": 4, popover: 6, dropdown: 6, drawer: 8, dialog: 6, card: 4, button: 0.5, dock: 6 };
 // A wide stationary dock needs a shallow lens, not a magnified control thumb.
-const DOCK_LENS = { ...CONTROL_LENS_PRESETS.surface, blur: 10, scale: 0.018, depth: 9,
-  curvature: 40, splay: 1, magnification: 1.025, rimStrength: 0.7, edgeHighlight: 0.32 };
+const DOCK_LENS = { ...CONTROL_LENS_PRESETS.surface, blur: 6, scale: 0.03, depth: 12,
+  curvature: 47, splay: 1, magnification: 1.05, rimStrength: 0.9, edgeHighlight: 0.46 };
 const OPPOSITE = { top: "bottom", bottom: "top", left: "right", right: "left" } as const;
 
 /** The shared curved field over a bounded scene or the native backdrop where
@@ -64,6 +64,7 @@ export function GlassPanel({
   const [admitted, setAdmitted] = useState(false), [ready, setReady] = useState(false);
   const [budgetResolved, setBudgetResolved] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
+  const [presented, setPresented] = useState(false);
   const [bundle, setBundle] = useState<{
     key: string; width: number; height: number; pad: number; parameters: string;
     textures: ControlLensTextures;
@@ -80,7 +81,9 @@ export function GlassPanel({
   const optical = JSON.parse(parameterKey) as ReturnType<typeof resolveControlLens>;
   const safeRadius = Number.isFinite(radius) ? Math.max(0, Math.min(radius,
     size.width ? size.width / 2 : Infinity, size.height ? size.height / 2 : Infinity)) : 20;
-  const geometry = { shape, rimWidth: kind === "dock" ? 1.25 : 1.1, ...(beak ? { beak: { side: size.side, offset: size.offset } } : {}) };
+  const small = kind === "tooltip";
+  const geometry = { shape, rimWidth: small ? 1.1 : 1.6, bevel: small ? 0 : 1.25, columnRim: !small, resolution: small ? 2 : 1.5,
+    ...(beak ? { beak: { side: size.side, offset: size.offset } } : {}) };
   const metrics = controlLensMetrics(size.width, size.height, optical, geometry);
   const key = JSON.stringify([size.width, size.height, safeRadius, parameterKey, geometry]);
   // Radius edits keep the last complete contour + field + glint together until
@@ -92,6 +95,11 @@ export function GlassPanel({
   const source = scene?.source;
   const portable = Boolean(source && size.covered);
   const available = portable || nativeBackdrop;
+  const reveal = !inherited && kind !== "tooltip" && kind !== "button" && kind !== "dock";
+  // Reveal the initial finish once; resizing/retargeting never hides the labels.
+  useEffect(() => {
+    if (inherited || solid || mapFailed || ready || (textures && (!available || (budgetResolved && !admitted))) || (size.width > 0 && !bounded)) setPresented(true);
+  }, [inherited, solid, mapFailed, ready, textures, available, budgetResolved, admitted, size.width, bounded]);
 
   const setRoot = useCallback((node: HTMLElement | null) => {
     root.current = node;
@@ -154,7 +162,7 @@ export function GlassPanel({
   }, [inherited, solid, available, bounded, kind, settings.performance?.maxActiveSurfaces]);
 
   useEffect(() => {
-    if (inherited || !bounded) return;
+    if (inherited || solid || !bounded) return;
     let cancelled = false;
     setMapFailed(false);
     const frame = requestAnimationFrame(() => {
@@ -167,7 +175,7 @@ export function GlassPanel({
     return () => { cancelled = true; cancelAnimationFrame(frame); };
     // The serialized key includes every optical and contour input.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, bounded, inherited]);
+  }, [key, bounded, inherited, solid]);
 
   useLayoutEffect(() => {
     const node = root.current, sceneNode = source?.current;
@@ -182,8 +190,9 @@ export function GlassPanel({
       map: textures.displacement, width: fullWidth, height: fullHeight,
       depth: settings.refraction === false ? 0 : metrics.displacementScale,
       chroma: 0, blur: optical.blur, opticalTransmission: settings.refraction !== false,
-      rim: textures.rim, rimScale: 0, colorBleed: kind === "dock" ? 0.5 : 0.3, glint: 1,
-      colorSaturation: 1, colorGain: 1, colorSpread: kind === "dock" ? 12 : 8,
+      rim: textures.rim, rimScale: small ? 0 : textures.rimScale,
+      colorBleed: small ? 0.3 : kind === "dock" ? 0.6 : 0.45, glint: 1,
+      colorSaturation: 1, colorGain: 1, colorSpread: small ? 8 : Math.min(32, size.height / 4),
     });
     if (!portable) {
       setReady(true);
@@ -201,7 +210,7 @@ export function GlassPanel({
     return () => {
       subscription.destroy(); filter.destroy(); mirror.current = null; manager.current = null; setReady(false);
     };
-  }, [inherited, solid, admitted, available, portable, source, textures, fullWidth, fullHeight, metrics.pad, metrics.displacementScale, optical.blur, kind, dark, settings.refraction, scene?.frameRate, settings.performance?.frameRate]);
+  }, [inherited, solid, admitted, available, portable, source, textures, fullWidth, fullHeight, metrics.pad, metrics.displacementScale, optical.blur, small, size.height, kind, dark, settings.refraction, scene?.frameRate, settings.performance?.frameRate]);
 
   const active = ready && admitted && available && !solid;
   const Tag = asChild ? Slot.Root : "div";
@@ -217,12 +226,14 @@ export function GlassPanel({
         data-glass-shape={shape}
         data-glass-blur-px={optical.blur}
         data-glass-beak={beak ? size.side : "none"}
+        data-glass-reveal={reveal || undefined}
         className={cn("relative isolate", className)}
         style={{ "--foreground": dark ? "#fff" : "#171719", "--background": dark ? "#111113" : "#fff",
           "--muted-foreground": dark ? "#b8b8bd" : "#626268",
           borderRadius: safeRadius, color: dark ? "#fff" : "#171719",
           opacity: kind === "tooltip" && !solid && !mapFailed &&
-            (!textures || (available && (!budgetResolved || (admitted && !ready)))) ? 0 : undefined, ...style } as CSSProperties}>
+            (!textures || (available && (!budgetResolved || (admitted && !ready)))) ? 0
+            : reveal && !solid && !mapFailed ? presented ? 1 : 0 : undefined, ...style } as CSSProperties}>
         {!inherited && <>
           <svg ref={housing} aria-hidden="true" width="0" height="0" style={{ position: "absolute" }} />
           <div ref={backdrop} aria-hidden="true" data-glass-ignore="" className="glass-panel-backdrop"
@@ -230,16 +241,13 @@ export function GlassPanel({
             style={{ "--panel-blur": `${optical.blur}px`, position: "absolute", inset: -metrics.pad, zIndex: -1, pointerEvents: "none", ...mask,
             background: solid ? "var(--background)" : active ? kind === "dock"
               ? "color-mix(in srgb,var(--foreground) 3%,transparent)" : "transparent"
-              : kind === "dock" || portable
-                ? "color-mix(in srgb,var(--background) 14%,transparent)" : dark
-              ? "color-mix(in srgb,color-mix(in srgb,var(--background) 86%,var(--foreground) 14%) 86%,transparent)"
-              : "color-mix(in srgb,var(--background) 94%,transparent)" } as CSSProperties}>
+              : "color-mix(in srgb,var(--background) 14%,transparent)" } as CSSProperties}>
             <div ref={layer} style={{ position: "absolute", inset: 0, opacity: active && portable ? 1 : 0 }}>
               <div style={{ position: "absolute", inset: 0, overflow: "hidden", contain: "paint" }}>
                 <div ref={host} data-glass-mirror-host="" inert style={{ position: "absolute" }} />
               </div>
             </div>
-            {active && dark && kind !== "dock" && contrastProtection && <div style={{ position: "absolute", inset: 0, background: "color-mix(in srgb,var(--foreground) 3%,transparent)" }} />}
+            {active && kind !== "dock" && contrastProtection && (!small || dark) && <div style={{ position: "absolute", inset: 0, background: small ? "color-mix(in srgb,var(--foreground) 3%,transparent)" : "color-mix(in srgb,var(--background) 10%,transparent)" }} />}
             {textures && !solid && <div style={{ position: "absolute", inset: 0, backgroundImage: `url("${textures.reflection}")`, backgroundSize: "100% 100%" }} />}
           </div>
         </>}

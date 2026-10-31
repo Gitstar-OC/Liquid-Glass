@@ -138,26 +138,30 @@ the same global optical budget governs all visible sections. Dynamic
 music and elastic components load on demand, and audio is removed on departure.
 The docs preview's refraction comparison changes displacement only. Landing
 illustrations expose native component interactions without editing controls.
-The six compact examples use one bounded asset workspace each. Normal toolbar,
-table, image and activity content belongs to the source; glass portals stay in
-the preview container, outside the mirrored source DOM. Closed row menus and
-drawers allocate no lens. Only the active menu/drawer or collection caption
-requests its existing compact panel slot. Hover surfaces are not pinned on the
-homepage; the docs inspector retains explicit pinning. File lists have a bounded
-scroll viewport. There are no new renderers or background animation callbacks.
+The six lower homepage examples use a plain, complete paper plane with one
+centered trigger or card. Their frames are 400px high (420px on phones).
+Overlays start closed; tooltip/hover-card triggers also support taps. No images,
+file tables or asset-workspace DOM render in these homepage scenes. A source
+mirror has just two authored source elements: its root and paper plane. The simple example family and
+the richer docs/gallery workspace family load in separate dynamic chunks, only
+when selected and visible. Closed overlays allocate no optical panel. The docs
+inspector retains explicit pinning and its existing bounded file-scroll viewport.
+There are no new renderers or background animation callbacks.
 No idle RAF loop runs.
 Clip the page's sampling margins so the bottom lens cannot extend scroll height.
 
-The compact panel lens uses 0.35–2.5px blur and 1.04–1.12× source magnification,
+The compact panel lens uses 0.35–8px blur and 1.04–1.12× source magnification,
 with no source brightness boost. Its thin source-color band reuses the existing
 cached rim PNG and bounded SourceGraphic through the existing colorBleed graph.
-The narrow horizontal kernel preserves neighboring columns. Compact panels use
-1px horizontal / 8px vertical diffusion; the dock uses 1px / 12px. Saturation
-and RGB gain remain at 1, retaining the actual source colors. Legacy surface
-callers keep their existing defaults. Dock geometry requests a fixed 1.25px band;
-other panels retain 1.1px. This adds no
-new map, CPU pixel readback, whole-page mirror or idle animation. Slider/switch
-and video maps omit this geometry option and retain their approved output.
+The narrow horizontal kernel preserves neighboring columns. The rim map's red
+coordinate stays neutral while green projects its interior column to the rim.
+Vertical diffusion is one quarter of the lens height, capped at 32px. This
+enables the existing two-primitive coordinate/projection branch over the same
+bounded SourceGraphic. Saturation and RGB gain remain at 1. Panels use a 1.6px
+source-color band and 1.25px tonal bevel; tooltips keep their previous 1.1px
+shoulder and local diffusion. Legacy surface callers keep their defaults. No
+new map, source capture, CPU readback, whole-page mirror or idle animation is
+added. Slider/switch and video maps omit the new geometry options.
 Background softening stays inside the SVG transmission pass, before the colored
 edge is composed; no outer blur softens the rim.
 The optional non-refracting component family is deferred.
@@ -237,6 +241,12 @@ stores a small, edge-confined transmission response; there is no black texture,
 CSS border, or full-body gray wash. Cached diagonal glints retain the silhouette.
 Padding includes the maximum ray excursion. At most 2× map resolution,
 1.5M storage pixels and 12 cached bundles are retained.
+Compact panels use 1.5× map storage resolution on desktop and mobile; controls,
+video and tooltips retain 2×. This allocates about 44% fewer pixels for the same
+panel geometry, before dimension rounding. Symmetric body rays now use the
+quarter-map path even for joined bubbles. Only the pointer's small neighborhood
+recomputes its asymmetric surface and ray. Pixel writes and cached texture
+channels are unchanged. Reduced-transparency surfaces skip map generation.
 
 Only a completed slider requests the optional source-mixture reflection. It uses
 seven SVG primitives over the existing small SourceGraphic: map, coordinates,
@@ -266,7 +276,7 @@ The highlighted DOM retains native dimensions. One bounded travel callback ends
 on arrival, hidden-document changes, cancellation or unmount; no idle loop runs.
 Their persistent lens remains admitted until hidden/unmounted or deselected.
 The homepage dock uses one stationary `GlassPanel` with a shallow compact
-field: 0.018 scale, 9px depth, 1.025× zoom, 10px blur and 24px rounded corners.
+field: 0.03 scale, 12px depth, 1.05× zoom, 6px blur and 24px rounded corners.
 Four native square placeholders stay sharp, with an appearance divider and without
 hover lift or press scale. Resize/position events update geometry, without an
 idle frame loop, whole-page capture or per-item optical layer. The native
@@ -345,14 +355,14 @@ optical sampling margins never belong in that scrolling container.
 The profile example now portals a native popover into its 640 × 400px bounded
 scene (380px high on phones). A local 720px transparent WebP illustration is
 displayed in a 168px circular avatar (160px on phones) over an opaque paper plane.
-One compact DOM lens refracts that composition at 1.08× magnification and 1.5px
+One compact DOM lens refracts that composition at 1.08× magnification and 5px
 blur; foreground actions
 remain sharp. No separate WebGL context, custom image-coordinate observer or
 whole-document capture is needed. The two actions edit the name or copy a link.
-Initial open prevents autofocus. Closing, scrolling out or unmounting releases
+The menu starts closed and prevents autofocus on opening. Closing, scrolling out or unmounting releases
 its source/filter work under the same document budget.
 The Surface playground preset retains its supplied 0.5px blur; the menu has a
-local 1.5px override. The former checkbox rows and per-image alignment observer
+local 5px override. The former checkbox rows and per-image alignment observer
 were removed from the profile demonstration.
 
 `GlassLensButton imageRef` retains the video's shader and a displayed-image ref.
@@ -367,7 +377,7 @@ one admitted lens while open, sharing the existing bounded image source.
 Workspace image/collection tiles likewise open one controlled native dialog.
 Selecting an asset inside a collection replaces its dialog content instead of
 opening another modal. The selected content survives the closing animation;
-focus returns to the original tile without scrolling. Dialogs use 2.5px local
+focus returns to the original tile without scrolling. Dialogs use 6px local
 blur and a dim overlay, replacing the former full-overlay 6px backdrop blur.
 Example tabs perform one initial visibility read before paint, then use the
 existing IntersectionObserver; this makes newly selected controls available to

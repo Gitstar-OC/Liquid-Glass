@@ -50,7 +50,7 @@ export function GlassDialogContent({
       >
         <GlassPanel
           kind="dialog" radius={28} shape="squircle"
-          lensParameters={{ scale: 0.025, depth: 10, magnification: 1.04, blur: surface === "thick" ? 8 : surface === "frosted" ? 5 : 2.5 }}
+          lensParameters={{ scale: 0.025, depth: 10, magnification: 1.04, blur: surface === "thick" ? 12 : surface === "frosted" ? 8 : 6 }}
           className={cn("grid gap-5 p-6", showCloseButton && "[&_[data-slot=dialog-title]]:pr-8")}
         >
           {children}

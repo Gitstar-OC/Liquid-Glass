@@ -696,6 +696,7 @@ summary {
   backdrop-filter: blur(var(--panel-blur));
   -webkit-backdrop-filter: blur(var(--panel-blur));
 }
+[data-glass-reveal] { transition: opacity 140ms var(--ease-out); }
 .glass-bubble-motion[data-state="open"] {
   animation: glass-bubble-in 240ms var(--ease-out) both;
 }
@@ -722,6 +723,7 @@ summary {
   to { opacity: 0; transform: translateY(calc(var(--bubble-offset) / 2)) scale(var(--bubble-scale)); }
 }
 @media (prefers-reduced-motion: reduce) {
+  [data-glass-reveal] { transition: none; }
   .glass-dialog-motion { animation-duration: 100ms !important; transform: none !important; }
   .glass-bubble-motion {
     --bubble-offset: 0px;
@@ -959,6 +961,10 @@ summary {
   background: color-mix(in srgb, var(--muted) 45%, var(--background));
 }
 .panel-preview-stage .home-control-stage { height: 100%; min-height: 0; border-radius: 0; }
+.panel-preview-stage[data-preview="simple"] { background: var(--background); }
+.simple-preview-plane { position: absolute; inset: 0; background: var(--background); }
+.simple-preview-center { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; }
+.simple-preview-card { width: min(280px,100%); }
 .panel-preview-stage:is([data-panel-example="tooltip"], [data-panel-example="hover-card"], [data-panel-example="popover"], [data-panel-example="dropdown"], [data-panel-example="drawer"], [data-panel-example="card"]) { container-type: inline-size; }
 .workspace-scene { --workspace-inset: 32px; --workspace-cover-height: 250px; --workspace-heading-block: 72px; }
 .workspace-plane {
@@ -1150,6 +1156,7 @@ summary {
 .landing-interaction-window[data-example="video"], .landing-interaction-window[data-example="drawer"] { --preview-height: 560px; }
 .landing-interaction-window[data-example="tooltip"] { --preview-height: 420px; }
 .landing-interaction-window[data-example="hover-card"], .landing-interaction-window[data-example="dropdown"], .landing-interaction-window[data-example="card"] { --preview-height: 440px; }
+.landing-interaction-window[data-preview="simple"] { --preview-height: 400px; }
 .landing-interaction-panel, .landing-interaction-panel > .panel-showcase, .landing-interaction-panel .panel-preview-stage { height: 100%; }
 .landing-interaction-panel[data-state="inactive"] { display: none; }
 .landing-interaction-panel[data-state="active"] { animation: landing-panel-enter 420ms cubic-bezier(.22,1,.36,1) both; }
@@ -1175,6 +1182,7 @@ summary {
   .landing-interaction-window[data-example="video"] { --preview-height: 400px; }
   .landing-interaction-window[data-example="profile"], .landing-interaction-window[data-example="popover"] { --preview-height: 460px; }
   .landing-interaction-window[data-example="drawer"] { --preview-height: 540px; }
+  .landing-interaction-window[data-preview="simple"] { --preview-height: 420px; }
   .landing-detail-list { margin-top: 56px; gap: 56px; }
 }
 @media (prefers-reduced-motion: reduce) {

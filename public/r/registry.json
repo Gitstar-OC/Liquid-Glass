@@ -1707,6 +1707,9 @@
           "backdrop-filter": "blur(var(--panel-blur))",
           "-webkit-backdrop-filter": "blur(var(--panel-blur))"
         },
+        "[data-glass-reveal]": {
+          "transition": "opacity 140ms var(--ease-out)"
+        },
         ".glass-bubble-motion[data-side=\"bottom\"]": {
           "--bubble-offset": "-3px"
         },
@@ -1802,6 +1805,9 @@
           "box-shadow": "none !important"
         },
         "@media (prefers-reduced-motion: reduce)": {
+          "[data-glass-reveal]": {
+            "transition": "none"
+          },
           ".glass-dialog-motion": {
             "animation-duration": "100ms !important",
             "transform": "none !important"
@@ -2350,6 +2356,9 @@
           "backdrop-filter": "blur(var(--panel-blur))",
           "-webkit-backdrop-filter": "blur(var(--panel-blur))"
         },
+        "[data-glass-reveal]": {
+          "transition": "opacity 140ms var(--ease-out)"
+        },
         ".glass-bubble-motion[data-side=\"bottom\"]": {
           "--bubble-offset": "-3px"
         },
@@ -2445,6 +2454,9 @@
           "box-shadow": "none !important"
         },
         "@media (prefers-reduced-motion: reduce)": {
+          "[data-glass-reveal]": {
+            "transition": "none"
+          },
           ".glass-dialog-motion": {
             "animation-duration": "100ms !important",
             "transform": "none !important"

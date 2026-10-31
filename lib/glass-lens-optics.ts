@@ -151,7 +151,7 @@ export function buildControlLensTextures(
   const fw = width + pad * 2,
     fh = height + pad * 2;
   // Small controls get subpixel normals and antialiasing; allocation remains bounded.
-  const resolution = Math.min(2, Math.sqrt(1_500_000 / (fw * fh)));
+  const resolution = Math.min(Math.max(1, Math.min(2, geometry?.resolution ?? 2)), Math.sqrt(1_500_000 / (fw * fh)));
   const tw = Math.max(1, Math.ceil(fw * resolution)),
     th = Math.max(1, Math.ceil(fh * resolution));
   const canvas = document.createElement("canvas");
@@ -183,12 +183,30 @@ export function buildControlLensTextures(
   // panels must not acquire a huge rim; tiny controls retain room for the body.
   const lightScale = Math.max(width, height),
     rimHeight = Math.min(geometry?.rimWidth ?? 1.1, cap * 0.12);
-  // Ordinary controls retain the exact quarter-map path. A joined pointer is
-  // asymmetric; only that small bubble computes its complete contour.
-  const asymmetric = Boolean(geometry?.beak);
-  const sampleSurface = geometry ? createControlLensSurface(hw, hh, radius, geometry) : null;
-  for (let y = 0; y < (asymmetric ? th : Math.ceil(th / 2)); y++)
-    for (let x = 0; x < (asymmetric ? tw : Math.ceil(tw / 2)); x++) {
+  const bevel = Math.max(0, Math.min(2, geometry?.bevel ?? 0));
+  // Trace one quadrant of the symmetric body. Only the small neighborhood of
+  // a joined pointer needs an asymmetric surface/ray calculation.
+  const sampleSurface = geometry ? createControlLensSurface(hw, hh, radius, { ...geometry, beak: undefined }) : null;
+  const joinedSurface = geometry?.beak ? createControlLensSurface(hw, hh, radius, geometry) : null;
+  const beak = geometry?.beak;
+  const verticalBeak = beak?.side === "top" || beak?.side === "bottom";
+  const beakSign = beak?.side === "top" || beak?.side === "left" ? -1 : 1;
+  const along = verticalBeak ? hw : hh, across = verticalBeak ? hh : hw;
+  const beakWidth = Math.max(6, Math.min(beak?.width ?? 14, along));
+  const beakHeight = Math.max(2, Math.min(beak?.height ?? 5, 12));
+  const beakMargin = Math.max(0, along - radius - beakWidth / 2);
+  const beakOffset = Math.max(-beakMargin, Math.min(beakMargin, ((beak?.offset ?? 0.5) * 2 - 1) * along));
+  const bendAt = (inside: number, shoulder: number) => {
+    const u = Math.max(0, Math.min(0.9998, 1 - Math.max(0, inside) / cap));
+    const slope = ((parameters.depth / cap) * (parameters.curvature / 58) * u) /
+      Math.sqrt(Math.max(0.0001, 1 - u * u));
+    const nz = 1 / Math.sqrt(1 + slope * slope), nxy = slope * nz, eta = 1 / 1.5;
+    const k = eta * nz - Math.sqrt(1 - eta * eta * (1 - nz * nz));
+    const ray = Math.pow(Math.max(0, Math.min(1, (-k * nxy) / Math.max(0.001, eta - k * nz))), 1 / parameters.splay);
+    return Math.min(1, ray / 0.6) * shoulder;
+  };
+  for (let y = 0; y < Math.ceil(th / 2); y++)
+    for (let x = 0; x < Math.ceil(tw / 2); x++) {
       const px = ((x + 0.5) / tw) * fw - fw / 2,
         py = ((y + 0.5) / th) * fh - fh / 2;
       const surface = sampleSurface
@@ -197,37 +215,42 @@ export function buildControlLensTextures(
         inside = -surface.distance;
       const alpha = Math.max(0, Math.min(1, inside * resolution + 0.5));
       const shoulder = 1 - smooth(0, shoulderWidth, inside);
-      const u = Math.max(0, Math.min(0.9998, 1 - Math.max(0, inside) / cap));
-      const slope =
-        ((parameters.depth / cap) * (parameters.curvature / 58) * u) /
-        Math.sqrt(Math.max(0.0001, 1 - u * u));
-      const nz = 1 / Math.sqrt(1 + slope * slope),
-        nxy = slope * nz,
-        eta = 1 / 1.5;
-      const k = eta * nz - Math.sqrt(1 - eta * eta * (1 - nz * nz));
-      const ray = Math.pow(
-        Math.max(0, Math.min(1, (-k * nxy) / Math.max(0.001, eta - k * nz))),
-        1 / parameters.splay,
-      );
-      const bend = Math.min(1, ray / 0.6) * shoulder;
+      const bend = bendAt(inside, shoulder);
       const zoom = (1 - 1 / magnification) * (1 - shoulder);
       const dx = inside >= 0 ? -surface.nx * bend * amplitude - px * zoom : 0;
       const dy = inside >= 0 ? -surface.ny * bend * amplitude * 0.7 - py * zoom : 0;
-      for (let q = 0; q < (asymmetric ? 1 : 4); q++) {
+      for (let q = 0; q < 4; q++) {
         const flipX = Boolean(q & 1),
           flipY = Boolean(q & 2),
           mx = flipX ? tw - 1 - x : x,
           my = flipY ? th - 1 - y : y,
-          i = (my * tw + mx) * 4;
-        map.data[i] = encode((dx * (flipX ? -1 : 1)) / maximum);
-        map.data[i + 1] = encode((dy * (flipY ? -1 : 1)) / maximum);
+          i = (my * tw + mx) * 4,
+          physicalX = px * (flipX ? -1 : 1), physicalY = py * (flipY ? -1 : 1);
+        let localInside = inside, localAlpha = alpha;
+        let nx = surface.nx * (flipX ? -1 : 1), ny = surface.ny * (flipY ? -1 : 1);
+        let localDx = dx * (flipX ? -1 : 1), localDy = dy * (flipY ? -1 : 1);
+        if (joinedSurface) {
+          const beakAlong = (verticalBeak ? physicalX : physicalY) - beakOffset;
+          const beakAcross = (verticalBeak ? physicalY : physicalX) * beakSign - across;
+          if (beakAcross >= -6 && beakAcross <= beakHeight + 3 && Math.abs(beakAlong) <= beakWidth / 2 + 6) {
+            const joined = joinedSurface(physicalX, physicalY);
+            localInside = -joined.distance;
+            localAlpha = Math.max(0, Math.min(1, localInside * resolution + 0.5));
+            nx = joined.nx; ny = joined.ny;
+            const localShoulder = 1 - smooth(0, shoulderWidth, localInside);
+            const localBend = bendAt(localInside, localShoulder);
+            const localZoom = (1 - 1 / magnification) * (1 - localShoulder);
+            localDx = localInside >= 0 ? -nx * localBend * amplitude - physicalX * localZoom : 0;
+            localDy = localInside >= 0 ? -ny * localBend * amplitude * 0.7 - physicalY * localZoom : 0;
+          }
+        }
+        map.data[i] = encode(localDx / maximum);
+        map.data[i + 1] = encode(localDy / maximum);
         map.data[i + 2] = 128;
         map.data[i + 3] = 255;
         coverage.data[i] = coverage.data[i + 1] = coverage.data[i + 2] = 255;
-        coverage.data[i + 3] = Math.round(alpha * 255);
-        if (!alpha) continue;
-        const nx = surface.nx * (flipX ? -1 : 1),
-          ny = surface.ny * (flipY ? -1 : 1);
+        coverage.data[i + 3] = Math.round(localAlpha * 255);
+        if (!localAlpha) continue;
         const facing = nx * lx + ny * ly;
         // Encode a small directional transmission loss in the otherwise unused
         // blue channel for the video backend. The RGB source stays intact; only the thin
@@ -237,32 +260,32 @@ export function buildControlLensTextures(
             0.16,
             ((0.08 + 0.06 * Math.abs(nx)) *
               (0.95 - 0.05 * facing) *
-              Math.exp(-Math.max(0, inside) / 0.55) *
+              Math.exp(-Math.max(0, localInside) / (bevel || 0.55)) *
               parameters.edgeHighlight) /
               0.39,
-          ) * alpha;
+          ) * localAlpha;
         map.data[i + 2] = Math.round(128 + (attenuation * 255) / 1.5);
         // Two neutral glints anchor the upper-left and lower-right shoulders.
         // This finish is independent of source hue. Keep the displacement and
         // blue transmission fields unchanged for the approved video backend.
         const glintFacing = nx * glintX + ny * glintY,
           glintSquared = glintFacing * glintFacing;
-        const edge = Math.exp(-Math.max(0, inside) / 0.5) *
+        const edge = Math.exp(-Math.max(0, localInside) / (bevel || 0.5)) *
           (parameters.edgeHighlight / 0.39) * (parameters.rimStrength / 0.61) *
-          (0.02 + 0.26 * glintSquared * glintSquared);
+          (bevel ? 0.035 + 0.32 * glintSquared * glintSquared : 0.02 + 0.26 * glintSquared * glintSquared);
         reflection.data[i] =
           reflection.data[i + 1] =
           reflection.data[i + 2] =
-            180;
-        reflection.data[i + 3] = Math.round(edge * alpha * 255);
+            bevel ? Math.round(245 - 89 * smooth(0.35, 1.25, localInside)) : 180;
+        reflection.data[i + 3] = Math.round(edge * localAlpha * 255);
         // Optional completion reflection projects the same source mixture
         // toward the lens center in both axes.
-        rim.data[i] = encode((-px * (flipX ? -1 : 1)) / lightScale);
-        rim.data[i + 1] = encode((-py * (flipY ? -1 : 1)) / lightScale);
+        rim.data[i] = geometry?.columnRim ? 128 : encode(-physicalX / lightScale);
+        rim.data[i + 1] = encode(-physicalY / lightScale);
         rim.data[i + 2] = 128;
         // Only the completed slider adds this thin source-mixture band.
         rim.data[i + 3] = Math.round(
-          alpha * (1 - smooth(rimHeight - 0.35, rimHeight + 0.35, inside)) * 255,
+          localAlpha * (1 - smooth(rimHeight - 0.35, rimHeight + 0.35, localInside)) * 255,
         );
       }
     }

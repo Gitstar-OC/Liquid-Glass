@@ -29,7 +29,7 @@ export function GlassPopoverContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "glass-bubble-motion z-50 w-72 origin-(--radix-popover-content-transform-origin) outline-hidden",
+          "glass-bubble-motion z-50 w-72 max-w-(--radix-popover-content-available-width) origin-(--radix-popover-content-transform-origin) outline-hidden",
           className,
         )}
         {...props}
@@ -40,7 +40,7 @@ export function GlassPopoverContent({
           lensParameters={{ ...(surface === "frosted" ? { blur: 8 } : surface === "thick" ? { blur: 12 } : {}), ...lensParameters }}
           className="flex w-full flex-col gap-3 p-4 text-sm"
         >
-          {children}
+          <div data-glass-panel-viewport="" className="flex max-h-[max(48px,calc(var(--radix-popover-content-available-height,100dvh)_-_32px))] flex-col gap-3 overflow-y-auto overscroll-contain">{children}</div>
         </GlassPanel>
         {beak && <PopoverPrimitive.Arrow data-glass-beak-anchor="" width={14} height={5} opacity={0} aria-hidden="true" />}
       </PopoverPrimitive.Content>

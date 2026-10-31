@@ -29,11 +29,17 @@ The default tooltip is 26px high with 0.35px background softening and 1.04× sou
 zoom. Light surfaces have no gray body tint or added source brightness.
 Dark surfaces retain a faint neutral reflection. These are material defaults,
 not a claim about Apple's renderer. `lensParameters` overrides the shared field.
-Larger panels use 0.7–2.5px background softening and 1.04–1.12× source zoom, while
+Larger panels use 4–8px background softening and 1.04–1.12× source zoom, while
 their foreground stays sharp. Source-colored shoulders reuse the bounded
 source and cached rim mask without boosting source saturation or RGB. The dock
-has a fixed 1.25px local-color band, 24px rounded corners, 10px blur and a shallow
-1.025× lens; there is no painted accent border.
+has a fixed 1.6px local-color band, 24px rounded corners, 6px blur and a shallow
+1.05× lens. A 1.25px directional tonal bevel preserves the silhouette on light
+paper and in the fallback. This is part of the cached contour maps.
+
+The colored shoulder samples the interior of each background column instead
+of sampling only pixels at the perimeter. It reuses the existing rim texture
+and filter's column projection, without a CPU color histogram. Neighboring
+columns stay separate and source saturation/RGB gain remain unchanged.
 
 Put a small, complete background in `GlassScene` for portable DOM refraction,
 and keep portals within that source's bounds. Backgrounds must paint their
@@ -56,7 +62,12 @@ lens refracts a centered circular avatar over its paper plane, with two actions.
 Docs retain radius/shape and refraction controls. Normal-glass comparisons are
 deferred; these examples focus on the actual lens.
 
-The six lower examples share an asset-workspace context. A toolbar icon owns
+On the homepage, the six lower examples show centered triggers on a plain paper
+plane, with no images or surrounding application UI. Popovers, menus, drawers,
+tooltips and hover cards start closed; the card remains visible. Touch users
+can tap tooltip/hover-card triggers. The richer examples load only in docs/gallery.
+
+The docs/gallery examples share an asset-workspace context. A toolbar icon owns
 the tooltip, a collaborator link owns the hover card, and the View popover
 changes the grid/list layout and file details. File-row ellipses expose copy,
 duplicate and download actions. Filenames open a native details drawer. The
@@ -67,3 +78,6 @@ Shared dialogs now use the same compact lens, without a whole-viewport blur.
 These are ordinary product layouts; the overlay or collection caption is the
 only lens. On the homepage, tooltips and hover cards open on hover/focus. The
 documentation inspector can still pin them for shape and refraction editing.
+Popover and hover-card foreground viewports scroll within the available local
+space while their optical contours stay intact. Initial readiness fades the
+completed finish in once; resizing keeps foreground labels visible.

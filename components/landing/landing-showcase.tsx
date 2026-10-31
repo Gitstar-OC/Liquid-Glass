@@ -18,6 +18,7 @@ function ExampleSection({ title, examples, id }: { title?: string; examples: Sho
   const input = useRef<"pointer" | "keyboard">("pointer");
   const keyboardHint = useId();
   const example = SHOWCASE_EXAMPLES.find(item => item.id === selected)!;
+  const simple = OVERLAYS.includes(selected) || DETAILS.includes(selected);
   return (
     <section className="landing-example-section" id={id} aria-label={title ?? "Interaction examples"}>
       <Tabs value={selected} onValueChange={next => {
@@ -34,7 +35,7 @@ function ExampleSection({ title, examples, id }: { title?: string; examples: Sho
           </TabsList>}
           {examples.length > 1 && <p id={keyboardHint} className="sr-only">Arrow keys change examples. Tab moves to the selected example’s controls.</p>}
         </header>
-        <div className="landing-interaction-window" data-example={selected} data-keyboard={keyboard || undefined} style={{ "--slide-direction": direction } as CSSProperties}>
+        <div className="landing-interaction-window" data-example={selected} data-preview={simple ? "simple" : undefined} data-keyboard={keyboard || undefined} style={{ "--slide-direction": direction } as CSSProperties}>
           {examples.map(value => examples.length === 1 ? <div key={value} className="landing-interaction-panel" data-state="active">
             <PanelShowcase compact minimal initialExample={value} />
           </div> : <TabsContent key={value} value={value} tabIndex={-1} className="landing-interaction-panel">

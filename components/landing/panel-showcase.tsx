@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { GlassSettingsProvider } from "@/components/glass-scene";
 import { useGlassTheme } from "@/components/glass/glass-theme-provider";
 import { GlassSlider } from "@/components/glass/glass-slider";
@@ -9,7 +10,10 @@ import { PreviewToolbar } from "@/components/site/preview-toolbar";
 import type { GlassShape } from "@/lib/glass";
 import { HomeExample, type HomeExampleId } from "@/components/landing/home-examples";
 import { cn } from "@/lib/utils";
-import { WorkspacePanelExample, type WorkspaceExample } from "@/components/landing/workspace-panel-example";
+import type { WorkspaceExample } from "@/components/landing/workspace-panel-example";
+
+const WorkspacePanelExample = dynamic(() => import("@/components/landing/workspace-panel-example").then(module => module.WorkspacePanelExample));
+const SimplePanelExample = dynamic(() => import("@/components/landing/simple-panel-example").then(module => module.SimplePanelExample));
 
 export const SHOWCASE_EXAMPLES = [
   { id: "slider", name: "Slider", doc: "glass-slider" },
@@ -70,11 +74,13 @@ export function PanelShowcase({ initialExample = "slider", compact = false, mini
     : example === "dropdown" ? "Open a file’s action menu." : "Change the asset layout with View.";
   return (
     <section ref={section} className={cn("panel-showcase", compact && "panel-showcase-compact", minimal && "panel-showcase-minimal", resolvedMode === "dark" ? "showcase-dark" : "showcase-light")} aria-label={`${selected.name} example`}>
-      <div ref={setContainer} className="panel-preview-stage" data-panel-example={example}>
+      <div ref={setContainer} className="panel-preview-stage" data-panel-example={example} data-preview={minimal && !control ? "simple" : undefined}>
         <GlassSettingsProvider refraction={refraction}>
           {control ? <div className="home-control-stage size-full" data-example={example === "profile" ? "popover" : example}>
             {mounted && <HomeExample key={example} id={(example === "profile" ? "popover" : example) as HomeExampleId} previewActive={pinned} />}
-          </div> : mounted && container ? <WorkspacePanelExample key={example}
+          </div> : mounted && container ? minimal ? <SimplePanelExample key={example}
+            example={example as WorkspaceExample} appearance={resolvedMode} container={container}
+            radius={radius} shape={shape} beak={beak} /> : <WorkspacePanelExample key={example}
             example={example as WorkspaceExample}
             appearance={resolvedMode} container={container} radius={radius} shape={shape}
             beak={beak} pinned={pinned} onUnpin={() => setPinned(false)} /> : null}

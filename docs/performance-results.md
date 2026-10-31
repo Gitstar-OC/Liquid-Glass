@@ -1335,3 +1335,47 @@ packaging completed with 58 entries and 70 shared source files.
   blocked, so appearance and native-device timings are unverified. Registry
   packaging completed with 58 items and 70 shared source files.
 
+## 2026-10-31 — light-mode bevel, interior color and quiet homepage previews
+
+- The six lower homepage examples now show only a centered trigger or card on
+  an opaque paper plane. Popovers, dropdowns, drawers and the profile menu start
+  closed; hover examples are unpinned and support a tap. No workspace images or
+  file table render in these six scenes. Frames stay at 400px / 420px on phones.
+  Simple examples and richer docs/gallery examples load in separate dynamic
+  chunks, only when selected and visible. A homepage source has two authored
+  elements; closed overlays register no lens.
+- Compact panels use a 1.25px tonal bevel in the existing transmission/reflection
+  textures. Directional white/neutral shoulders keep light and dark silhouettes
+  legible, including the lightweight fallback. Coverage, normals, color and
+  squircle shape share their contour. No CSS border, shadow or extra texture was
+  added. Tooltips retain their previous material; control/video presets omit the
+  new panel geometry options and retain their tracing equations.
+- The existing rim PNG keeps its red coordinate neutral and projects green to
+  the interior of its source column. Vertical diffusion uses lens-height / 4,
+  capped at 32px; source gain and saturation stay at 1. Enabling the existing
+  coordinate/projection branch adds two SVG primitives over the same bounded
+  SourceGraphic. The fixed color band is 1.6px. This is a column-weighted color
+  approximation, without a CPU histogram, new capture or whole-page filter.
+- Cards/hover cards use 4px background blur, menus/popovers/dialogs 6px, and
+  drawers 8px. Foreground content remains unfiltered, with a restrained neutral
+  contrast finish. The profile menu uses 5px. The dock keeps its 24px contour and
+  stationary slots, now using the shared bevel, 1.05× zoom, 12px depth and 6px
+  background blur. Native SVG backdrop support remains Chromium-only; other
+  browsers retain the cached contour and local backdrop-blur fallback.
+- Panels use 1.5× map storage on desktop and mobile, allocating approximately
+  44% fewer pixels than 2× before dimension rounding. Tooltips and controls keep
+  2×. Joined shapes now trace their symmetric body once per quadrant and patch
+  only the small pointer neighborhood. Pixel channels, four output PNGs, the
+  12-entry cache and 1.5M-pixel cap are unchanged. Reduced transparency skips map
+  generation. There is no idle animation or per-frame source-color readback.
+- Cards/overlays reveal once after their initial finish resolves, then retain
+  visible foregrounds through resizing. Nested cards inherit immediately.
+  Budget-denied panels keep the same 14% neutral fallback instead of the old
+  near-white body. Popover/hover-card widths and foreground scrolling respect
+  Radix's available local bounds; optical margins remain outside the scroller.
+- Evidence is a source review and passive development-server compilation logs.
+  No tests, lint, typecheck, production build, registry verification or frame
+  benchmark were run, as requested. Development-URL browser access remains
+  blocked; reference parity, GPU timings and native mobile behavior remain
+  unverified. Registry packaging completed with 58 items and 70 shared files.
+

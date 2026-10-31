@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export function ProfilePopoverExample() {
   const { resolvedMode } = useGlassTheme();
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("Alex Morgan");
   const [draft, setDraft] = useState(name);
   const [editing, setEditing] = useState(false);
@@ -50,7 +50,7 @@ export function ProfilePopoverExample() {
           <GlassPopoverContent container={container} collisionBoundary={container ?? undefined} collisionPadding={20}
             side="left" align="center" sideOffset={12} radius={24} shape="squircle"
             aria-label="Profile actions" className="profile-illustration-menu"
-            lensParameters={{ scale: 0.025, depth: 10, magnification: 1.08, blur: 1.5, rimStrength: 0.8, edgeHighlight: 0.38 }}
+            lensParameters={{ scale: 0.025, depth: 10, magnification: 1.08, blur: 5, rimStrength: 0.9, edgeHighlight: 0.46 }}
             onOpenAutoFocus={event => event.preventDefault()}
             onCloseAutoFocus={event => { if (editing) event.preventDefault(); }}>
             <div className="flex flex-col gap-1">

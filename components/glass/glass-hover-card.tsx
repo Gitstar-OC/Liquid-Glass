@@ -27,14 +27,14 @@ export function GlassHoverCardContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "glass-bubble-motion z-50 w-64 origin-(--radix-hover-card-content-transform-origin) outline-hidden",
+          "glass-bubble-motion z-50 w-64 max-w-(--radix-hover-card-content-available-width) origin-(--radix-hover-card-content-transform-origin) outline-hidden",
           className,
         )}
         {...props}
       >
         <GlassPanel kind="hover-card" radius={radius} shape={shape} beak={beak}
           lensParameters={lensParameters} className="w-full p-4 text-sm">
-          {children}
+          <div data-glass-panel-viewport="" className="max-h-[max(48px,calc(var(--radix-hover-card-content-available-height,100dvh)_-_32px))] overflow-y-auto overscroll-contain">{children}</div>
         </GlassPanel>
         {beak && <HoverCardPrimitive.Arrow data-glass-beak-anchor="" width={14} height={5} opacity={0} aria-hidden="true" />}
       </HoverCardPrimitive.Content>

@@ -12,6 +12,12 @@ export interface ControlLensShape {
   beak?: GlassBeak;
   /** Fixed CSS-pixel source-color shoulder for larger panels; controls omit it. */
   rimWidth?: number;
+  /** Compact-panel bevel in CSS pixels. Controls/video omit it. */
+  bevel?: number;
+  /** Project each interior column toward the rim without mixing neighboring columns. */
+  columnRim?: boolean;
+  /** Map samples per CSS pixel. Controls retain their existing 2× default. */
+  resolution?: number;
 }
 
 /** One smooth union, including its normals: the beak is never a second layer. */

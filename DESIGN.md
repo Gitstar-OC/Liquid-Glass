@@ -52,19 +52,20 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   fixed above the viewport's bottom safe area and stays visible while scrolling.
   Use a plain control plate on the quiet lavender/dark grid; Video owns its flower
   footage. No autoplay or hidden live catalogue. Bubble, panel and menu examples
-  use a bounded asset workspace, without an enclosing glass panel. Demonstrate
-  tooltips on toolbar icons, hover cards on collaborator names, view popovers
-  in the library toolbar, menus on file-row ellipses, drawers from filenames,
-  and glass collection cards over their cover images. No isolated demo-only
-  trigger buttons. Actions change the preview or open the actual local asset.
-  Homepage hover surfaces respond to pointer/focus; docs can pin them open.
+  use a quiet, opaque paper plane on the homepage. Center one View button,
+  ellipsis menu, drawer trigger, tooltip trigger, hover-card trigger or standalone
+  card. Start overlays closed and hover surfaces unpinned. No photos, file
+  workspace or ornamental backdrop in these six homepage examples. Keep their
+  frames stable at 400px (420px on phones). Tooltips and hover cards also support
+  a tap. Richer asset-workspace examples remain in docs/gallery and load on
+  demand, separately from the homepage's simple examples.
   Keep only the short Aave/Apple attribution below the
   hero heading; remove Controls and explanatory example subtext.
   The profile has a centered 168px circular avatar (160px on phones), containing
   the local illustration on a complete paper plane,
-  and a visible lens with two actions: Edit profile and Share profile. The
+  and a menu lens with two actions: Edit profile and Share profile. The
   popover uses 1.08× actual DOM refraction so the portrait's colors and features
-  visibly bend. It opens without taking focus and retains a native edit dialog.
+  visibly bend. It starts closed, opens without taking focus and retains a native edit dialog.
   The non-refracting component family is deferred; do not show normal-glass
   material choices in these previews.
   A small active-state inspector pins the expanded material for comparison.
@@ -186,12 +187,13 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   The homepage chooses black ink in light Duotheme and white ink in dark Duotheme,
   independent of the photo. Changing appearance must update this chosen ink.
 - Larger `GlassSurface` commands retain their stronger background softening.
-  Compact panels use their own 0.35–2.5px blur defaults. Shared dialogs use the
+  Compact panels use 0.35px blur for tooltips, 4px for cards/hover cards, 6px for
+  popovers/menus/dialogs and 8px for drawers. Shared dialogs use the
   same compact lens, with a dim overlay and no whole-viewport blur. Local blur
   overrides remain available. Pending image lenses keep the actual backdrop
   with a faint neutral reflection; do not flash an almost-white opaque panel.
   Image buttons use the video's actual WebGL finish over a displayed image.
-  The profile menu uses its bounded DOM lens with 1.5px softening.
+  The profile menu uses its bounded DOM lens with 5px softening.
   Keep the image's own pixels and source-colored rim, without a white body fill.
   Its native actions and controls share one optical layer. Profile
   identity stays outside the image so it is not replaced with sampled text.
@@ -233,13 +235,20 @@ examples, and every new component. Read alongside [performance rules](docs/glass
   backdrop where SVG backdrop filtering is supported, with a bounded CSS blur
   fallback elsewhere. Other docks can retain their app glyphs.
   Separate the appearance utility with one quiet vertical divider. Use the same
-  compact, joined lens tooltip for dock hints. The dock's 1.25px
-  source-colored edge diffuses actual local background columns; it is not a
+  compact, joined lens tooltip for dock hints. The dock's 1.6px
+  source-colored edge projects actual interior background columns; it is not a
   painted accent border or an invented white source. Neutral glints retain
-  its silhouette on light backgrounds. Its shallow field uses 1.025× zoom and
-  10px background softening, rather than the stronger control-thumb optics.
+  its silhouette on light backgrounds. Its shallow field uses 1.05× zoom and
+  6px background softening, rather than the stronger control-thumb optics.
   Preserve actual source RGB in compact color glints, without saturation or
   brightness gain. Image collection captions use a restrained 1.06× lens.
+- Compact panels share a 1.25px tonal bevel in the existing cached reflection
+  and transmission maps. Its coverage, normals, source-colored shoulder and
+  squircle mask come from the same contour. Keep the neutral glint distinct from
+  actual source colors. Tooltips and control/video presets retain their finish.
+  Reveal overlays/cards once their initial finish is ready; resizing does not
+  hide their labels again. Popover/hover-card width and foreground scrolling
+  respect Radix's available local space. Keep optical margins outside scrollers.
 - Action button groups use a capsule silhouette and individually rounded hit
   areas within one shared glass surface; do not inherit square shadcn group joins.
 - `liquidOnHold` reveals a standalone lens after 180ms of pointer intent. Release,

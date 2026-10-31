@@ -224,7 +224,7 @@ export function WorkspacePanelExample({ example, appearance, container, radius, 
     </Workspace>;
     foreground = <div className="workspace-collection-layer">
       <GlassCard {...geometry} size="sm" className="workspace-collection-card"
-        lensParameters={{ scale: 0.025, depth: 10, magnification: 1.06, blur: 1.25, rimStrength: 0.8, edgeHighlight: 0.38 }}>
+        lensParameters={{ scale: 0.025, depth: 10, magnification: 1.06, blur: 4, rimStrength: 0.9, edgeHighlight: 0.46 }}>
         <CardHeader><CardTitle><span className="workspace-collection-title">Landscape studies<ArrowUpRight aria-hidden="true" /></span></CardTitle><CardDescription>Brand photography</CardDescription></CardHeader>
         <CardContent><p className="text-xs">Dunes, open water and ice.</p></CardContent>
         <CardFooter className="justify-between border-0 bg-transparent"><Badge variant="secondary">3 assets</Badge><span className="text-xs text-muted-foreground">Updated today</span></CardFooter>
